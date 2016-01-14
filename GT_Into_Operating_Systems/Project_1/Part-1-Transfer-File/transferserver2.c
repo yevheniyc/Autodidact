@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
     
     int fd;                             // file descriptor for sending a file
     struct stat file_stat;              // used with filestats and contains all sorts of info
-    int offset;                         // helps with traking location in the file
+    off_t offset;                       // helps with traking location in the file
     int remain_data;                    // remaining data
     char file_size[256];                // the size of the sending file or the sending chunk??
     ssize_t len;                        // length of the sent file size - we send if first so that client knows what to expect
@@ -193,8 +193,8 @@ int main(int argc, char **argv) {
             exit(1);
         }
 
-        fprintf(stdout, "File Size: \n%d bytes \n", file_stat.st_size); // get file size
-        sprintf(file_size, "%d", file_stat.st_size); // convert int to char
+        fprintf(stdout, "File Size: \n%d bytes \n", (int)file_stat.st_size); // get file size
+        sprintf(file_size, "%d", (int)file_stat.st_size); // convert int to char
 
         // sending file size first
         len = send(new_fd, file_size, sizeof(file_size), 0);
@@ -203,17 +203,17 @@ int main(int argc, char **argv) {
             exit(1);
         }
 
-        fprintf(stdout, "server: sent %d bytes for the size\n", len);
+        fprintf(stdout, "server: sent %d bytes for the size\n", (int)len);
 
         // initiate variables for keeping how much as been sent out
         offset = 0;
         remain_data = file_stat.st_size;
 
         // sending file data in chunks
-        while (((sent_bytes = sendfile(new_fd, fd, &offset, 50)) > 0) && (remain_data > 0) { // the size of sent chunk ...i think
-            fprintf(stdout, "1. Server sent %d bytes from file's data, offset is now: %d and remaining data = %d\n", sent_bytes, offset, remain_data);
+        while (((sent_bytes = sendfile(new_fd, fd, &offset, BUFFER_SIZE)) > 0) && (remain_data > 0)) { // the size of sent chunk ...i think
+            fprintf(stdout, "1. Server sent %d bytes from file's data, offset is now: %d and remaining data = %d\n", sent_bytes, (int)offset, remain_data);
             remain_data -= sent_bytes;
-            fprintf(stdout, "2. Server sent %d bytes from file's data, offset is now: %d and remaining data = %d\n", sent_bytes, offset, remain_data);
+            fprintf(stdout, "2. Server sent %d bytes from file's data, offset is now: %d and remaining data = %d\n", sent_bytes, (int)offset, remain_data);
         }
     }
 
