@@ -50,7 +50,7 @@
     }
 #endif
 
-#define BUFFER_SIZE  16
+#define BUFFER_SIZE  256
 #define MAX_PENDING  5
 #define USAGE                                                                 \
 "usage:\n"                                                                    \
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
     struct stat file_stat;              // used with filestats and contains all sorts of info
     off_t offset;                       // helps with traking location in the file
     int remain_data;                    // remaining data
-    char file_size[256];                // the size of the sending file or the sending chunk??
+    char file_size[4];                // the size of the sending file or the sending chunk??
     ssize_t len;                        // length of the sent file size - we send if first so that client knows what to expect
     int sent_bytes = 0;                 // length of the actual file chunk that is being sent out
 
@@ -178,7 +178,6 @@ int main(int argc, char **argv) {
                   ip_info, sizeof ip_info);
         printf("server: got connection from %s\n", ip_info);
 
-        
 
         // let's handle files here for now
         fd = open(filename, O_RDONLY);
@@ -215,6 +214,8 @@ int main(int argc, char **argv) {
             remain_data -= sent_bytes;
             fprintf(stdout, "2. Server sent %d bytes from file's data, offset is now: %d and remaining data = %d\n", sent_bytes, (int)offset, remain_data);
         }
+        close(sockfd);
+        close(new_fd);
     }
 
     return 0;
