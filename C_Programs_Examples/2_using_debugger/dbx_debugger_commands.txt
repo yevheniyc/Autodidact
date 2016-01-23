@@ -1,0 +1,19 @@
+Brief dbx command summary:
+
+Brief dbx command summary:
+run 			Starts execution from beginning of program
+step  			Executes the next statement
+cont			Resumes execution
+status			Prints out all pending dbx instructions (trace, stop, etc.)
+trace			Traces line by line the execution of the program
+where			Displays current location
+stop at #		Insert breakpoint - execution will stop before executing statement at specified line number
+print expr		Evaluates expression, then displays the result
+delete #		Removes specified dbx instruction - number is obtained from first value of status output
+Notes:
+To effectively use dbx, make sure that you have a line numbered listing of your source file:
+      1. cat -n sourcefile.c | lpr
+      2. gcc -g -o sourcefile sourcefile.c
+      3. dbx sourcefile
+
+Be aware that when a program is compiled with the -g option, it will behave differently than under normal compilation. For example, all integers, unless otherwise specified, are automatically initialized to zero. Under normal situations, no initialization is performed. This can cause a program that is buggy to work correctly when compiled for the debugger!
