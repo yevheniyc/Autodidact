@@ -1,0 +1,9 @@
+Brief gdb command summary - a dubbuger used on Ubuntu:
+1. gcc -g file.c      // compile your program , this will generate a.out file with required debugging information 
+2. gdb a.out          // start with gdb
+=== we are inside gdb
+3. b main             // to set break point at main        
+4. run                // run now, and it will stop at break point main 
+5. s                  // option s is to step single line and even step into functions
+6. n                  // option n is to execute next line and step over functions  
+7. p  [variable name] // to print the value of variable at that particular instance very helpful  
