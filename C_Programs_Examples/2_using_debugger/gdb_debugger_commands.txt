@@ -7,3 +7,6 @@ Brief gdb command summary - a dubbuger used on Ubuntu:
 5. s                  // option s is to step single line and even step into functions
 6. n                  // option n is to execute next line and step over functions  
 7. p  [variable name] // to print the value of variable at that particular instance very helpful  
+
+NOTE: 
+	Mac uses LLDB which has a suit of somewhat similar commands.
