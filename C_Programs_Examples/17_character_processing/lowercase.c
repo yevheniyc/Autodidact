@@ -23,7 +23,7 @@ main() {
 
 	while ( (ch = getchar()) != EOF ) { // make assignment, then compare value against EOF
 		if ((ch >= 'A') && (ch <= 'Z')) // check for uppercase character
-			ch += 'a' - 'A';			// convert to lowercase the hard way
+			ch += 'a' - 'A';			// convert to lowercase the hard way - simple arithmetics
 		putchar(ch);					// write character to stout
 	}
 }
