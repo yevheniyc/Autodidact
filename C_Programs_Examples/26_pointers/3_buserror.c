@@ -95,5 +95,5 @@ main() {
 	i=8 &values = 0x7fff5795a8d6 &values[i] = 0x7fff5795a8d7
 	Enter integer #10: 454545454454
 	i=9 &values = 0x7fff5795a8d6 &values[i] = 0x7fff5795a8d7
-	Averate is -0.9
+	Averate is -0.9 =======> weird - in the example showed "Bus error", but here this.
 */
