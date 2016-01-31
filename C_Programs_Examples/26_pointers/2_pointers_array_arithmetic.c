@@ -60,7 +60,7 @@ main() {
 				printf("%0X\n", p_int + 1); // show hexadecimal representation of 1st array element's address -> F7FFC7C (4 bytes from previous)
 				printf("%0X\n", p_int + 2); // show hexadecimal representation of 2nd array element's address -> F7FFC80 (4 byptes from previous)
 				// print pointer value
-				printf("%d\n", *p_int); // show the value the pointer points to (dereferrencing) -> 5
+				printf("%d\n", *p_int or *(p_int + 1)); // show the value the pointer points to (dereferrencing) -> 5
 	*/
 }
 
