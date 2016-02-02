@@ -63,10 +63,8 @@ void display() {
 		printf("\nempty queue");
 	else {
 		int a;
-		
 		temp = front;
-		while(temp != NULL)
-		{
+		while(temp != NULL) {
 			a = (temp->r.acceptfd);			
 			printf("\n acceptfd is %d, file name is %s, file size is %d , ip addr is %u, request is %s,time is %s",a,temp->r.file_name,temp->r.size,temp->r.cli_ipaddr,temp->r.in_buf,temp->r.time_arrival);
 			temp=temp->link;
