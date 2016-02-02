@@ -1,3 +1,8 @@
+/*
+    MULTI THREADED WEB SERVER IN C SOURCE CODE.
+    LODE PAGES FROM GIVEN FOLDER LOCATION AND PUBLISH THEM
+*/
+
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <unistd.h> 
