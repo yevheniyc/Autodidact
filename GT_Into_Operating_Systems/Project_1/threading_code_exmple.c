@@ -61,8 +61,7 @@ typedef struct node N;
 void display() {
 	if(front==NULL)
 		printf("\nempty queue");
-	else
-	{
+	else {
 		int a;
 		
 		temp = front;
