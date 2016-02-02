@@ -1,6 +1,6 @@
 # Multi-threaded Web Server
 
-Disclamer: This code has been borrowed from https://github.com/adilansari/myhttpd as a template for my own project. Some patterns were very helpful in understadning how to implement mutexes, for example. However, parsing and error-proofing command line arguments wil be based on Dr. Estell's programming book. By the end of the project, all of the lines should be written by me!
+Disclaimer: This code has been borrowed from https://github.com/adilansari/myhttpd as a template for my own project. Some patterns were very helpful in understadning how to implement mutexes, for example. However, parsing and error-proofing command line arguments wil be based on Dr. Estell's programming book. By the end of the project, all of the lines should be written by me!
 
 The objective of this project is to implement a multithreaded web server “myhttpd” in C/C++ on a UNIX-based platform.
 
