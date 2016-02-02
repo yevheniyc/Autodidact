@@ -362,21 +362,21 @@ void *thread_listen(void *arg) {
 
 	while(1) {
 		//printf("\nin listening thread before accept\n");
-		acceptfd= accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+		acceptfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
 		if (acceptfd < 0) 
-          	perror("error in accepting");
+		  	perror("error in accepting");
 
-	    unsigned int ip = cli_addr.sin_addr.s_addr;
-	  	// time
+		unsigned int ip = cli_addr.sin_addr.s_addr;
+			// time
 		time_t now;
-	    time(&now);
-	    struct tm * ct = localtime(&now); //getting localtime
-	    int ch[128], time_arrival[128];
-	    struct timeval tv;
-	    strftime(ch, sizeof ch, "[%d/%b/%Y : %H:%M:%S %z]", ct); //format of the timestamp string we need
-	    snprintf(time_arrival, sizeof time_arrival, ch, tv.tv_usec); //printing the needed timestamp string
-	               
-		
+		time(&now);
+		struct tm * ct = localtime(&now); //getting localtime
+		int ch[128], time_arrival[128];
+		struct timeval tv;
+		strftime(ch, sizeof ch, "[%d/%b/%Y : %H:%M:%S %z]", ct); //format of the timestamp string we need
+		snprintf(time_arrival, sizeof time_arrival, ch, tv.tv_usec); //printing the needed timestamp string
+		           
+
 		/*	
 			FILE * file_des=fopen(file,"a"); 
 			printf("\n in  serving thread \n");
@@ -387,7 +387,7 @@ void *thread_listen(void *arg) {
 		char *file_name = malloc(sizeof(char *));
 		memset(in_buf, 0, sizeof(in_buf));
 		retcode = recv(acceptfd, in_buf, BUF_SIZE, 0);			
-            
+		    
 		//printf("\nin listening thread before getting file name\n");
 		if (retcode < 0) { 
 			printf("recv error detected ...\n"); 
