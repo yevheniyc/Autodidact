@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define YES 1
 #define NO 0
@@ -25,7 +26,7 @@ main(int argc, char *argv[]) {
 		check for passed arguments - assume all flags appear before filelist
 	*/
 	if (argc > 1) {
-		if (argv[1][0] == '-') {// any flags?
+		if (argv[1][0] == '-') { // any flags?
 			cflag = NO; // if flag arguments have been passed then enable only
 			wflag = NO; // those options that have been selected
 			lflag = NO;
@@ -36,17 +37,20 @@ main(int argc, char *argv[]) {
 				// process the flag by looping through non-dash portion of the flag
 				for (j = 1; j < strlen(argv[index]); j++)
 					switch (argv[index][j]) {
-						case 'l': lflag = YES, break; // output line count
-						case 'w': wflag = YES, break; // output word count
-						case 'c': cflag = YES, break; // output character count
+						case 'l': lflag = YES; break; // output line count
+						case 'w': wflag = YES; break; // output word count
+						case 'c': cflag = YES; break; // output character count
 						default : fprintf(stderr, UsageMesg, argv[0]);
 								  exit(1);
 					}
 			} else {
-				// remaining arguments are filenames
+				// if no dash workcount -c -c filaname1 filename2 - remaining arguments are filenames
 				fileptr = index;
 				break;
 			}
+	} else { // if only a single argument was passed (the executable name), than exit with usage and error
+		fprintf(stderr, UsageMesg, argv[0]);
+		exit(1);
 	}
 
 	/*
@@ -60,7 +64,7 @@ main(int argc, char *argv[]) {
 		*/
 
 		if (fileptr != argc)
-			if (fp = fopen(argv[index], "r") == NULL) {
+			if ((fp = fopen(argv[index], "r")) == NULL) {
 				fprintf(stderr, OpenMesg, argv[0], argv[index++]); // can't read file
 				continue;
 			}
@@ -96,9 +100,9 @@ main(int argc, char *argv[]) {
 		/*
 			output current file results - print only what was spcified
 		*/
-		if (lflag) printf(" %7ld", lines);
-		if (wflag) printf(" %7ld", words);
-		if (cflag) printf(" %7ld", characters);
+		if (lflag) printf(" %7d", lines);
+		if (wflag) printf(" %7d", words);
+		if (cflag) printf(" %7d", characters);
 
 		if (argc != fileptr)
 			printf(" %s\n", argv[index]); // print filename
@@ -117,6 +121,18 @@ main(int argc, char *argv[]) {
 		output totals if more than one file was processed
 	*/
 	if (argc - fileptr > 1) { // then have two or more files, so print out total counts(s)
-		if (lflag) printf("")
+		if (lflag) printf(" %7d", tlines);
+		if (wflag) printf(" %7d", twords);
+		if (cflag) printf(" %7d", tcharacters);
+		printf("total\n");
 	}
+
+	exit(0); // exit program - return status normal: successful execution
 }
+
+/*
+	Note that, while this is a workalike program, this is not the most efficient implementation 
+	possible for this code. For example, the character count can be more readily obtained by using 
+	an advanced system function that will return the attributes for a specified file. 
+	Things that are not being requested by the user could be skipped, thereby saving additional time.
+*/
