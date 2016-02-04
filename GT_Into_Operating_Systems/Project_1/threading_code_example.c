@@ -1,3 +1,7 @@
+/*
+	An example borrowed online, cleaned and reimplemented.
+*/
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
