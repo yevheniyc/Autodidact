@@ -1,6 +1,7 @@
 /*
     MULTI THREADED WEB SERVER IN C SOURCE CODE.
     LODE PAGES FROM GIVEN FOLDER LOCATION AND PUBLISH THEM
+    Source: http://sanjeewamalalgoda.blogspot.com/2010/05/java-micro-edition-code-for-logarithams.html
 */
 
 #include <stdio.h> 
