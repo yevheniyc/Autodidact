@@ -67,6 +67,12 @@ void * work(void * thr) {
 }
 ////////////////////////////////
 
+/*
+	NOTE:
+		- pthread_create - parameters to the function must be pointers
+						 - the function variable should be functions' address, which is "word"
+/*
+
 ///////// OUTPUT ///////////////
 /*
 	Executed thread: 0
