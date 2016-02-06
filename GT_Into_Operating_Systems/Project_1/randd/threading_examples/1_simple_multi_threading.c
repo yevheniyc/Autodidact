@@ -33,7 +33,7 @@
 
 #include <stdio.h>
 #include <pthread.h>
-#include <unistd.h> // for usleep
+#include <unistd.h> // for usleep on mac
 
 /////// PROTOTYPES //////////////
 void * work(void * thr);

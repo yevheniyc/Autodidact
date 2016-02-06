@@ -56,9 +56,151 @@
 			-> usually, it is useful to encapsulate the critical section within a separte function, for clarity
 
 	Illustrating multi-threading synchronization with mutaxes:
-		- "thread safe" - 
-		- in 1_simple_multi_threading.c, the "printf" in the "work" function is not "thread safe", so we need to hanlde it ourselves
+		- "thread safe" code (http://www.thegeekstuff.com/2012/07/c-thread-safe-and-reentrant/):
+			-> As the name suggests, a piece of code is thread safe when more than one thread can execute the same code 
+			   without causing synchronization problems. Lets look at the following code snippet:
+					...
 
+					char arr[10];
+					int index=0;
 
+					int func(char c)
+					{
+					    int i=0;
+					    if(index >= sizeof(arr))
+					    {
+					        printf("\n No storage\n");
+					        return -1;
+					    }
+					    arr[index] = c;
+					    index++;
+					    return index;
+					}
 
+					...
+			-> The above function populates the array ‘arr’ with the character value passed to it as argument and 
+			   then updates the ‘index’ variable so that subsequent calls to this function write on the updated index 
+			   of the array.
+			-> Suppose this function is being used by two threads. Now, lets assume that thread one calls this function 
+			   and updates the array index with value ‘c’. Now, before updating the ‘index’ suppose second thread gets 
+			   the execution control and it also calls this function. Now since the index was not updated by thread one , 
+			   so this thread writes on the same index and hence overwrites the value written by thread one. So we see 
+			   that lack of synchronization between the threads was the root cause of this problem.
+			-> Now, lets make this function thread safe:
+					...
+					char arr[10];
+					int index=0;
+
+					int func(char c)
+					{
+					    int i=0;
+					    if(index >= sizeof(arr))
+					    {
+					        printf("\n No storage\n");
+					        return -1;
+					    }
+
+				       ...
+				       Lock a mutex here
+				       ...
+
+					    arr[index] = c;
+					    index++;
+
+				       ...
+				       unlock the mutex here
+				       ...
+					    
+					    return index;
+					}
+					...
+			-> What we did above is that we made the array and index updates an atomic operation using the mutex locks. 
+			   Now even if multiple threads are trying to use this function, there would be no synchronization problems 
+			   as any thread which acquires the mutex will complete both operations (array and index update) 
+			   before any other thread acquires the mutex. So now the above piece of code becomes thread-safe.
+
+		- in 1_simple_multi_threading.c, the "printf" in the "work" function is not "thread safe", 
+		  so we need to hanlde it ourselves with mutexes
+		- if we had another function we wanted to make "thread safe", we should just define/initiate/destory another mutex:
+			-> pthread_mutex_t mtx2
+			-> pthread_mutex_init(&mtx2, 0)
+			-> pthread_mutex_lock(&mtx2)
+			-> pthread_mutex_unlock(&mtx2, 0)
+			-> pthread_mutex_destroy(&mtx2)
 */
+
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h> // for usleep on mac
+
+////////// GLOBALS //////////
+pthread_mutex_t mtx; // define mutex variable
+/////////////////////////////
+
+
+//////// PROTOTYPES //////////
+void * work(void * ptr);
+void print(int thread, int i);
+//////////////////////////////
+
+
+///////// MAIN ///////////////
+int main(int argc, char ** argv) {
+	pthread_t t0, t1;
+
+	pthread_mutex_init(&mtx, 0); // init the mutex variable
+	pthread_create(&t0, 0, work, (void *)0);
+	pthread_create(&t1, 0, work, (void *)1);
+
+	pthread_join(t0, 0);
+	pthread_join(t1, 0);
+
+	pthread_mutex_destroy(&mtx); // destroy the mutex
+	return 0;
+}
+//////////////////////////////
+
+
+///////// FUNCTIONS //////////
+void * work(void * ptr) {
+	int i;
+	for (i = 0; i < 10; i++) {
+		print((int)ptr, i);
+		usleep(1000);
+	}
+
+	pthread_exit(0); // terminate thread
+}
+
+void print(int thread, int i) {
+	pthread_mutex_lock(&mtx);
+	printf("thread %d: %d\n", thread, i); // critical section protected by lock/unlock mutex
+	pthread_mutex_unlock(&mtx);
+}
+//////////////////////////////
+
+
+////////// OUTPUT ////////////
+/* Notice how nicely they are synchronized!
+	thread 0: 0
+	thread 1: 0
+	thread 0: 1
+	thread 1: 1
+	thread 0: 2
+	thread 1: 2
+	thread 0: 3
+	thread 1: 3
+	thread 0: 4
+	thread 1: 4
+	thread 0: 5
+	thread 1: 5
+	thread 0: 6
+	thread 1: 6
+	thread 0: 7
+	thread 1: 7
+	thread 0: 8
+	thread 1: 8
+	thread 0: 9
+	thread 1: 9
+*/
+//////////////////////////////
