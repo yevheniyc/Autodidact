@@ -121,6 +121,7 @@
 
 		- in 1_simple_multi_threading.c, the "printf" in the "work" function is not "thread safe", 
 		  so we need to hanlde it ourselves with mutexes
+		  
 		- if we had another function we wanted to make "thread safe", we should just define/initiate/destory another mutex:
 			-> pthread_mutex_t mtx2
 			-> pthread_mutex_init(&mtx2, 0)
