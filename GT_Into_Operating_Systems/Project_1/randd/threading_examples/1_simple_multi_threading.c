@@ -28,22 +28,24 @@
 		- proper thread termination:
 			- pthread_exit - wait for the created thread to terminate (i.e. for a function to complete)
 			- pthread_detach - detach the threads
+		- int usleep(useconds_t useconds) - suspend thread execution for an inteval measured in microseconds
 */
 
 #include <stdio.h>
 #include <pthread.h>
+#include <unistd.h> // for usleep
 
 /////// PROTOTYPES //////////////
-void * work(void * ptr);
+void * work(void * thr);
 /////////////////////////////////
 
 
 /////// MAIN ////////////////////
 int main(int argc, char ** argv) {
-	pthread_h t1, t2; // thread IDs
-	// create/run threads
-	pthread_create(&t1, 0, work, (void *)0);
-	pthread_create(&t2, 0, work, (void *)1);
+	pthread_t t1, t2; // thread IDs
+	// create/run threads and pass 0 and 1 to see which one is executed
+	pthread_create(&t1, 0, work, (void *) 0);
+	pthread_create(&t2, 0, work, (void *) 1);
 	// terminate threads after function work is complete
 	pthread_join(t1, 0);
 	pthread_join(t2, 0);
@@ -54,13 +56,38 @@ int main(int argc, char ** argv) {
 
 
 /////// FUNCTIONS //////////////
-void * work(void * ptr) {
-	int 1;
+void * work(void * thr) {
+	int i;
 	for (i = 0; i < 10; i++) {
-		printf("%d", (int) ptr); // cast pointer to void to an integer type
+		printf("Executed thread: %d\n", (int) thr); // cast pointer to void to an integer type
 		usleep(1000); 			 // sleep for a second
 	}
 
 	pthread_exit(0); // wait for the function in thread to complete and exit the thread
 }
 ////////////////////////////////
+
+///////// OUTPUT ///////////////
+/*
+	Executed thread: 0
+	Executed thread: 1
+	Executed thread: 0
+	Executed thread: 1
+	Executed thread: 1	-> out of order
+	Executed thread: 0
+	Executed thread: 1
+	Executed thread: 0
+	Executed thread: 1
+	Executed thread: 0
+	Executed thread: 1
+	Executed thread: 0
+	Executed thread: 1
+	Executed thread: 0
+	Executed thread: 1
+	Executed thread: 0
+	Executed thread: 1
+	Executed thread: 0
+	Executed thread: 0	-> out of order
+	Executed thread: 1
+/*
+///////////////////////////////
