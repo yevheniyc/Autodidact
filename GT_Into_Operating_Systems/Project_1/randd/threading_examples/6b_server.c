@@ -93,7 +93,7 @@ int main(int argc, char ** argv) {
 		else {
 			// start a new thread but do not wait for it
 			pthread_create(&thread, 0, process, (void *)connection);
-			pthread_detach(thread); // do not wait for the thread to complete, 
+			pthread_detach(thread); // do not wait for the thread to terminate/complete, 
 									// keep accepting new connections
 		}
 	}
