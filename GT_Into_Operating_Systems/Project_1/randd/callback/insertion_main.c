@@ -27,6 +27,8 @@ int main(void) {
 
 	// check for choices
 	switch (choice) {
+		// insertion sort is defined in insertion_sort.h
+		// and implemented in insertion_sort.c
 		case 1: insertion_sort(array, 10, ascending);
 				break;
 		case 2: insertion_sort(array, 10, descending);
