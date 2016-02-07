@@ -4,7 +4,12 @@
 
 	Implementing Client/Server architecture using sockets and threads.
 	This is the Client:
-		- handle command line parameters: server IP/host, server port, the message
+		- parse command line parameters: server IP/host, server port, the message
+		- create socket
+		- find server with gethostbyname(domain name)
+		- connect to the server
+		- write a message
+		- close socket
 
 	Intro:
 		The process handling is much more resource consuming than 
@@ -15,8 +20,10 @@
 */
 
 #include <stdio.h>
-#include <sys/socket.h>
-#include <netdb.h>
+#include <sys/socket.h> // sockets: socket, connect
+#include <netdb.h>		// htons, etcs
+#include <string.h>		// memcpy
+#include <unistd.h>		// read/write
 
 /*
 	main()
@@ -35,9 +42,9 @@ int main(int argc, char ** argv) {
 	}
 
 	// the number of parameters was ok, let's obtain port number
-	if (sscanf(argv[2], "%d", &port) <= 0) { // sscanf(source_arg, "source_arg type", source_arg_variable)
+	if (sscanf(argv[2], "%d", &port) <= 0) { // sscanf(source_arg, "source_arg type", dest_address)
 		fprintf(stderr, "%s: error: wrong parameter: port\n", argv[0]);
-		return -2; // not sure what -2 does
+		return -2;
 	}
 
 	// create a TCP socket for streaming data and for the Internet domain
