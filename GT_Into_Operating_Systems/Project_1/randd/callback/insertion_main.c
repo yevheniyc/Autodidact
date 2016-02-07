@@ -30,6 +30,7 @@ int main(void) {
 		case 1: insertion_sort(array, 10, ascending);
 				break;
 		case 2: insertion_sort(array, 10, descending);
+				break;
 		default: printf("no such option!\n");
 	}
 
