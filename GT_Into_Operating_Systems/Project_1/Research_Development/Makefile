@@ -1,0 +1,48 @@
+# Makefile - Yevheniy Chuba - 02/06/2016
+# Example of using make
+
+# This program is called make. It reads in a file, called a Makefile, 
+# that tells it how different files depend on each other, and works out 
+# which files need to be re-compiled and which ones do not. 
+
+# For example, a rule could say something like “if fromboz.o is older than fromboz.c, 
+# that means someone must have changed fromboz.c, so it needs to be re-compiled.” 
+
+# The makefile also has rules telling make how to re-compile the source file, 
+# making it a much more powerful tool.
+
+
+########## Makefile Example + Explanation ################################
+#  foo: foo.c
+#  	gcc -o foo foo.c
+
+# It consists of two lines, a dependency line and a creation line.
+
+# The dependency line here consists of the name of the program (known as the target), 
+# followed by a colon, then whitespace, then the name of the source file. 
+# When make reads this line, it looks to see if foo exists; if it exists, 
+# it compares the time foo was last modified to the time foo.c was last modified. If foo does not exist, 
+# or is older than foo.c, it then looks at the creation line to find out what to do. In other words, 
+# this is the rule for working out when foo.c needs to be re-compiled.
+
+# The creation line starts with a tab (press the tab key) and then the command you would type to create foo 
+# if you were doing it at a command prompt. If foo is out of date, or does not exist, make then executes this 
+# command to create it. In other words, this is the rule which tells make how to re-compile foo.c.
+
+# So, when you type make, it will make sure that foo is up to date with respect to your latest changes to foo.c. 
+# This principle can be extended to Makefiles with hundreds of targets—in fact, on FreeBSD, 
+# it is possible to compile the entire operating system just by typing make world in the appropriate directory!
+#########################################################################
+
+# Indicate compiler to use
+CC=gcc
+
+client: 6a_client.c
+	$(CC) -o client 6a_client.c
+
+server: 6b_server.c
+	$(CC) -o server 6b_server.c
+
+clean:
+	rm -f client server
+	rm *.out
