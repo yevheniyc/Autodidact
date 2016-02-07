@@ -5,8 +5,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "insertion_sort.h"
-#include "insertion_sort.c"
+#include "7a_insertion_sort.h"
+#include "7b_insertion_sort.c"
 
 
 ///// PROTOTYPES /////////////////////

@@ -1,10 +1,10 @@
 /*
-	insertion_sort.c - Yevheniy Chuba - 02/03/2016
+	7b_insertion_sort.c - Yevheniy Chuba - 02/03/2016
 	Implementation of the sort algorithm using callbacks with 
 	function pointers.
 */
 
-#include "insertion_sort.h"
+#include "7a_insertion_sort.h"
 
 /*
 	insertion_void:
