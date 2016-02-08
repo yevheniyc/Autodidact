@@ -19,7 +19,7 @@
 
 ########## Makefile Example + Explanation ################################
 #  foo: foo.c - dependencies
-#  	gcc -o foo foo.c
+#      gcc -o foo foo.c
 
 # It consists of two lines, a dependency line and a creation line.
 
