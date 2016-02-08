@@ -13,7 +13,7 @@
 
 
 ########## Makefile Example + Explanation ################################
-#  foo: foo.c
+#  foo: foo.c - dependencies
 #  	gcc -o foo foo.c
 
 # It consists of two lines, a dependency line and a creation line.
@@ -32,10 +32,15 @@
 # So, when you type make, it will make sure that foo is up to date with respect to your latest changes to foo.c. 
 # This principle can be extended to Makefiles with hundreds of targets—in fact, on FreeBSD, 
 # it is possible to compile the entire operating system just by typing make world in the appropriate directory!
+
+# $(variable) -> to use globally defined variables in the rule section
+# -command -> to ignore the return value of the command
 #########################################################################
 
 # Indicate compiler to use
 CC=gcc
+# -I flag tells gcc to look in the current directory (.) for the include files *.h
+CFLAGS=-I.
 
 client: 6a_client.c
 	$(CC) -o client 6a_client.c
@@ -43,6 +48,10 @@ client: 6a_client.c
 server: 6b_server.c
 	$(CC) -o server 6b_server.c
 
+insertion: 7c_insertion_main.c 7b_insertion_sort.c
+	$(CC) -o insertion 7c_insertion_main.c 7b_insertion_sort.c $(CFLAGS)
+
 clean:
-	rm -f client server
-	rm *.out
+	-rm -f client server
+	-rm *.out *.o
+	-rm -f insertion
