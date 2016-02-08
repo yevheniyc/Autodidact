@@ -1,6 +1,11 @@
 # Makefile - Yevheniy Chuba - 02/06/2016
 # Example of using make
 
+# For good examples:
+	# - http://www.thegeekstuff.com/2010/08/make-utility/ 			-> general example
+	# - http://www.gnu.org/software/make/manual/make.html				-> everything is here
+	# - http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/  -> a few nice tricks for managing larger projects
+
 # This program is called make. It reads in a file, called a Makefile, 
 # that tells it how different files depend on each other, and works out 
 # which files need to be re-compiled and which ones do not. 
@@ -55,3 +60,17 @@ clean:
 	-rm -f client server
 	-rm *.out *.o
 	-rm -f insertion
+
+
+############ Makefile Example + Shortcuts ###############################
+# obj= getname.o getaccno.o main.o 						-> global of object files
+# getinfo: $(obj) header.h 								-> dependencies including *.h files
+# 	cc -o getinfo $(obj) header.h	
+# 	@echo "make complete." 								-> @echo for debuggin makefiles
+# main.o:                                               -> no need for >> gcc -c main.c
+# getaccno.o:
+# getname.o:
+# clean:
+# 	rm getinfo $(obj)
+# 	@echo "getinfo, $(obj) files are removed."          -> @echo again!
+#########################################################################
