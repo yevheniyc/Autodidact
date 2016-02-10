@@ -52,38 +52,47 @@ struct hostent {
 
 
 int main(int argc, char **argv) {
-  int option_char;   // passed options
-  int portno = 8888; /* port to listen on */
-  struct sockaddr_in address;
-  char buffer[16];
-  int sock = -1;
-  
-  // Parse and set command line arguments
-  while ((option_char = getopt(argc, argv, "p:h")) != -1){
-    switch (option_char) {
-      case 'p': // listen-port
-        portno = atoi(optarg); // global optarg; aoti -> int
-        break;
-      case 'h': // help
-        fprintf(stdout, "%s", USAGE);
-        exit(0);
-        break;           
-      default:
-        fprintf(stderr, "%s", USAGE);
-        exit(1);
+    int option_char;   // passed options
+    int portno = 8888; /* port to listen on */
+    struct sockaddr_in address_server; // address info of the server
+    struct sockaddr address_client; // address info of a connected client
+    int addr_client_len; // length of the client field
+    int read_size; // size of the message received
+    char client_message[16];
+    int sock_server;
+    int sock_client;
+
+    // Parse and set command line arguments
+    while ((option_char = getopt(argc, argv, "p:h")) != -1){
+        switch (option_char) {
+            case 'p': // listen-port
+                portno = atoi(optarg); // global optarg; aoti -> int
+                break;
+        case 'h': // help
+            fprintf(stdout, "%s", USAGE);
+            exit(0);
+            break;           
+        default:
+            fprintf(stderr, "%s", USAGE);
+            exit(1);
+        }
     }
-  }
 
-  /* Socket Code Here */
+    /* Socket Code Here */
 
-  sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  address.sin_family = AF_INET;
-  address.sin_addr.s_addr = INADDR_ANY;
-  address.sin_port = portno;
+    sock_server = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    address_server.sin_family = AF_INET;
+    address_server.sin_addr.s_addr = INADDR_ANY;
+    address_server.sin_port = portno;
 
-  bind(sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in));
-  listen(sock, 5);
-  printf("%s: ready and listening on port %d\n", argv[0], portno);
-  return 0;
+    bind(sock_server, (struct sockaddr *)&address_server, sizeof(struct sockaddr_in));
+    listen(sock_server, 5);
+    printf("%s: ready and listening on port %d\n", argv[0], portno);
 
+    while(1) {
+        sock_client = accept(sock_server, (struct sockaddr *)&address_client, (socklen_t *) sizeof(struct sockaddr_in));
+        
+        while ((read_size = recv(sock_client, client_message, 15, 0)) > 0 ) // I think 0 will be added to the end
+            write(sock_client, client_message, strlen(client_message));
+    }
 }
