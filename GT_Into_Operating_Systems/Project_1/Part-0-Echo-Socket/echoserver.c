@@ -47,23 +47,23 @@ struct hostent {
 "  echoserver [options]\n"                                                    \
 "options:\n"                                                                  \
 "  -p                  Port (Default: 8888)\n"                                \
-"  -n                  Maximum pending connections\n"                         \
 "  -h                  Show this help message\n"                              
 
+
+
 int main(int argc, char **argv) {
-  int option_char;
+  int option_char;   // passed options
   int portno = 8888; /* port to listen on */
-  int maxnpending = 5;
+  struct sockaddr_in address;
+  char buffer[16];
+  int sock = -1;
   
   // Parse and set command line arguments
-  while ((option_char = getopt(argc, argv, "p:n:h")) != -1){
+  while ((option_char = getopt(argc, argv, "p:h")) != -1){
     switch (option_char) {
       case 'p': // listen-port
-        portno = atoi(optarg);
-        break;                                        
-      case 'n': // server
-        maxnpending = atoi(optarg);
-        break; 
+        portno = atoi(optarg); // global optarg; aoti -> int
+        break;
       case 'h': // help
         fprintf(stdout, "%s", USAGE);
         exit(0);
@@ -75,5 +75,15 @@ int main(int argc, char **argv) {
   }
 
   /* Socket Code Here */
+
+  sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  address.sin_family = AF_INET;
+  address.sin_addr.s_addr = INADDR_ANY;
+  address.sin_port = portno;
+
+  bind(sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in));
+  listen(sock, 5);
+  printf("%s: ready and listening on port %d\n", argv[0], portno);
+  return 0;
 
 }
