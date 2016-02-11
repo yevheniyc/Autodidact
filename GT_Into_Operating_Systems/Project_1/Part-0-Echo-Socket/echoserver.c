@@ -93,6 +93,6 @@ int main(int argc, char **argv) {
         sock_client = accept(sock_server, (struct sockaddr *)&address_client, (socklen_t *) sizeof(struct sockaddr_in));
         
         while ((read_size = recv(sock_client, client_message, 15, 0)) > 0 ) // I think 0 will be added to the end
-            write(sock_client, client_message, strlen(client_message));
+            write(sock_client, client_message, strlen(client_message)); // return the message
     }
 }
