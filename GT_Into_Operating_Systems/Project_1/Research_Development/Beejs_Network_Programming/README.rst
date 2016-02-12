@@ -279,4 +279,119 @@ Conversion:
 
 Structs
 ^^^^^^^
+Let's cover different data types used by the sockets interface
 
+Socket descriptor type::
+	
+	int
+
+When making a connection, one of the first structs used is ** struct addringo **.
+	* it is used to prepare the socket address structures for subsequent use
+	* it is used in host name lookups
+	* it is used in service name lookups
+	* struct addrinfo holds address information, example::
+
+		struct addrinfo {
+			int 			ai_flags; 		// AI_PASSIVE, AI_CANNONNAME, etc.
+			int 			ai_family; 		// AF_INET, AF_INET6, AF_UNSPEC
+			int 			ai_socktype; 	// SOCK_STREAM, SOCK_DGRAM
+			int 			ai_protocol; 	// use 0 for "any"
+			size_t	 		ai_addrlen; 	// size of ai_addr in bytes (2 vs. 4 bytes, depending on Internet Protocol)
+			struct sockaddr *ai_addr;		// struct sockaddr_in or _in6
+			char 			*ai_canonname;	// full canonical hostname
+
+			struct addrinfo *ai_next; 		// linked list, next node
+
+		}
+
+	* this struct will be loaded a bit and then used for ** getaddrinfo() **
+	
+		* getaddrinfo() will return a pointer to a new linked list of these structures, filled out will all network/host info we need!
+	
+	* we can force it to use IPv4 or IPv6 in the ai_family field, or leave it as AF_UNSPEC - to use whatever
+		
+		* this is powerful, because now we are writing IP version-agnostic code
+
+	* addrinfo struct is a linked list, where ai_next points at the next element of type addrinfo
+	* the ai_addr field in the struct addrinfo is a pointer to a struct sockaddr - where all of the details of the IP address structure are stored
+	* we will not usually need to write to these structures; a call to ** getaddrinfo() ** will fill out the addrinfo struct; but the details are improtant
+
+Struct sockaddr holds socket address information for many types of sockets:
+	* let's first examine IP4V structures::
+
+		struct sockaddr {
+			unsigned short 	sa_family; 	 // address family, AF_INET, AF_INET6, AF_UNSPEC
+			char 			sa_data[14]; // 14 bytes of protocol address
+		} // -> short (2 bytes) + array of 14 chars (14 bytes) = 16 bytes
+
+		* sa_family - could be a variety of things, but it will be AFINET (IPv4) or AF_INET6(IPv6) for everything we do in this document
+		* sa_data 	- contains a destination address and port number for the socket. This is rather unwieldy since you don't want to tediously pack the address in the sa_data by hand
+		* to deal with struct sockaddr, programmers created a parallel structure::
+
+			struct sockaddr_in ("in" for internet") to be used with IPv4
+
+		* a pointer to a struct sockaddr_in can be cast to a pointer to a struct sockaddr and vise-versa
+		* so even though ** connect() ** wants a struct sockaddr*, we can still us a struct sockaddr_in and cast it in the last minute::
+
+			// (IPv4 only - see struct sockaddr_in6 for IPv6)
+
+			struct sockaddr_in {
+				short int 			in_family; 	 // Address family, AF_INET
+				unsigned short int  sin_port; 	 // port number
+				struct in_addr		sin_addr; 	 // internet address
+				unsigned char 		sin_zero[8]; // same size as struct sockaddr
+			} // -> short int (2 bytes) + short int (2 bytes) + in_addr(4 bytes - 32 bit address) + array of 8 chars (8 bytes) = 16 bytes
+
+		* struct sockaddr_in makes it easy to reference elements of the struct sockaddr, because struct sockaddr packs all of it into char sa_data[14] - why not just use sockaddr_in then, instead of confusing a hack out of me
+
+			* sin_zero:
+
+				* is used to pad the sockaddr_in structure to the length of a struct sockaddr
+				* should be set to all zeros with the function ** memset() **. 
+
+			* sin_family corresponds to sa_family in a struct sockaddr and should be set to AF_INET
+			* sin_port must be in Network Byte Order - ** htons() **
+
+		* let's dig deeper into ** sin_addr ** field of struct in_addr type - one of the scariest unions of all time::
+
+			// (IPv4 only - see struct in6_addr for IPv6)
+			// internet address (a structure for historical reasons)
+			struct in_addr {
+				uint32_t s_addr; // that's a 32-bit int (4 bytes)
+			}
+
+		* very nice, so if we declared ** struct sockaddr_in ina **, then ** ina.sin_addr.s_addr ** references 4-byte IP address (in Network Byte Order)
+		* uint32_t used to be a union, but not anymore; however, if your system still uses that union, #defines will ensure that the 4-byte IP address in (NBO) is referenced
+	
+	* let's examine IPv6 structs::
+
+		// (IPv6 only - see struct sockaddr_in and struct in_addr for IPv4)
+		struct sockaddr_in6 {
+			u_int16_t 		sin6_family;	// address family, AF_INET6
+			u_int16_t 		sin6_port; 		// port number, Network Byte Order
+			u_int32_t		sin6_flowinfo; 	// IPv6 flow information
+			struct in6_addr sin6_addr; 		// IPv6 address
+			u_init32_t		sin6_scope_id; 	// Scope ID
+		};
+
+		struct in6_addr {
+			unsigned char s6_addr[16]; 	// IPv6 address - 128 bits
+		}
+
+		* Note that IPv6 has an IPv6 address and a port number, just like IPv4 has an IPv4 address and a port number
+		* Also note that we will not going to talk about the IPv6 flow information or Scope ID fields for now
+
+	* struct sockaddr_storage is designed to be large enought to hold both IPv4 and IPv6 structures
+		
+		* the reasoning behind is that sometimes we don't know in advance if packets will fill out struct sockaddr with an IPv4 or IPv6 address
+		* so we pass in this parallel structure, very similar to struct sockaddr except larger and then cast it to the type we need::
+
+			struct sockaddr_storage {
+				sa_family_t ss_family; 		// address family
+				// all of this is padding, implementation specific
+				char 		__ss_pad1[_SS_PAD1SIZE];
+				int64_t		__ss_align;
+				char 		__ss_pad2[_SS_PAD2SIZE];
+			}
+
+		* What's important is that you can see the address family in the ss_family field—check this to see if it's AF_INET or AF_INET6 (for IPv4 or IPv6). Then you can cast it to a struct sockaddr_in or struct sockaddr_in6 if you wanna.
