@@ -5,6 +5,7 @@ File descriptor for network communication is retrieved by::
 	a call to the socket() system routine
 
 File descriptor [wiki](https://en.wikipedia.org/wiki/File_descriptor):
+	
 	* In Unix and related computer operating systems, a file descriptor (FD) is an abstract indicator 
 	used to access a file or other input/output resource, such as a pipe or network connection. 
 	* File descriptors form part of the POSIX application programming interface. 
