@@ -311,7 +311,7 @@ Struct sockaddr holds socket address information for many types of sockets:
 
 Let's first examine IP4V structures::
 	* struct sockaddr::
-	
+
 		struct sockaddr {
 			unsigned short 	sa_family; 	 // address family, AF_INET, AF_INET6, AF_UNSPEC
 			char 			sa_data[14]; // 14 bytes of protocol address
@@ -376,6 +376,7 @@ Let's examine IPv6 structs:
 	* Note that IPv6 has an IPv6 address and a port number, just like IPv4 has an IPv4 address and a port number
 	* Also note that we will not going to talk about the IPv6 flow information or Scope ID fields for now
 
+Handling both IPv4 and IPv6:
 	* struct sockaddr_storage is designed to be large enought to hold both IPv4 and IPv6 structures
 		* the reasoning behind is that sometimes we don't know in advance if packets will fill out struct sockaddr with an IPv4 or IPv6 address
 		* so we pass in this parallel structure, very similar to struct sockaddr except larger and then cast it to the type we need::
