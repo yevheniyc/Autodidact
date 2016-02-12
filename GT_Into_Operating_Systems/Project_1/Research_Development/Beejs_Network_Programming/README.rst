@@ -221,19 +221,16 @@ Port Numbers
 ^^^^^^^^^^^^
 In the network model both IP (Internet Layer) and TCP/UDP (Transport Layer) represent addresses:
 	* IP address:
-
 		* 32 bits IPv4 and 128 bits IPv6
 		* specifies the network location (your company) and subnets (your company's servers)
 		* they are used for node-to-node communication
 	
 	* Port address
-
 		* 16 bits
 		* used by TCP (stream sockets) and UDP (datagram sockets)
 		* serves as a local address for the connection
 		* for example, any message comming on port# 5324 (on company's network) is a stream socket communication handled by TCP protocol
 		* so how would a single computer handle incoming mail and web services and sockets?
-
 			* different internet services on the web have well-known port numbers
 			* the Big IANA Por List specifies them
 			* on Unix, `vi /etc/services' file
@@ -249,7 +246,6 @@ The way computer stores bytes:
 Terminology:
 	* Big Endian is also called ** Network Byte Order **, because that is the direction 0|1s are traveling via wires
 	* Our computer stores numbers in ** Host Byte Order **, which as mentioned above could be in Big or Little Endian. For example:
-
 		* Intel 80x86's Host Byte Order is Little-Endian
 		* Motorola 68k's Host Byte Order is Big-Endian
 		* For PCs - it depends (of course)
@@ -302,11 +298,9 @@ When making a connection, one of the first structs used is ** struct addringo **
 		}
 
 	* this struct will be loaded a bit and then used for ** getaddrinfo() **
-	
 		* getaddrinfo() will return a pointer to a new linked list of these structures, filled out will all network/host info we need!
 	
 	* we can force it to use IPv4 or IPv6 in the ai_family field, or leave it as AF_UNSPEC - to use whatever
-		
 		* this is powerful, because now we are writing IP version-agnostic code
 
 	* addrinfo struct is a linked list, where ai_next points at the next element of type addrinfo
@@ -340,7 +334,6 @@ Struct sockaddr holds socket address information for many types of sockets:
 			} // -> short int (2 bytes) + short int (2 bytes) + in_addr(4 bytes - 32 bit address) + array of 8 chars (8 bytes) = 16 bytes
 
 		* struct sockaddr_in makes it easy to reference elements of the struct sockaddr, because struct sockaddr packs all of it into char sa_data[14] - why not just use sockaddr_in then, instead of confusing a hack out of me
-
 			* sin_zero:
 
 				* is used to pad the sockaddr_in structure to the length of a struct sockaddr
@@ -379,7 +372,6 @@ Struct sockaddr holds socket address information for many types of sockets:
 		* Also note that we will not going to talk about the IPv6 flow information or Scope ID fields for now
 
 	* struct sockaddr_storage is designed to be large enought to hold both IPv4 and IPv6 structures
-		
 		* the reasoning behind is that sometimes we don't know in advance if packets will fill out struct sockaddr with an IPv4 or IPv6 address
 		* so we pass in this parallel structure, very similar to struct sockaddr except larger and then cast it to the type we need::
 
