@@ -4,42 +4,43 @@ http://beej.us/guide/bgnet/output/html/multipage/theory.html
 File descriptor for network communication is retrieved by::
 	a call to the socket() system routine
 
-File descriptor [wiki](https://en.wikipedia.org/wiki/File_descriptor):
-	* In Unix and related computer operating systems, a file descriptor (FD) is an abstract indicator 
-	used to access a file or other input/output resource, such as a pipe or network connection. 
+File descriptor https://en.wikipedia.org/wiki/File_descriptor:
+	* In Unix and related computer operating systems, a file descriptor (FD) is an abstract indicator used to access a file or other input/output resource, such as a pipe or network connection. 
 	* File descriptors form part of the POSIX application programming interface. 
 	* A file descriptor is a non-negative integer, represented in C programming language as the type int.
-	* Each Unix process (except perhaps a daemon) should expect to have three standard POSIX file descriptors, 
-	corresponding to the three standard streams:
+	* Each Unix process (except perhaps a daemon) should expect to have three standard POSIX file descriptors, corresponding to the three standard streams:
+	
 		* 0 -> standard input  -> STDIN_FILENO  (unistd.h - symbolic constant) -> stdin  (stdio.h - file stream)
 		* 1 -> standard output -> STDOUT_FILENO (unistd.h - symbolic constant) -> stdout (stdio.h - file stream)
 		* 2 -> standard error  -> STDERR_FILENO (unistd.h - symbolic constant) -> stderr (stdio.h - file stream)
-	* In the traditional implementation of Unix, file descriptors index into a per-process file descriptor table 
-	maintained by the kernel, that in turn indexes into a system-wide table of files opened by all processes, 
-	called the **file table**. 
-	* File Table records the mode with which the file (or other resource) has been opened for: 
+		
+	* In the traditional implementation of Unix, file descriptors index into a per-process file descriptor table maintained by the kernel, that in turn indexes into a system-wide table of files opened by all processes, called the **file table**. 
+	* File Table records the mode with which the file (or other resource) has been opened for:
+	
 		* reading 
 		* writing
 		* appending
 		* reading and writing
 		* possibly other modes
+		
 	* File Table also indexes into a third table called the **inode table** that describes the actual underlying files.
-	* To perform input or output, the process passes the file descriptor to the kernel through a system call, 
-	and the kernel will access the file on behalf of the process. The process does not have direct access to the file 
-	or inode tables.
+	* To perform input or output, the process passes the file descriptor to the kernel through a system call, and the kernel will access the file on behalf of the process. The process does not have direct access to the file or **inode tables**.
 	* On Linux, the set of file descriptors open in a process can be accessed under the path /proc/PID/fd/, where PID is the process identifier.
 	* In Unix-like systems, file descriptors can refer to any Unix file type named in a file system. As well as regular files, this includes:
+	
 		* directories
 		* block and character devices (also called "special files")
 		* Unix domain sockets
 		* named pipes. 
+		
 	* File descriptors can also refer to other objects that do not normally exist in the file system:
+	
 		* anonymous pipes
 		* network sockets
-	* The **FILE** data structure in the C standard I/O library usually includes a low level file descriptor 
-	for the object in question on Unix-like systems. The overall data structure provides additional abstraction 
-	and is instead known as a **file handle**.
+		
+	* The **FILE** data structure in the C standard I/O library usually includes a low level file descriptor for the object in question on Unix-like systems. The overall data structure provides additional abstraction and is instead known as a **file handle**.
 	* Operations on file descriptors:
+		
 		* creating file descriptors::
 	
 			- open()
@@ -77,9 +78,7 @@ File descriptor [wiki](https://en.wikipedia.org/wiki/File_descriptor):
 	
 		* operations on the file descriptor table::
 	
-			-  The fcntl() function is used to perform various operations on a file descriptor, 
-			depending on the command argument passed to it. There are commands to get and set 
-			attributes associated with a file descriptor, including F_GETFD, F_SETFD, F_GETFL and F_SETFL.
+			-  The fcntl() function is used to perform various operations on a file descriptor, depending on the command argument passed to it. There are commands to get and set attributes associated with a file descriptor, including F_GETFD, F_SETFD, F_GETFL and F_SETFL.
 	
 			- close()
 			- closefrom() (BSD)
@@ -109,12 +108,11 @@ File descriptor [wiki](https://en.wikipedia.org/wiki/File_descriptor):
 			- setsockopt()
 			- shutdown() - shuts down one or both halves of a full duplex connection
 
-It returns the socket descriptor over which communication is possible
-using the specialied::
+It returns the socket descriptor over which communication is possible using the specialied::
+	
 	send() and recv() socket calls
 
-We could use read() and write() calls to communication thorugh the socket, 
-however, sen() and recv() offer greater control over data transmission.
+We could use read() and write() calls to communication thorugh the socket, however, sen() and recv() offer greater control over data transmission.
 
 Types of sockets:
 	* DARPA Internet addresses (Internet Sockets)
