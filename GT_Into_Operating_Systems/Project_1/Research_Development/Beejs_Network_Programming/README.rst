@@ -316,40 +316,40 @@ Struct sockaddr holds socket address information for many types of sockets:
 		} // -> short (2 bytes) + array of 14 chars (14 bytes) = 16 bytes
 
 		
-		* sa_family - could be a variety of things, but it will be AFINET (IPv4) or AF_INET6(IPv6) for everything we do in this document
-		* sa_data 	- contains a destination address and port number for the socket. This is rather unwieldy since you don't want to tediously pack the address in the sa_data by hand
-		* to deal with struct sockaddr, programmers created a parallel structure::
+	* sa_family - could be a variety of things, but it will be AFINET (IPv4) or AF_INET6(IPv6) for everything we do in this document
+	* sa_data 	- contains a destination address and port number for the socket. This is rather unwieldy since you don't want to tediously pack the address in the sa_data by hand
+	* to deal with struct sockaddr, programmers created a parallel structure::
 
-			struct sockaddr_in ("in" for internet") to be used with IPv4
+		struct sockaddr_in ("in" for internet") to be used with IPv4
 
-		* a pointer to a struct sockaddr_in can be cast to a pointer to a struct sockaddr and vise-versa
-		* so even though ** connect() ** wants a struct sockaddr*, we can still us a struct sockaddr_in and cast it in the last minute::
+	* a pointer to a struct sockaddr_in can be cast to a pointer to a struct sockaddr and vise-versa
+	* so even though ** connect() ** wants a struct sockaddr*, we can still us a struct sockaddr_in and cast it in the last minute::
 
-			// (IPv4 only - see struct sockaddr_in6 for IPv6)
+		// (IPv4 only - see struct sockaddr_in6 for IPv6)
 
-			struct sockaddr_in {
-				short int 			in_family; 	 // Address family, AF_INET
-				unsigned short int  sin_port; 	 // port number
-				struct in_addr		sin_addr; 	 // internet address
-				unsigned char 		sin_zero[8]; // same size as struct sockaddr
-			} // -> short int (2 bytes) + short int (2 bytes) + in_addr(4 bytes - 32 bit address) + array of 8 chars (8 bytes) = 16 bytes
+		struct sockaddr_in {
+			short int 			in_family; 	 // Address family, AF_INET
+			unsigned short int  sin_port; 	 // port number
+			struct in_addr		sin_addr; 	 // internet address
+			unsigned char 		sin_zero[8]; // same size as struct sockaddr
+		} // -> short int (2 bytes) + short int (2 bytes) + in_addr(4 bytes - 32 bit address) + array of 8 chars (8 bytes) = 16 bytes
 
-		* struct sockaddr_in makes it easy to reference elements of the struct sockaddr, because struct sockaddr packs all of it into char sa_data[14] - why not just use sockaddr_in then, instead of confusing a hack out of me
-			* sin_zero:
+	* struct sockaddr_in makes it easy to reference elements of the struct sockaddr, because struct sockaddr packs all of it into char sa_data[14] - why not just use sockaddr_in then, instead of confusing a hack out of me
+		* sin_zero:
 
-				* is used to pad the sockaddr_in structure to the length of a struct sockaddr
-				* should be set to all zeros with the function ** memset() **. 
+			* is used to pad the sockaddr_in structure to the length of a struct sockaddr
+			* should be set to all zeros with the function ** memset() **. 
 
-			* sin_family corresponds to sa_family in a struct sockaddr and should be set to AF_INET
-			* sin_port must be in Network Byte Order - ** htons() **
+		* sin_family corresponds to sa_family in a struct sockaddr and should be set to AF_INET
+		* sin_port must be in Network Byte Order - ** htons() **
 
-		* let's dig deeper into ** sin_addr ** field of struct in_addr type - one of the scariest unions of all time::
+	* let's dig deeper into ** sin_addr ** field of struct in_addr type - one of the scariest unions of all time::
 
-			// (IPv4 only - see struct in6_addr for IPv6)
-			// internet address (a structure for historical reasons)
-			struct in_addr {
-				uint32_t s_addr; // that's a 32-bit int (4 bytes)
-			}
+		// (IPv4 only - see struct in6_addr for IPv6)
+		// internet address (a structure for historical reasons)
+		struct in_addr {
+			uint32_t s_addr; // that's a 32-bit int (4 bytes)
+		}
 
 		* very nice, so if we declared ** struct sockaddr_in ina **, then ** ina.sin_addr.s_addr ** references 4-byte IP address (in Network Byte Order)
 		* uint32_t used to be a union, but not anymore; however, if your system still uses that union, #defines will ensure that the 4-byte IP address in (NBO) is referenced
