@@ -1,6 +1,12 @@
+Network Sockets
+---------------
+
 The following code is borrowed and analyzed from:
 http://beej.us/guide/bgnet/output/html/multipage/theory.html
 
+
+File Descriptors
+^^^^^^^^^^^^^^^^
 File descriptor for network communication is retrieved by::
 	a call to the socket() system routine
 
@@ -103,6 +109,9 @@ It returns the socket descriptor over which communication is possible using the 
 
 We could use read() and write() calls to communication through the socket, however, send() and recv() offer greater control over data transmission.
 
+
+Unix Sockets
+^^^^^^^^^^^^
 Types of sockets:
 	* DARPA Internet addresses (Internet Sockets)
 	* Path names on a local node (Unix Sockets)
@@ -134,3 +143,6 @@ How tftp, dhcpcd and others retain data integrity if packets are lost?
 	* tftp and similar programs have their own protocol on top of UDP. For example, the tftp protocol says that for each packet that gets sent, the recipient has to send back a packet that says, "I got it!" (an "ACK" packet). If the sender of the original packet gets no reply in, say, five seconds, he'll re-transmit the packet until he finally gets an ACK. This acknowledgment procedure is very important when implementing reliable SOCK_DGRAM applications.
 	
 	* It's way faster to fire-and-forget than it is to keep track of what has arrived safely and make sure it's in order and all that. If you're sending chat messages, TCP is great; if you're sending 40 positional updates per second of the players in the world, maybe it doesn't matter so much if one or two get dropped, and UDP is a good choice
+
+Network Theaory Overview
+^^^^^^^^^^^^^^^^^^^^^^^^
