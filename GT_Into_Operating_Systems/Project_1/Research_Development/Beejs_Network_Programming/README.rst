@@ -206,17 +206,14 @@ Network portion of the IP address is descibed by netmask:
 	* with netmask of 255.255.255.0, if IP is 192.0.2.12 -> network is 192.0.2.12 AND 255.255.255.0 0, which gives 192.0.2.0
 	* this was unsustainable
 	* netmask now is allowed to be an arbitrary number of bits, not just 8, 16, 24:
-
 		* netmask could be 255.255.255.252 with 30 bits representing network and 2 bits of hosts (2^2 hosts on the network)
 		* the netmask is ALWAYS a bunch of 1-bits followed by a bunch of 0-bits
 
 	* to represent IPv4 network, use 192.0.2.12/30, where:
-
 		* 30 out of 32 bits of the IP address for the network
 		* 2 out of 32 bits of the IP address for the hosts
 
 	* to represent IPv6:
-
 		* 2001:db8::/32 or 2001:db8:5413:4028::9db9/64.
 
 
