@@ -278,7 +278,7 @@ Socket descriptor type::
 	
 	int
 
-When making a connection, one of the first structs used is ** struct addringo **.
+When making a connection, one of the first structs used is struct addrinfo.
 	* it is used to prepare the socket address structures for subsequent use
 	* it is used in host name lookups
 	* it is used in service name lookups
@@ -297,7 +297,7 @@ When making a connection, one of the first structs used is ** struct addringo **
 
 		}
 
-	* this struct will be loaded a bit and then used for ** getaddrinfo() **
+	* this struct will be loaded a bit and then used for getaddrinfo()
 		* getaddrinfo() will return a pointer to a new linked list of these structures, filled out will all network/host info we need!
 	
 	* we can force it to use IPv4 or IPv6 in the ai_family field, or leave it as AF_UNSPEC - to use whatever
@@ -315,6 +315,7 @@ Struct sockaddr holds socket address information for many types of sockets:
 			char 			sa_data[14]; // 14 bytes of protocol address
 		} // -> short (2 bytes) + array of 14 chars (14 bytes) = 16 bytes
 
+		
 		* sa_family - could be a variety of things, but it will be AFINET (IPv4) or AF_INET6(IPv6) for everything we do in this document
 		* sa_data 	- contains a destination address and port number for the socket. This is rather unwieldy since you don't want to tediously pack the address in the sa_data by hand
 		* to deal with struct sockaddr, programmers created a parallel structure::
