@@ -41,7 +41,7 @@ File descriptor [wiki](https://en.wikipedia.org/wiki/File_descriptor):
 	and is instead known as a **file handle**.
 	* Operations on file descriptors:
 		* creating file descriptors::
-
+	
 			- open()
 			- creat()
 			- socket()
@@ -49,9 +49,9 @@ File descriptor [wiki](https://en.wikipedia.org/wiki/File_descriptor):
 			- socketpair()
 			- pipe()
 			- opendir()
-
+	
 		* operations on a single file descriptor::
-
+	
 			- read(), write()
 			- readv(), writev()
 			- pread(), pwrite()
@@ -67,39 +67,39 @@ File descriptor [wiki](https://en.wikipedia.org/wiki/File_descriptor):
 			- fsync()
 			- fdatasync()
 			- fstatvfs()
-
+	
 		* operations on multiple file descriptors::
-
+	
 			- select(), pselect()
 			- poll()
 			- epoll() (linux)
 			- kqueue() (BSD)
-
+	
 		* operations on the file descriptor table::
-
+	
 			-  The fcntl() function is used to perform various operations on a file descriptor, 
 			depending on the command argument passed to it. There are commands to get and set 
 			attributes associated with a file descriptor, including F_GETFD, F_SETFD, F_GETFL and F_SETFL.
-
+	
 			- close()
 			- closefrom() (BSD)
 			- dup()
 			- dup2()
 			- fcntl(F_DUPFD)
-
+	
 		* operations that modify process state::
 			
 			- fchdir() -> sets the process's current working directory based on a directory file descriptor
 			- mmap()   -> maps ranges of a file into the process's address space
-
+	
 		* file locking::
-
+	
 			- flock()
 			- fcntl()
 			- lockf()
-
+	
 		* **Sockets**::
-
+	
 			- connect()
 			- bind()
 			- accept() - creates a new file descriptor for an incoming connection
@@ -156,7 +156,7 @@ How tftp, dhcpcd and others retain data integrity if packets are lost?
 	   If the sender of the original packet gets no reply in, say, five seconds, 
 	   he'll re-transmit the packet until he finally gets an ACK. This acknowledgment 
 	   procedure is very important when implementing reliable SOCK_DGRAM applications.
-
+	
 	* It's way faster to fire-and-forget than it is to keep track of what has arrived 
 	   safely and make sure it's in order and all that. If you're sending chat messages, 
 	   TCP is great; if you're sending 40 positional updates per second of the players in the world, 
