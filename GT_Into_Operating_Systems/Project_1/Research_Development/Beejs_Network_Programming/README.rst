@@ -356,20 +356,22 @@ Let's first examine IP4V structures::
 		* uint32_t used to be a union, but not anymore; however, if your system still uses that union, #defines will ensure that the 4-byte IP address in (NBO) is referenced
 	
 
-Let's examine IPv6 structs::
+Let's examine IPv6 structs:
 
-			// (IPv6 only - see struct sockaddr_in and struct in_addr for IPv4)
-			struct sockaddr_in6 {
-				u_int16_t 		sin6_family;	// address family, AF_INET6
-				u_int16_t 		sin6_port; 		// port number, Network Byte Order
-				u_int32_t		sin6_flowinfo; 	// IPv6 flow information
-				struct in6_addr sin6_addr; 		// IPv6 address
-				u_init32_t		sin6_scope_id; 	// Scope ID
-			};
+	* struct sockaddr_in6
 
-			struct in6_addr {
-				unsigned char s6_addr[16]; 	// IPv6 address - 128 bits
-			}
+		// (IPv6 only - see struct sockaddr_in and struct in_addr for IPv4)
+		struct sockaddr_in6 {
+			u_int16_t 		sin6_family;	// address family, AF_INET6
+			u_int16_t 		sin6_port; 		// port number, Network Byte Order
+			u_int32_t		sin6_flowinfo; 	// IPv6 flow information
+			struct in6_addr sin6_addr; 		// IPv6 address
+			u_init32_t		sin6_scope_id; 	// Scope ID
+		};
+
+		struct in6_addr {
+			unsigned char s6_addr[16]; 	// IPv6 address - 128 bits
+		}
 
 	* Note that IPv6 has an IPv6 address and a port number, just like IPv4 has an IPv4 address and a port number
 	* Also note that we will not going to talk about the IPv6 flow information or Scope ID fields for now
