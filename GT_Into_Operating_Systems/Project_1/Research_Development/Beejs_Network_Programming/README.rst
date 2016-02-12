@@ -310,11 +310,12 @@ When making a connection, one of the first structs used is struct addrinfo.
 Struct sockaddr holds socket address information for many types of sockets:
 
 Let's first examine IP4V structures::
-
-	struct sockaddr {
-		unsigned short 	sa_family; 	 // address family, AF_INET, AF_INET6, AF_UNSPEC
-		char 			sa_data[14]; // 14 bytes of protocol address
-	} // -> short (2 bytes) + array of 14 chars (14 bytes) = 16 bytes
+	* struct sockaddr::
+	
+		struct sockaddr {
+			unsigned short 	sa_family; 	 // address family, AF_INET, AF_INET6, AF_UNSPEC
+			char 			sa_data[14]; // 14 bytes of protocol address
+		} // -> short (2 bytes) + array of 14 chars (14 bytes) = 16 bytes
 
 		
 	* sa_family - could be a variety of things, but it will be AFINET (IPv4) or AF_INET6(IPv6) for everything we do in this document
