@@ -431,7 +431,7 @@ Task 1 - stor an IP array of chars into struct sockaddr_in ina:
 		struct sockaddr_in6 sa6; 	 // pretend this is loaded with something
 
 		inet_ntop(AF_INET6, &(sa6.sin6_addr), ip6, INET6_ADDRSTRLEN);
-		printf("The IPv^ address is: %s\n", ip6);
+		printf("The IPv6 address is: %s\n", ip6);
 
 		// note: the historical function to do this conversion was called inet_ntoa(). 
 		// It's also obsolete and won't work with IPv6
@@ -487,6 +487,77 @@ Jumping from IPv4 to IPv6
 	* Instead of gethostbyname(), use the superior getaddrinfo().
 	* Instead of gethostbyaddr(), use the superior getnameinfo() (although gethostbyaddr() can still work with IPv6).
 	* INADDR_BROADCAST no longer works. Use IPv6 multicast instead.
+
+
+System Calls or Bust
+^^^^^^^^^^^^^^^^^^^^
+Let's examine system calls (library calls) that allow us to access the network functionality on Unix. 
+
+getaddrinfo() - prepare to launch:
+	* helps out to set up structs used later
+	* used to use gethostbyname() to do DNS lookups and then load that info into struct sockaddr_in by hand, which was wasteful and not addoptable to both IPv4/IPv6 protocols
+	* getaddrinfo() does both DNS and service name lookups, and fills out the structs we need::
+
+		#include <sys/types.h>
+		#include <sys/socket.h>
+		#include <netdb.h>
+
+		int getaddrinfo(const char *node,				// e.g. "www.example.com" or IP
+						const char *service,			// e.g. "http" or port number
+						const struct addrinfo *hints,	// fill it up before passing, so that res receives everything else
+						struct addrinfo **res)			// res will contain results received
+
+		// status = getaddrinfo(....)					// -1 is error, 0 is confused, 1 is good		
+
+	* Give this function three input parameters and it gives back a pointer to linked-list res of type addrinfo
+	* the "node" parameter is the host name or IP address
+	* Next is the parameter service, which can be a port number, like "80", or the name of a particular service (found in The IANA Port List or the /etc/services file on your Unix machine) like "http" or "ftp" or "telnet" or "smtp" or whatever
+	* the hints parameter points to a struct addrinfo that you've already filled out with relevant information
+	* let's setup structures that will be used when a server is listening on my host's (machine's) IP address and port 3490::
+
+		int status;
+		struct addrinfo hints;
+		struct addrinfo *servinfo;	// will point to the results
+
+		memset(&hints, 0, sizeof hints); 	// make sure the struct is empty and filled with 0s
+		hints.ai_family = AF_UNSPEC; 		// don't care IPv4 or IPv6
+		hints.ai_socktype = SOCK_STREAM;	// TCP stream sockets
+		hints.ai_flags = AI_PASSIVE;		// fill in my IP for me
+
+		if ((status = getaddrinfo(NULL, "3490", &hints, &servinfo) != 0)) {
+			fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
+			exit(1);
+		}
+
+		// servinfo now points to a linked list of 1 or more struct addrinfos
+		// ... do everything until we don't need servinfo anymore...
+
+		freeaddrinfo(servinfo); 			// free the linked-list
+
+	* let's setup structures used when a client wants to connect to a particular server - "www.example.net" port 3490::
+
+		int status;
+		struct addrinfo hints;
+		struct addrinfo *servinfo; 			// will point to the results
+
+		memset(&hints, 0, sizeof hints); 	// make sure the struct is empty
+		hints.ai_family = AF_UNSPEC; 		/ don't care IPv4 or IPv6
+		hints.ai_socktype = SOCK_STREAM; 	// TCP stream sockets
+
+		// get ready to connect
+		status = getaddrinfo("www.example.net", "3490", &hints, &servinfo);
+
+		// servinfo now points to a linked list of 1 or more struct addrinfos
+
+		// etc.
+
+	* let's examine the linked list struct servinfo in more details: check showip.c example
+
+
+
+
+
+
 
 
 
