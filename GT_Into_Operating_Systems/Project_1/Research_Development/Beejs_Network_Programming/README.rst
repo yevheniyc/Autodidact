@@ -357,8 +357,7 @@ Let's first examine IP4V structures::
 	
 
 Let's examine IPv6 structs:
-
-	* struct sockaddr_in6
+	* struct sockaddr_in6::
 
 		// (IPv6 only - see struct sockaddr_in and struct in_addr for IPv4)
 		struct sockaddr_in6 {
