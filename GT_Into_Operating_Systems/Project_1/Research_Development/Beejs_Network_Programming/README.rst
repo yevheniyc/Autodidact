@@ -308,12 +308,13 @@ When making a connection, one of the first structs used is struct addrinfo.
 	* we will not usually need to write to these structures; a call to ** getaddrinfo() ** will fill out the addrinfo struct; but the details are improtant
 
 Struct sockaddr holds socket address information for many types of sockets:
-	* let's first examine IP4V structures::
 
-		struct sockaddr {
-			unsigned short 	sa_family; 	 // address family, AF_INET, AF_INET6, AF_UNSPEC
-			char 			sa_data[14]; // 14 bytes of protocol address
-		} // -> short (2 bytes) + array of 14 chars (14 bytes) = 16 bytes
+Let's first examine IP4V structures::
+
+	struct sockaddr {
+		unsigned short 	sa_family; 	 // address family, AF_INET, AF_INET6, AF_UNSPEC
+		char 			sa_data[14]; // 14 bytes of protocol address
+	} // -> short (2 bytes) + array of 14 chars (14 bytes) = 16 bytes
 
 		
 	* sa_family - could be a variety of things, but it will be AFINET (IPv4) or AF_INET6(IPv6) for everything we do in this document
@@ -354,23 +355,24 @@ Struct sockaddr holds socket address information for many types of sockets:
 		* very nice, so if we declared ** struct sockaddr_in ina **, then ** ina.sin_addr.s_addr ** references 4-byte IP address (in Network Byte Order)
 		* uint32_t used to be a union, but not anymore; however, if your system still uses that union, #defines will ensure that the 4-byte IP address in (NBO) is referenced
 	
-	* let's examine IPv6 structs::
 
-		// (IPv6 only - see struct sockaddr_in and struct in_addr for IPv4)
-		struct sockaddr_in6 {
-			u_int16_t 		sin6_family;	// address family, AF_INET6
-			u_int16_t 		sin6_port; 		// port number, Network Byte Order
-			u_int32_t		sin6_flowinfo; 	// IPv6 flow information
-			struct in6_addr sin6_addr; 		// IPv6 address
-			u_init32_t		sin6_scope_id; 	// Scope ID
-		};
+Let's examine IPv6 structs::
 
-		struct in6_addr {
-			unsigned char s6_addr[16]; 	// IPv6 address - 128 bits
-		}
+	// (IPv6 only - see struct sockaddr_in and struct in_addr for IPv4)
+	struct sockaddr_in6 {
+		u_int16_t 		sin6_family;	// address family, AF_INET6
+		u_int16_t 		sin6_port; 		// port number, Network Byte Order
+		u_int32_t		sin6_flowinfo; 	// IPv6 flow information
+		struct in6_addr sin6_addr; 		// IPv6 address
+		u_init32_t		sin6_scope_id; 	// Scope ID
+	};
 
-		* Note that IPv6 has an IPv6 address and a port number, just like IPv4 has an IPv4 address and a port number
-		* Also note that we will not going to talk about the IPv6 flow information or Scope ID fields for now
+	struct in6_addr {
+		unsigned char s6_addr[16]; 	// IPv6 address - 128 bits
+	}
+
+	* Note that IPv6 has an IPv6 address and a port number, just like IPv4 has an IPv4 address and a port number
+	* Also note that we will not going to talk about the IPv6 flow information or Scope ID fields for now
 
 	* struct sockaddr_storage is designed to be large enought to hold both IPv4 and IPv6 structures
 		* the reasoning behind is that sometimes we don't know in advance if packets will fill out struct sockaddr with an IPv4 or IPv6 address
@@ -384,4 +386,4 @@ Struct sockaddr holds socket address information for many types of sockets:
 				char 		__ss_pad2[_SS_PAD2SIZE];
 			}
 
-		* What's important is that you can see the address family in the ss_family field—check this to see if it's AF_INET or AF_INET6 (for IPv4 or IPv6). Then you can cast it to a struct sockaddr_in or struct sockaddr_in6 if you wanna.
+	* What's important is that you can see the address family in the ss_family field—check this to see if it's AF_INET or AF_INET6 (for IPv4 or IPv6). Then you can cast it to a struct sockaddr_in or struct sockaddr_in6 if you wanna.
