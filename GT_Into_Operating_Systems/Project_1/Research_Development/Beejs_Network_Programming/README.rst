@@ -390,3 +390,103 @@ Handling both IPv4 and IPv6:
 			}
 
 	* What's important is that you can see the address family in the ss_family field—check this to see if it's AF_INET or AF_INET6 (for IPv4 or IPv6). Then you can cast it to a struct sockaddr_in or struct sockaddr_in6 if you wanna.
+
+
+IP Addresses, Part Deux
+^^^^^^^^^^^^^^^^^^^^^^^
+There are many functions that help to manipulate IP addresses. No need to figure them out by hand and stuff into long <<
+
+Task 1 - stor an IP array of chars into struct sockaddr_in ina:
+	* we have a struct sockaddr_in ina into which we want to stor IP address "10.12.110.57" or "2001:db8:63b3:1::3490"
+	* we want to use inet_pton function - converts IP address in numbers-and-dots notation into either a struct in_addr or struct in6_addr, depending on whether we specify AF_INET or AF_INET6
+	* "pton" stands for "presentation to networ"
+	* here is how to perform the string IP address conversion to its binary representations::
+
+		struct sockaddr_in  sa; 	// IPv4
+		struct sockaddr_in6 sa6; 	// IPv6
+
+		inet_pton(AF_INET, "10.12.110.57", &(sa.sin_addr)); 			// IPv4
+		inet_pton(AF_INET6, "2001:db8:63b3:1::3490", &(sa.sin6_addr));  // IPv6
+
+		// note: the old way of doing things used a function called inet_addr() or another function called inet_aton(); 
+		// these are now obsolete and don't work with IPv6
+
+		// Now, the above code snippet isn't very robust because there is no error checking. 
+		// See, inet_pton() returns -1 on error, or 0 if the address is messed up. 
+		// So check to make sure the result is greater than 0 before using!
+
+	* here is how to convert struct in_addr (binary represenation) to numbers-and-dots notation or struct in6_addr to hex-and-colons notations::
+
+		// IPv4:
+
+		char ip4[INET_ADDRSTRLEN]; 	// space to hold the IPv4 string
+		struct sockaddr_in sa;		// pretend this is loaded with something
+
+		inet_ntop(AF_INET, &(sa.sin_addr), ip4, INET_ADDRSTRLEN);
+		printf("The IPv4 address is: %s\n", ip4);
+
+		// IPv6:
+
+		char ip6[INET6_ADDRSTRLEN];  // space to hold the IPv6 string
+		struct sockaddr_in6 sa6; 	 // pretend this is loaded with something
+
+		inet_ntop(AF_INET6, &(sa6.sin6_addr), ip6, INET6_ADDRSTRLEN);
+		printf("The IPv^ address is: %s\n", ip6);
+
+		// note: the historical function to do this conversion was called inet_ntoa(). 
+		// It's also obsolete and won't work with IPv6
+
+		// When you call it, you'll pass the address type (IPv4 or IPv6), the address, a pointer to a string to hold the result, 
+		// and the maximum length of that string. (Two macros conveniently hold the size of the string you'll need to hold the 
+		// largest IPv4 or IPv6 address: INET_ADDRSTRLEN and INET6_ADDRSTRLEN.)
+
+	* Lastly, these functions only work with numeric IP addresses—they won't do any nameserver DNS lookup on a hostname, like "www.example.com". You will use getaddrinfo() to do that, as you'll see later on
+
+
+Private (Or Disconnected) Networks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Lots of places have a firewall that hides the network from the rest of the world for their own protection. And often times, the firewall translates "internal" IP addresses to "external" (that everyone else in the world knows) IP addresses using a process called Network Address Translation, or NAT.
+
+For now we don't even have to worry about NAT, since it's done for you transparently. But I wanted to talk about the network behind the firewall in case you started getting confused by the network numbers you were seeing.
+
+For instance, I have a firewall at home. I have two static IPv4 addresses allocated to me by the DSL company, and yet I have seven computers on the network. How is this possible? Two computers can't share the same IP address, or else the data wouldn't know which one to go to!
+
+The answer is: they don't share the same IP addresses. They are on a private network with 24 million IP addresses allocated to it. They are all just for me. Well, all for me as far as anyone else is concerned. Here's what's happening:
+	* If I log into a remote computer, it tells me I'm logged in from 192.0.2.33 which is the public IP address my ISP has provided to me. 
+	* But if I ask my local computer what its IP address is, it says 10.0.0.5. Who is translating the IP address from one to the other? 
+	* That's right, the firewall! It's doing NAT!
+	* 10.x.x.x is one of a few reserved networks that are only to be used either on fully disconnected networks, or on networks that are behind firewalls. 
+	* The details of which private network numbers are available for you to use are outlined in RFC 1918, but some common ones you'll see are 10.x.x.x and 192.168.x.x, where x is 0-255, generally. 
+	* Less common is 172.y.x.x, where y goes between 16 and 31.
+	* Networks behind a NATing firewall don't need to be on one of these reserved networks, but they commonly are.
+	* IPv6 has private networks, too, in a sense. They'll start with fdxx: (or maybe in the future fcXX:), as per RFC 4193. NAT and IPv6 don't generally mix, however (unless you're doing the IPv6 to IPv4 gateway thing which is beyond the scope of this document)—in theory you'll have so many addresses at your disposal that you won't need to use NAT any longer. But if you want to allocate addresses for yourself on a network that won't route outside, this is how to do it.
+
+
+Jumping from IPv4 to IPv6
+^^^^^^^^^^^^^^^^^^^^^^^^^
+	* First of all, try to use getaddrinfo() to get all the struct sockaddr info, instead of packing the structures by hand. This will keep you IP version-agnostic, and will eliminate many of the subsequent steps.
+	* Any place that you find you're hard-coding anything related to the IP version, try to wrap up in a helper function.
+	* Change AF_INET to AF_INET6.
+	* Change PF_INET to PF_INET6.
+	* Change INADDR_ANY assignments to in6addr_any assignments, which are slightly different::
+
+		struct sockaddr_in sa;
+		struct sockaddr_in6 sa6;
+
+		sa.sin_addr.s_addr = INADDR_ANY;  // use my IPv4 address
+		sa6.sin6_addr = in6addr_any; // use my IPv6 address
+
+	* Also, the value IN6ADDR_ANY_INIT can be used as an initializer when the struct in6_addr is declared, like so::
+
+		struct in6_addr ia6 = IN6ADDR_ANY_INIT;
+	
+	* Instead of struct sockaddr_in use struct sockaddr_in6, being sure to add "6" to the fields as appropriate (see structs, above). There is no sin6_zero field.
+	* Instead of struct in_addr use struct in6_addr, being sure to add "6" to the fields as appropriate (see structs, above).
+	* Instead of inet_aton() or inet_addr(), use inet_pton().
+	* Instead of inet_ntoa(), use inet_ntop().
+	* Instead of gethostbyname(), use the superior getaddrinfo().
+	* Instead of gethostbyaddr(), use the superior getnameinfo() (although gethostbyaddr() can still work with IPv6).
+	* INADDR_BROADCAST no longer works. Use IPv6 multicast instead.
+
+
+
