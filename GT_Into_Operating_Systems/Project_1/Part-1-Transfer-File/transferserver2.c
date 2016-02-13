@@ -1,6 +1,7 @@
 /*
-  echoserver2.c - Yevheniy Chuba - 02/13/2016
-  A streaming server that repeats and sends back client's message
+  transferserver2.c - Yevheniy Chuba - 02/13/2016
+  A streaming server that upon accept()ing a connection
+  transfers a file in chunks.
 */
 
 #include <stdio.h>
@@ -14,6 +15,8 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/sendfile.h>
+#include <sys/stat.h>
 
 #if 0
     /* 
@@ -71,12 +74,23 @@ int main(int argc, char **argv) {
     struct sockaddr_storage their_addr; // connector's address informmation that handle both sockaddr_in and sockaddr_in6
     socklen_t sin_size;                 // their_addr' struct size
     char message_buff[BUFFER_SIZE];     // for receiving and sending messages
-    int num_bytes;                      // for receiving - how many bytes were actuall received
+    int num_bytes_total;                // for sending - how many bytes were totally sent
     int res;                            // return result flag for getaddrinfo
     int yes;                            // used for setsockopt - to reap zombies
     char ip_info[INET6_ADDRSTRLEN];     // enough to handle IPv6 as well as IPv4
-    char * filename = "bar.txt";        // file to transfer
-  
+    char * filename = "bar.txt";        // pointer to first character of file name array
+    FILE * file_pointer;                // pointer to file object
+    int num_bytes_sent;                 // return from send() - bytes sent
+    
+    int fd;                             // file descriptor for sending a file
+    struct stat file_stat;              // used with filestats and contains all sorts of info
+    int offset;                         // helps with traking location in the file
+    int remain_data;                    // remaining data
+    char file_size[256];                // the size of the sending file or the sending chunk??
+    ssize_t len;                        // length of the sent file size - we send if first so that client knows what to expect
+    int sent_bytes = 0;                 // length of the actual file chunk that is being sent out
+
+
     // Parse and set command line arguments
     while ((option_char = getopt(argc, argv, "p:f:h")) != -1){
         switch (option_char) {
@@ -164,9 +178,42 @@ int main(int argc, char **argv) {
                   ip_info, sizeof ip_info);
         printf("server: got connection from %s\n", ip_info);
 
-        // let's send this message back to the client
-        if (send(new_fd, message_buff, num_bytes, 0) == -1) {
-            perror("send");
+        
+
+        // let's handle files here for now
+        fd = open(filename, O_RDONLY);
+        if (fd == -1) {
+            fprintf(stderr, "Error opening file --> %s\n", strerror(errno));
+            exit(1);
+        }
+
+        // get file stats
+        if (fstat(fd, &file_stat) < 0) {
+            fprintf(stderr, "Error fstat --> %s\n", strerror(errno));
+            exit(1);
+        }
+
+        fprintf(stdout, "File Size: \n%d bytes \n", file_stat.st_size); // get file size
+        sprintf(file_size, "%d", file_stat.st_size); // convert int to char
+
+        // sending file size first
+        len = send(new_fd, file_size, sizeof(file_size), 0);
+        if (len < 0) {
+            fprintf(stderr, "Error on sending greetings --> %s", strerror(errno));
+            exit(1);
+        }
+
+        fprintf(stdout, "server: sent %d bytes for the size\n", len);
+
+        // initiate variables for keeping how much as been sent out
+        offset = 0;
+        remain_data = file_stat.st_size;
+
+        // sending file data in chunks
+        while (((sent_bytes = sendfile(new_fd, fd, &offset, 50)) > 0) && (remain_data > 0) { // the size of sent chunk ...i think
+            fprintf(stdout, "1. Server sent %d bytes from file's data, offset is now: %d and remaining data = %d\n", sent_bytes, offset, remain_data);
+            remain_data -= sent_bytes;
+            fprintf(stdout, "2. Server sent %d bytes from file's data, offset is now: %d and remaining data = %d\n", sent_bytes, offset, remain_data);
         }
     }
 
