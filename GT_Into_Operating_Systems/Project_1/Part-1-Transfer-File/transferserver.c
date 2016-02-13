@@ -52,28 +52,28 @@ struct hostent {
 "  -h                  Show this help message\n"                              
 
 int main(int argc, char **argv) {
-  int option_char;
-  int portno = 8888; /* port to listen on */
-  char *filename = "bar.txt"; /* file to transfer */
+    int option_char;
+    int portno = 8888; /* port to listen on */
+    char *filename = "bar.txt"; /* file to transfer */
 
-  // Parse and set command line arguments
-  while ((option_char = getopt(argc, argv, "p:f:h")) != -1){
-    switch (option_char) {
-      case 'p': // listen-port
-        portno = atoi(optarg);
-        break;                                        
-      case 'f': // listen-port
-        filename = optarg;
-        break;   
-      case 'h': // help
-        fprintf(stdout, "%s", USAGE);
-        exit(0);
-        break;       
-      default:
-        fprintf(stderr, "%s", USAGE);
-        exit(1);
+    // Parse and set command line arguments
+    while ((option_char = getopt(argc, argv, "p:f:h")) != -1){
+        switch (option_char) {
+            case 'p': // listen-port
+                portno = atoi(optarg);
+                break;                                        
+            case 'f': // listen-port
+                filename = optarg;
+                break;   
+            case 'h': // help
+                fprintf(stdout, "%s", USAGE);
+                exit(0);
+                break;       
+            default:
+                fprintf(stderr, "%s", USAGE);
+                exit(1);
+        }
     }
-  }
 
   /* Socket Code Here */
 
