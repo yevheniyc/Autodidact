@@ -468,6 +468,7 @@ The answer is: they don't share the same IP addresses. They are on a private net
 
 Jumping from IPv4 to IPv6
 ^^^^^^^^^^^^^^^^^^^^^^^^^
+Let's dive into conversion:
 	* First of all, try to use getaddrinfo() to get all the struct sockaddr info, instead of packing the structures by hand. This will keep you IP version-agnostic, and will eliminate many of the subsequent steps.
 	* Any place that you find you're hard-coding anything related to the IP version, try to wrap up in a helper function.
 	* Change AF_INET to AF_INET6.
