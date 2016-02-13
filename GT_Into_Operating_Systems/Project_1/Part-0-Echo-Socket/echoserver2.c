@@ -15,35 +15,35 @@
 #include <errno.h>
 
 #if 0
-/* 
- * Structs exported from netinet/in.h (for easy reference)
- */
+    /* 
+     * Structs exported from netinet/in.h (for easy reference)
+     */
 
-/* Internet address */
-struct in_addr {
-    unsigned int s_addr; 
-};
+    /* Internet address */
+    struct in_addr {
+        unsigned int s_addr; 
+    };
 
-/* Internet style socket address */
-struct sockaddr_in  {
-    unsigned short int sin_family; /* Address family */
-    unsigned short int sin_port;   /* Port number */
-    struct in_addr sin_addr;	 /* IP address */
-    unsigned char sin_zero[...];   /* Pad to size of 'struct sockaddr' */
-};
+    /* Internet style socket address */
+    struct sockaddr_in  {
+        unsigned short int sin_family; /* Address family */
+        unsigned short int sin_port;   /* Port number */
+        struct in_addr sin_addr;	 /* IP address */
+        unsigned char sin_zero[...];   /* Pad to size of 'struct sockaddr' */
+    };
 
-/*
- * Struct exported from netdb.h
- */
+    /*
+     * Struct exported from netdb.h
+     */
 
-/* Domain name service (DNS) host entry */
-struct hostent {
-    char    *h_name;        /* official name of host */
-    char    **h_aliases;    /* alias list */
-    int     h_addrtype;     /* host address type */
-    int     h_length;       /* length of address */
-    char    **h_addr_list;  /* list of addresses */
-}
+    /* Domain name service (DNS) host entry */
+    struct hostent {
+        char    *h_name;        /* official name of host */
+        char    **h_aliases;    /* alias list */
+        int     h_addrtype;     /* host address type */
+        int     h_length;       /* length of address */
+        char    **h_addr_list;  /* list of addresses */
+    }
 #endif
 
 #define BUFFER_SIZE  16
@@ -62,16 +62,16 @@ void * get_in_addr(struct sockaddr * sa);
 int main(int argc, char **argv) {
     int sockfd, new_fd;                 // listen on sock_fd, new connection on new_fd
     int option_char;                    // for handling commandline argv
-    int portno = 8888;                 // default port to listen on
+    int portno = 8888;                  // default port to listen on
     char port_char[15];                 // use chars version for getaddrinfo()
     int maxnpending = MAX_PENDING;      // max of pending connections in the queue
-    struct addrinfo hints,              // hints - preload know server info; 
+    struct addrinfo hints,              // hints - preload server info; 
                     *servinfo;          // copy return from getaddrinfo() to servinfo
     struct sockaddr_storage their_addr; // connector's address informmation that handle both sockaddr_in and sockaddr_in6
     socklen_t sin_size;                 // their_addr' struct size
     char message_buff[BUFFER_SIZE];     // for receiving and sending messages
     int num_bytes;                      // for receiving - how many bytes were actuall received
-    int res;                            // return result for getaddrinfo
+    int res;                            // return result flag for getaddrinfo
     int yes;                            // used for setsockopt - to reap zombies
     char ip_info[INET6_ADDRSTRLEN];     // enough to handle IPv6 as well as IPv4
   
@@ -101,15 +101,21 @@ int main(int argc, char **argv) {
     hints.ai_flags = AI_PASSIVE;      // my ip
 
 
-    // get more detailed server information
-    snprintf(port_char, sizeof port_char, "%d", portno);
+    /* 
+        get more detailed server information: 
+        IMPORTANT: 
+            - NULL in getaddrinfo says to get all info from the server - from here!
+            - Client will have server's IP instead, which is more useful there
+            - I need to practice with this!
+    */
+    snprintf(port_char, sizeof port_char, "%d", portno); // convert numerial port to chars for here
     if ((res = getaddrinfo(NULL, port_char, &hints, &servinfo)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(res));
         return 1;
     }
     printf("getaddrinfo is executed\n");
 
-    // use that information to create a socket
+    // use that information to create a socket: this info is especially handy in the client code
     if ((sockfd = socket(servinfo->ai_family, 
                          servinfo->ai_socktype, 
                          servinfo->ai_protocol)) == -1) {
@@ -150,14 +156,14 @@ int main(int argc, char **argv) {
             exit(1); // exit if acception did not work
         }
 
-        // let's find connector's information
+        // let's find connector's (client's) information
         inet_ntop(their_addr.ss_family,
                   get_in_addr((struct sockaddr *)&their_addr),
                   ip_info, sizeof ip_info);
         printf("server: got connection from %s\n", ip_info);
 
         // let's get connector's (client's message)
-        if ((num_bytes = recv(sockfd, message_buff, BUFFER_SIZE-1, 0)) == -1) {
+        if ((num_bytes = recv(new_fd, message_buff, BUFFER_SIZE-1, 0)) == -1) {
             perror("recv");
             exit(1);
         }
@@ -170,9 +176,9 @@ int main(int argc, char **argv) {
         if (send(new_fd, message_buff, num_bytes, 0) == -1) {
             perror("send");
         }
-
-        printf("server: continue waiting.........\n");
     }
+
+    return 0;
 
 }
 
@@ -181,8 +187,7 @@ int main(int argc, char **argv) {
                 - returns address of a string representing internet address
 */
 // get sockaddr, IPv4 or IPv6:
-void *get_in_addr(struct sockaddr *sa)
-{
+void *get_in_addr(struct sockaddr *sa) {
     if (sa->sa_family == AF_INET) {
         return &(((struct sockaddr_in*)sa)->sin_addr);
     }
