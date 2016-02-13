@@ -5,8 +5,8 @@ CC=gcc
 # -I flag tells gcc to look in the current directory (.) for the include files *.h
 CFLAGS=-I.
 
-client: echoclient.c
-	$(CC) -o client echoclient.c
+client: echoclient2.c
+	$(CC) -o client echoclient2.c
 
 server: echoserver2.c
 	$(CC) -o server echoserver2.c
