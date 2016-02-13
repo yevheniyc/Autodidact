@@ -1,5 +1,6 @@
 /*
-  echoserver2.c - a stream socket that repeats and sends back client's message
+  echoserver2.c - Yevheniy Chuba - 02/13/2016
+  A streaming server that repeats and sends back client's message
 */
 
 #include <stdio.h>
