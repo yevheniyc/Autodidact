@@ -61,7 +61,8 @@ void * get_in_addr(struct sockaddr * sa);
 int main(int argc, char **argv) {
     int sockfd, new_fd;                 // listen on sock_fd, new connection on new_fd
     int option_char;                    // for handling commandline argv
-    int portno = 8888;                  // default port to listen on 
+    int portno = 8888;                 // default port to listen on
+    char port_char[15];                 // use chars version for getaddrinfo()
     int maxnpending = MAX_PENDING;      // max of pending connections in the queue
     struct addrinfo hints,              // hints - preload know server info; 
                     *servinfo;          // copy return from getaddrinfo() to servinfo
@@ -77,7 +78,7 @@ int main(int argc, char **argv) {
     while ((option_char = getopt(argc, argv, "p:n:h")) != -1){
         switch (option_char) {
             case 'p': // listen-port
-                portno = atoi(optarg);
+                portno = atoi(optarg); // removed for convenience with getaddrinfo
                 break;                                        
             case 'n': // server
                 maxnpending = atoi(optarg);
@@ -100,7 +101,8 @@ int main(int argc, char **argv) {
 
 
     // get more detailed server information
-    if ((res = getaddrinfo(NULL, portno, &hints, &servinfo)) != 0) {
+    snprintf(port_char, sizeof port_char, "%d", portno);
+    if ((res = getaddrinfo(NULL, port_char, &hints, &servinfo)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(res));
         return 1;
     }
@@ -111,7 +113,7 @@ int main(int argc, char **argv) {
                          servinfo->ai_socktype, 
                          servinfo->ai_protocol)) == -1) {
         perror("server: socket");
-        continue;
+        exit(1);
     }
     printf("socket is created\n");
 
@@ -126,25 +128,25 @@ int main(int argc, char **argv) {
     if (bind(sockfd, servinfo->ai_addr, servinfo->ai_addrlen) == -1) {
         close(sockfd);
         perror("server:bind");
-        continue;
+        exit(1);
     }
     printf("bind to socket\n");
 
     // now let's listen to the socket
     if (listen(sockfd, maxnpending) == -1) {
         perror("listen");
-        exit(1)
+        exit(1);
     }
 
     printf("server: waiting for connections...\n");
 
     while(1) { // main accept loop
         sin_size = sizeof their_addr; // we want to know client's information
+        
         // let's accept
-        new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size); // accept and cast to sockaddr pointer
-        if (new_fd = -1) {
+        if ((new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size)) == -1){ // accept and cast to sockaddr pointer
             perror("accept");
-            continue;
+            exit(1); // exit if acception did not work
         }
 
         // let's find connector's information

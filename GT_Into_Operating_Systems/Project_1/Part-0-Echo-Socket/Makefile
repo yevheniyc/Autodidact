@@ -8,8 +8,8 @@ CFLAGS=-I.
 client: echoclient.c
 	$(CC) -o client echoclient.c
 
-server: echoserver.c
-	$(CC) -o server echoserver.c
+server: echoserver2.c
+	$(CC) -o server echoserver2.c
 
 clean:
 	rm -f client server
