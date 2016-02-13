@@ -1,8 +1,12 @@
 Network Sockets
 ---------------
 
-The following code is borrowed and analyzed from:
+The following code/desciptions are borrowed and analyzed from:
 http://beej.us/guide/bgnet/output/html/multipage/theory.html
+
+This is a summary document created for learning purposes. Most of the text is copied from the original source.
+Writing everything by hand helped me to remember all of this (which is a lot). I also wanted to create a shorter 
+single page document for easy reference. 
 
 
 File Descriptors
@@ -926,3 +930,21 @@ gethostbyname(), below, to determine the IP address of your local machine::
 	// hostname - a pointer to an array of chars that will contain the hostname upon the function's return
 	// size - is the length in bytes of the hostname array
 	// The function returns 0 on successful completion, and -1 on error, setting errno as usual.
+
+
+Client-Server Implementation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Just about everything on the network deals with client processes talking to server processes and vice-versa. 
+Take telnet, for instance. When you connect to a remote host on port 23 with telnet (the client), 
+a program on that host (called telnetd, the server) springs to life. It handles the incoming telnet connection, 
+sets you up with a login prompt, etc.
+
+Note that the client-server pair can speak SOCK_STREAM, SOCK_DGRAM, or anything else (as long as they're speaking the same thing.) 
+Some good examples of client-server pairs are telnet/telnetd, ftp/ftpd, or Firefox/Apache. 
+Every time you use ftp, there's a remote program, ftpd, that serves you.
+
+Often, there will only be one server on a machine, and that server will handle multiple clients using fork(). 
+The basic routine is: server will wait for a connection, accept() it, and fork() a child process to handle it. 
+This is what our sample server does in the next section.
+
+My project is to create a multi-threaded process, but I can still borrow some concepts from Beej!
