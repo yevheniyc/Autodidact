@@ -4,7 +4,7 @@ Network Sockets
 The following code/desciptions are borrowed and analyzed from:
 http://beej.us/guide/bgnet/output/html/multipage/theory.html
 
-This is a summary document created for learning purposes. Most of the text is copied from the original source.
+This is a summary document created for learning purposes. Chunks of text are copied from the original source.
 Writing everything by hand helped me to remember all of this (which is a lot). I also wanted to create a shorter 
 single page document for easy reference. 
 
