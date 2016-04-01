@@ -12,6 +12,7 @@ single page document for easy reference.
 File Descriptors
 ^^^^^^^^^^^^^^^^
 File descriptor for network communication is retrieved by::
+	
 	a call to the socket() system routine
 
 File descriptor https://en.wikipedia.org/wiki/File_descriptor:
