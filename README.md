@@ -30,3 +30,8 @@ The book can be found [here](http://shop.oreilly.com/product/0636920027072.do)
 Testing scripts presented in the book with short summeries, using Jupyter. 
 Find the cookbook [here](http://biopython.org/DIST/docs/tutorial/Tutorial.html)
 
+***
+
+####Java Top 10 Algorightms (With Examples)
+A clear explanation of the 10 most asked algorithms in the interviews, using Java and concrete examples:
+[http://www.programcreek.com/2012/11/top-10-algorithms-for-coding-interview/](http://www.programcreek.com/2012/11/top-10-algorithms-for-coding-interview/)
