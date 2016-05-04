@@ -24,6 +24,8 @@ The book can be found [here](http://shop.oreilly.com/product/0636920027072.do)
 Testing scripts presented in the book with short summeries, using Jupyter. 
 Find the cookbook [here](http://biopython.org/DIST/docs/tutorial/Tutorial.html)
 
+***
+
 ####Interactive Python (Online Book)
 A great source for introduction to data structures and algorithms:
 [http://interactivepython.org/runestone/static/pythonds/index.html](http://interactivepython.org/runestone/static/pythonds/index.html)
