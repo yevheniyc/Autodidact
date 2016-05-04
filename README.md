@@ -14,6 +14,12 @@ Source is [here](http://beej.us/guide/bgnet/output/html/multipage/theory.html)
 
 ***
 
+####Interactive Python (Online Book)
+A great source for introduction to data structures and algorithms:
+[http://interactivepython.org/runestone/static/pythonds/index.html](http://interactivepython.org/runestone/static/pythonds/index.html)
+
+***
+
 ####Python Cookbook 3
 Testing scripts presented in the book with short summeries, using Jupyter. 
 The book can be found [here](http://shop.oreilly.com/product/0636920027072.do)
@@ -23,10 +29,4 @@ The book can be found [here](http://shop.oreilly.com/product/0636920027072.do)
 ####Biopython Cookbook
 Testing scripts presented in the book with short summeries, using Jupyter. 
 Find the cookbook [here](http://biopython.org/DIST/docs/tutorial/Tutorial.html)
-
-***
-
-####Interactive Python (Online Book)
-A great source for introduction to data structures and algorithms:
-[http://interactivepython.org/runestone/static/pythonds/index.html](http://interactivepython.org/runestone/static/pythonds/index.html)
 
