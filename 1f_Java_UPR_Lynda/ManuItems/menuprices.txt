@@ -1,0 +1,5 @@
+kolbasa : 10.0
+salo : 15.0
+borsh : 5.0
+picles : 3.0
+vodka : 100.0
