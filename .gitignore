@@ -1,5 +1,6 @@
 *.out
 *.dSYM
+.ipynb_checkpoint
 /1f_Java_UPR_Lynda/Binary/nbproject/private/
 /1f_Java_UPR_Lynda/Binary/build/
 /1f_Java_UPR_Lynda/Binary/dist/
