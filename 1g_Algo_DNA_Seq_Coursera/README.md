@@ -12,6 +12,7 @@ Hints::
 ***
 
 Skills learned in Module 1: DNA sequencing, strings and matching
+
 1. Introduction to algorithms used for DNA sequencing
 2. Sequencing technologies and how they work
 3. Intricate details about DNA and genomes 
@@ -23,6 +24,7 @@ Skills learned in Module 1: DNA sequencing, strings and matching
 8. Explore the Naive Exact Matching algorithm for finding patterns in text (not fast)
 
 There are two assingments for the first module:
+
 1. Programming challenge
 2. Quiz
 
