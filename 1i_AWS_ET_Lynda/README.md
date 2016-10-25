@@ -50,4 +50,24 @@ Examples of restructuring:
 
 
 #####Design for Failure
+
 - Avoid single points of failure (2 web servers -> 1 database server) - using Relational Database Service (RDS)
+
+#####Implement Elasticity - ability to scale cloud resource up/down/in/out
+
+- Scale on regular bases: daily/monthly/weekly - highly predictable traffic
+- Just when expecting event to happend: due to some events
+- Setup monitoring infrastructure (i.e. CPU utilization, or Network IO) - based on this info scale appropriately/automatically
+
+- Automate your deployment process
+- insure that initial system configuration and how you guild your applications are streamlined to accomodate scalling
+- Bootstrapping instances 
+    - refers to creating a self-sustaining start-up process that can run on its own and in the context of AWS
+    - tipically involves the process neeed to get your application up and running on an EC2 instance
+    
+#####Loose Coupling
+
+- Minimize dependencies between components
+- Example infrastructure: several web servers, app servers and a database server
+
+- Tightly-coupled components
