@@ -17,7 +17,7 @@
  - Mint
 
 AWS offers all three services (IaaS, PaaS, Saas)
-***
+
 #####Business Benefits
 
 - Minimal upfront infrastructure investment
@@ -70,4 +70,5 @@ Examples of restructuring:
 - Minimize dependencies between components
 - Example infrastructure: several web servers, app servers and a database server
 
-- Tightly-coupled components
+- Tightly-coupled components:
+![Alt text](img/1_tight_coupling.png "Tightly coupled infrastructure"")
