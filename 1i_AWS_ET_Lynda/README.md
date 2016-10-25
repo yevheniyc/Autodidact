@@ -71,4 +71,4 @@ Examples of restructuring:
 - Example infrastructure: several web servers, app servers and a database server
 
 - Tightly-coupled components:
-![Alt text](img/1_tight_coupling.png "Tightly coupled infrastructure"")
+<br><img src="img/1_tight_coupling.png" width="200" hight="200">
