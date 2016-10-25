@@ -159,5 +159,5 @@ Examples of restructuring:
     - Amazon EC2 provides a number of tools to make creating AMIs easy, including the AWS management console.
 	- After you've created an AMI with specific configurations, you can use that AMI to easily create new instance(s) as many times as needed, across multiple Availability Zones. You can do this programatically using the API, or by using the auto-scalling service, or using the console.
 <br><img src="img/5_aws_console.png" width="300" hight="300"><img src="img/6_amis.png" width="300" hight="300">
-<br><img src="img/7_instances.png" width="300" hight="300"><img src="img/8_create_instance.png" width="300" hight="300">
-<br><img src="img/9_create_instance_from _ami.png" width="300" hight="300">
+<br><img src="img/7_instances.png" width="300" hight="300"><img src="img/9_create_instance_from _ami.png" width="300" hight="300">
+<br><img src="img/8_create_instance.png" width="300" hight="300">
