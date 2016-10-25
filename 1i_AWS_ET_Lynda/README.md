@@ -168,3 +168,9 @@ Examples of restructuring:
 	<br><img src="img/9_create_instance_from _ami.png" width="500" hight="500">
 	- Create an instance:
 	<br><img src="img/8_create_instance.png" width="500" hight="500">
+
+- Elastic Load Balancing (ELB): 
+    - A component built to balance the traffic across EC2 instances and Availability Zones, and as such it allows your applications to achief greater fault tolerance. It is elastic in that it automatically scales request-handling capability based on the traffic demands. Elasticity and redundancy is built into this service.
+    - Characteristics of ELB:
+    	- It can handle the routing and load balancing of your HTTP, HTTPS, and TCP traffic to your EC2 instance
+	- It allows you to set up and configure health checks so it can know whether or not the instances to which it's routing traffic are healthy and should be used. 
