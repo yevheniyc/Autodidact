@@ -177,4 +177,9 @@ Fault Tolerance with ELB:
 <br><img src="img/10_elastic_load_balancer_round_robin.png" width="400" hight="400">
 
 
-#####Cloudwatch
+#####Cloudwatch - alert machanisms when a system experiences failure or approaches failure
+- Resource and Application monitoring service
+- Monitor resources immediately and automatically
+- Monitor resource utilization, performance, traffic load demand
+- Allows to gather and graph resource metrics such CPU utilization, disk I/O, and network traffic
+- Allows to set alarms when specific metric thresholds are breached, which can then trigger an action such as sending notifications or even kick-off a process to automatically handle the issue such as add or remove another resource.
