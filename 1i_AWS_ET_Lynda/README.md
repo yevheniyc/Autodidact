@@ -170,7 +170,16 @@ Examples of restructuring:
 	<br><img src="img/8_create_instance.png" width="500" hight="500">
 
 - Elastic Load Balancing (ELB): 
-    - A component built to balance the traffic across EC2 instances and Availability Zones, and as such it allows your applications to achief greater fault tolerance. It is elastic in that it automatically scales request-handling capability based on the traffic demands. Elasticity and redundancy is built into this service.
+    - A component built to balance the traffic across EC2 instances and Availability Zones, and as such it allows your applications to achieve greater fault tolerance. It is elastic in that it automatically scales request-handling capability based on the traffic demands. Elasticity and redundancy is built into this service.
     - Characteristics of ELB:
     	- It can handle the routing and load balancing of your HTTP, HTTPS, and TCP traffic to your EC2 instance
 	- It allows you to set up and configure health checks so it can know whether or not the instances to which it's routing traffic are healthy and should be used. 
+        - It can automatically and dynamically grow and shrink with the demand patterns of your application
+        - When creating a new ELB you get a single CNAME that you use for DNS configuration. For example, to use to point your web applications domains to.
+	- The single CNAME does not change even as the ELB scaling is happening. So how does it do it? 
+
+Fault Tolerance with ELB: 
+- ELB helps you achieve fault tolerance by allowing you to distribute trafic across multiple EC2 instances and availability zones.
+- Below we see a representation of an ELB routing traffic to two availability zones, but we know these two availability zones are actually geographically separate physical locations within a region. Our single CNAMEd ELB component actually resolves round robin DNS to ELB IP addresses in each availability zone and as traffic increases, AWS adds IP addresses to ELB's DNS entry and continues to round robin requests across the multiplying ELBs. Of course, as traffic decreases it removes the IP addresses from the ELB's DNS entry thereby reducing the number of load balancing components in the system. 
+- In summary, use Elastic Load Balancer to easily distribute your system across multiple resources and abailability zones to ensure your system remains up and running even if a single resource fails or disaster strikes.
+<br><img src="img/10_elastic_load_balancing_round_robin.png" width="300" hight="300">
