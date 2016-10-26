@@ -1,5 +1,7 @@
 ###Amazon Web Services Essential Training - Lynda
+
 ***
+
 #####Cloud Services
 - Infrastructure as a Service (IaaS)
  - Windows Asure
@@ -35,21 +37,23 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
 - Scaling Up (vertical scalling) - adding resources to a single component or node in our system in order to increase cits capacity to handle load. For example, increasing the number of CPUs or increase the memory of a database server. 
 - Scaling Down (vertical scalling) - reducing the resources of a single component or node in the system. 
 
+***
+
 #####Understanding Elasticity: Clouds ability to accomodate changes in load and demand of the system.
 - There is not a Cloud server type that has the exact or greater amount of RAM required on single server, that what you already have on premises. In that case, you should think about ways to distribute that need across multiple servers, by rethinking you application architecture, or perhaps by leveraging other available Cloud services, like a distributed memory cache (i.e. AWS EsastiCache).
 - You find that the database requires more input/output operations per second, often referred to as IOPS, than what the Cloud provides. There are other ways to achieve this, based on your data in use cases. One solution is to distribute across a cluster, thereby scaling out the database layer, or take advantage of other database sharding techniques that can route data and requests to where they need to be. 
 - Often, if you find to be hitting constraints with Cloud infrastructure (which in theory is infinitely scalable), this is most likely due to the application architecture not being built in a scalable manner. 
 
 #####Implement Elasticity - ability to scale cloud resource up/down/in/out
-    - Scale on regular bases: daily/monthly/weekly - highly predictable traffic
-    - Just when expecting event to happend: due to some events
-    - Setup monitoring infrastructure (i.e. CPU utilization, or Network IO) - based on this info scale appropriately/automatically
+- Scale on regular bases: daily/monthly/weekly - highly predictable traffic
+- Just when expecting event to happend: due to some events
+- Setup monitoring infrastructure (i.e. CPU utilization, or Network IO) - based on this info scale appropriately/automatically
 
-    - Automate your deployment process
-    - insure that initial system configuration and how you guild your applications are streamlined to accomodate scalling
-    - Bootstrapping instances 
-        - refers to creating a self-sustaining start-up process that can run on its own and in the context of AWS
-        - tipically involves the process neeed to get your application up and running on an EC2 instance
+- Automate your deployment process
+- insure that initial system configuration and how you guild your applications are streamlined to accomodate scalling
+- Bootstrapping instances 
+    - refers to creating a self-sustaining start-up process that can run on its own and in the context of AWS
+    - tipically involves the process neeed to get your application up and running on an EC2 instance
     
 #####Loose Coupling
 - Minimize dependencies between components
