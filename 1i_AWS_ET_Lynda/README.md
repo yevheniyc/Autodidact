@@ -41,19 +41,19 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
 
 #####Understanding Elasticity: Clouds ability to accomodate changes in load and demand of the system.
 - There is not a Cloud server type that has the exact or greater amount of RAM required on single server, that what you already have on premises. In that case, you should think about ways to distribute that need across multiple servers, by rethinking you application architecture, or perhaps by leveraging other available Cloud services, like a distributed memory cache (i.e. AWS EsastiCache).
-- You find that the database requires more input/output operations per second, often referred to as IOPS, than what the Cloud provides. There are other ways to achieve this, based on your data in use cases. One solution is to distribute across a cluster, thereby scaling out the database layer, or take advantage of other database sharding techniques that can route data and requests to where they need to be. 
+- You find that the database requires more input/output operations per second, often referred to as IOPS, than what the Cloud provides. There are other ways to achieve this based on your data in use cases. One solution is to distribute across a cluster, thereby scaling out the database layer, or take advantage of other database sharding techniques that can route data and requests to where they need to be. 
 - Often, if you find to be hitting constraints with Cloud infrastructure (which in theory is infinitely scalable), this is most likely due to the application architecture not being built in a scalable manner. 
 
 #####Implement Elasticity - ability to scale cloud resource up/down/in/out
 - Scale on regular bases: daily/monthly/weekly - highly predictable traffic
-- Just when expecting event to happend: due to some events
+- Just when expecting event to happen: due to some events
 - Setup monitoring infrastructure (i.e. CPU utilization, or Network IO) - based on this info scale appropriately/automatically
 
 - Automate your deployment process
-- insure that initial system configuration and how you guild your applications are streamlined to accomodate scalling
+- Insure that initial system configuration and how you build your applications are streamlined to accomodate scalling
 - Bootstrapping instances 
     - refers to creating a self-sustaining start-up process that can run on its own and in the context of AWS
-    - tipically involves the process neeed to get your application up and running on an EC2 instance
+    - tipically involves the process needed to get your application up and running on an EC2 instance
     
 #####Loose Coupling
 - Minimize dependencies between components
@@ -85,22 +85,22 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
         - Encrypt data before storing it on any storage devices
         - Encrypt the entire file storage systems. In AWS file storage comes in 2 different variaties:
     	    - Elastic block storage - persists beyond the lifetime of the underlying instance - **encryptable**
-	    - Local storage - will not servive the termination of the instance on which it presides - **encryptable**
+	        - Local storage - will not servive the termination of the instance on which it presides - **encryptable**
 	    - Store/Encrypt data in other AWS stores as well
         - Protect AWS access credentials - AWS supplies two types of security credentials:
-	    - AWS Access Keys - has two parts to it:
-		- A public access key ID
-		- A secret key ID: 
+	        - AWS Access Keys - has two parts to it:
+                - A public access key ID
+                - A secret key ID: 
                     - when using the APIs, use secret key ID for request authentication
                     - all public API requests sent via the internet should be sent over HTTPS
                     - if your application uses other AWS services, which require your secret key, rather than having your secret key be part of the applicaiton code, you should build your applications in a manner such that this secret key is passed in as arguments during launch of the application. The secret key should also be encrypted before sending.
                     - you can also launch your instance in IAM role - allows an instance to have access to the credentials associated with that role.
                         - IAM role - AWS's service designed so that your applications can securely make API requests from your instances, without requiring you to manage the security credentials that the applications use. Instead of creating and distributing your AWS credentials, you can delegate permission to make API requests using IAM roles. IAM is also used to manage access control: it allows you to create users and manage their permissions by assigning them roles and placing them into groups.
-                    - if your secret has been compromised - request a new one by rotating to a new access key ID
+                    - if your secret key has been compromised - request a new one by rotating to a new access key ID
                     - rather than handing out your root account information to everyone that needs access, it is strongly recommended that you create separate users for each person needing access. Then give them access only to the services they need to access.
                     - Make sure to secure your own applications - AWS provides security groups which act as your firewalls to the associated instances - always make sure you lock this down and restrict access to the instances.
                     - Make sure to update all software packages and apply all security patches - all of the pre-cloud application security practices still apply in the cloud.
-                - X509 Certificates
+            - X509 Certificates
 
 ***
 
@@ -108,7 +108,7 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
 Avoid single points of failure (2 web servers -> 1 database server) - using Relational Database Service (RDS)
 
 #####Virual Servers (EC2) and Elastic IP
-- EC2 - this are the servers used in AWS
+- EC2 - these are the servers used in AWS
 - Elastic IPs 
     - are the static IP addresses designed for cloud computing
     - are created for the account and are not specific to a particular instance
