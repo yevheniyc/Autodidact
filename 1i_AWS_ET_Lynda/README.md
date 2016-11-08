@@ -122,13 +122,13 @@ Avoid single points of failure (2 web servers -> 1 database server) - using Rela
     - US East - located in Virginia
     - US West - located in California
     - GovCloud - located in the northwest of the US:
-        - designed to allow US government agencies, contractors, and their customers to move more sensitive into the cloud by addressing their specific regulatory and compliance requirements.
-    - EU - located in Europe, Middle East, Africa area - located in Ireland
+        - designed to allow US government agencies, contractors, and their customers to move more sensitive data into the cloud by addressing their specific regulatory and compliance requirements.
+    - EU - covering Europe, Middle East, Africa area - located in Ireland
     - South America - located in Sao Paulo
     - Asia Pacific - Singapore, Sydney, Tokyo, and Beigin
         <br><img src="img/3_aws_regions.png" width="400" hight="400">
 - These regions are independent of one-another and there is no data replicatins between them
-- Customers can launch instances in more than one region: if you have a very strict high-availability and distaster recover requirements that specify you must have redundant systems that are completely isolated and very far apart geographically, using more than one region will help you meet this requirement.
+- Customers can launch instances in more than one region: if you have a very strict high-availability and distaster recovery requirements that specify you must have redundant systems that are completely isolated and very far apart geographically, using more than one region will help you meet this requirement.
 - Any communications that you establish between regions is across the public internet, so encryption methods should be used to protect your sensitive data.
 - Availability Zones: 
     - Even within a region, you can achieve geographical isolation to meet your high availability and disaster recovery needs. This is because each region consists of multiple locations called availability zones.
@@ -165,10 +165,10 @@ Avoid single points of failure (2 web servers -> 1 database server) - using Rela
 - A component built to balance the traffic across EC2 instances and Availability Zones, and as such it allows your applications to achieve greater fault tolerance. It is elastic in that it automatically scales request-handling capability based on the traffic demands. Elasticity and redundancy is built into this service.
 - Characteristics of ELB:
 	- It can handle the routing and load balancing of your HTTP, HTTPS, and TCP traffic to your EC2 instance
-- It allows you to set up and configure health checks so it can know whether or not the instances to which it's routing traffic are healthy and should be used. 
+    - It allows you to set up and configure health checks so it can know whether or not the instances to which it's routing traffic are healthy and should be used. 
     - It can automatically and dynamically grow and shrink with the demand patterns of your application
     - When creating a new ELB you get a single CNAME that you use for DNS configuration. For example, to use to point your web applications domains to.
-- The single CNAME does not change even as the ELB scaling is happening. So how does it do it? 
+    - The single CNAME does not change even as the ELB scaling is happening. So how does it do it? 
 
 Fault Tolerance with ELB: 
 - ELB helps you achieve fault tolerance by allowing you to distribute trafic across multiple EC2 instances and availability zones.
@@ -181,5 +181,5 @@ Fault Tolerance with ELB:
 - Resource and Application monitoring service
 - Monitor resources immediately and automatically
 - Monitor resource utilization, performance, traffic load demand
-- Allows to gather and graph resource metrics such CPU utilization, disk I/O, and network traffic
+- Allows to gather and graph resource metrics such as CPU utilization, disk I/O, and network traffic
 - Allows to set alarms when specific metric thresholds are breached, which can then trigger an action such as sending notifications or even kick-off a process to automatically handle the issue such as add or remove another resource.
