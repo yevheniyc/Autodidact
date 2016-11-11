@@ -42,6 +42,18 @@ for step in range(201):
     if step % 20 == 0:
         print(step, sess.run(W), sess.run(b))
 
-# 200 [ 0.10001285] [ 0.29999274]
+
+# In[11]:
+
+# create two matrixes and multiply them
+matrix1 = tf.constant([[3., 3.]])   # 1X2 matrix
+matrix2 = tf.constant([[2.], [2.]]) # 2x1 matrix
+# Create a Matmul (matrix multiplier) op that takes both matrixes as inputs
+product = tf.matmul(matrix1, matrix2)
+print ("product of both matrixes: ", product)
+
+
+# In[ ]:
+
 
 
