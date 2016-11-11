@@ -43,8 +43,6 @@ for step in range(201):
         print(step, sess.run(W), sess.run(b))
 
 
-# In[11]:
-
 # create two matrixes and multiply them
 matrix1 = tf.constant([[3., 3.]])   # 1X2 matrix
 matrix2 = tf.constant([[2.], [2.]]) # 2x1 matrix
