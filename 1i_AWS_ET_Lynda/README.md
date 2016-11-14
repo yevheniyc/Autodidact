@@ -228,9 +228,41 @@ If you are running an application on EC2, and this application is storing data o
         - the snapshots can also be copied across AWS regions making it easier to take advantage of AWS regions for systems that require large geographical distribution.
         - the snapshots are easy to take, either through the web console or programmatically through the API
         - a snapshot of the currently running volume can also be taken, however, snapshots only capture data that has been written to the volue at the time the snapshot command is complete. To make a complete snapshot, it is recommended to pause the volume. If you cannot pause all of the writes to the volume, you should consider unmounting the volume from within the instance, then issue the snapshot command and then remount the volume to ensure a consistent and complete snapshot. While the snapshot status is in a pending state you can remount and reuse the volume.
+        - snapshots are stored incrementally - you are billed only for the storage that is equal to the difference between current and the previous snapshots
+        - all active snapshots contain all the information needed to restore the volume to the instant at which the snapshot was taken
+        - snapshots can be used to create new volumes or chage attributes of existing ones: for example, expanding the size of a volume or moving volumes across availability zones, or sharing them across regions.
+        -  A few of the key characteristics of snapshots:
+            - Immediate access to data (**lazy loading**) - If you create a volume from a snapshot, all of this data stored in S3 will have to be transferred to your newly created volume. However, if you want to start using the volume with one of your instances right away, you can. The restoring of new volumes from EBS snapshots implements a lazy loading approach. So, any data that you start to access will be prioritized in the transfer. And if not already retrieved, will be immediately retrieved upon the first request, so you can begin using them right away.
+            - Resizing volumes -  When you create a new Amazon EBS volume based on a snapshot, you may change the size specified for the new volume. You will want to double check that your file system and/or your application supports such a resizing.
+            - Sharing - Snapshots are also easy to share. Amazon EBS snapshots make it easy for you to share your data, say with your coworkers or others in the AWS community. Users can create their own Amazon EBS volumes based on the EBS snapshots you decide to share.
+            - Copying across regions -  The ability to copy snapshots across regions makes it easier to take advantage of using AWS regions for geographical distribution
+
     - Cloudwatch can be used to view performacne metrics for the EBS volumes providing the insight into metrics such as throughput and latency.
 - Ephemeral Volumes (Local Storage) - does not servive termination
 
+#####Relational Database Services (RDS)
+When the database part of your application fails, you want to ensure a safe and quick recovery. If you are using a relational database to store persistent information in your application, you definitely want to consider using Amazon Relational Database Service. Amazon Relational Database Service, or simply RDS, provides an easy way to **setup**, **operate**, and **scale** a relational database in the cloud.
+
+You can launch a DB instance and get access to a full featured relational database without having to worry much about common database administration tasks like **backups**, **patch management**, and **security management**. RDS is also configured in such a way so that you can easily achieve **high avialability** and **high redundancy** requirements as well.
+
+Using RDS:
+- Create a database instance using the web console or the API
+- Specify the engine type: MySQL, Postgres, SQL Serer, Oracle
+- Specify DB instance size, and a few other configuration options
+- Once created, the instance is available to connect with your application
+- You can watch to monitor the general health of your DB instances using Cloud Watch
+- While you do have remote access to your database through the command line client, or other GUI tools you may use for your database management, unlike EC2 instances, you don't have SSH access to these instances, and do not have root access. This is actually one of the benefits when using RDS.
+-  You are turning over a lot of the administrative tasks to Amazon:
+    - Amazon RDS will automatically apply security patches on your behalf and will back up your database, storing the backups for a user defined retention period, and enabling point-in-time recovery from these backups.
+    - If you take advantage of the ability to deploy in multiple availability zones, and/or creating read-replicas of the database for increased performance and scalability, you are handing even more of the complex administration and configuration tasks over to AWS, thus, allowing you to stay focused less on boilerplate administration and configuration, and more on building what matters for you and your business. 
+
+Design for failures #7:
+- Design for Failure Lesson Number Seven: Consider using RDS to simplify database security, administration, backups, redundancy, failovers, scalability, and geographical distribution.
+
+***
+
+#####Bootstrapping
+Learn about the services and tools needed to help take advantage of the elastic nature of the Cloud, and as has been mentioned before, taking advantage of the Cloud's elastic nature is going to drive some of the biggest benefits you will realize from a Cloud-based environment versus a traditional one.
 
 
 
