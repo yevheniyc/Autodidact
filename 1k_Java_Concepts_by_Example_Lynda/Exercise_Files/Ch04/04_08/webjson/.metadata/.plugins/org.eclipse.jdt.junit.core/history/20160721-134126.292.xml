@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="ApiTest (1)" project="WebJson" tests="2" started="2" failures="0" errors="0" ignored="0">
+  <testsuite name="com.example.webjson.ApiTest" time="1.694">
+    <testcase name="testUrl" classname="com.example.webjson.ApiTest" time="0.0"/>
+    <testcase name="testBasicConnection" classname="com.example.webjson.ApiTest" time="1.694"/>
+  </testsuite>
+</testrun>

@@ -1,0 +1,72 @@
+package com.example.webjson;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+
+import com.example.webjson.StackQuery.SortBy;
+import com.example.webjson.StackQuery.SortOrder;
+
+public class ApiTest {
+
+	
+	public static void main(String[] args) {
+		ApiTest test = new ApiTest();
+		try {
+			test.testBasicConnection();
+			test.testUrl();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void testBasicConnection() throws IOException {
+		StackQuery query = new StackQuery();
+		
+		query.setSearchTerm("Hello World");
+		query.setSortBy(SortBy.RELEVANCE);
+		query.setSortOrder(SortOrder.ASCENDING);
+		
+		List<QueryResultBean> result = query.execute();
+		System.out.println("result = " + isResultValid(result) );
+	}
+	
+	
+	
+	public void testUrl() throws MalformedURLException {
+		StackQuery query = new StackQuery();
+		
+		query.setSearchTerm("Hello World");
+		query.setSortBy(SortBy.RELEVANCE);
+		query.setSortOrder(SortOrder.ASCENDING);
+		
+		URL url = query.buildUrl();
+		String goodUrl = "https://api.stackexchange.com/2.2/search?site=stackoverflow&pagesize=5&order=asc&sortrelevance&tagged=java&intitle=Hello%20World";
+		System.out.println("is URL correct? " + goodUrl.equals(url.toString()));
+	}
+	
+	
+	
+	
+	
+	
+	
+	public boolean isResultValid(List<QueryResultBean> results) {
+		if (results == null) { return false; }
+		
+		for (QueryResultBean result : results) {
+			if (result.getTitle() == null) { return false; }
+			if (result.getCreation_date() == 0) { return false; }
+			if (result.getLink() == null) { return false; }
+			
+			OwnerData owner = result.getOwner();
+			if (owner == null) { return false; }
+			if (owner.getDisplay_name() == null) { return false; }
+			if (owner.getUser_id() == 0) { return false; }
+		}
+		
+		return true;
+	}
+}

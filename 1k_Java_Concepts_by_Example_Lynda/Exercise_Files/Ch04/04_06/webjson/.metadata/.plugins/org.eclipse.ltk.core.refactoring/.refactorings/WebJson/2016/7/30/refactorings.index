@@ -1,0 +1,8 @@
+1469058248213	Rename type 'StackConnection'
+1469058289003	Rename local variable 'connection'
+1469122792147	Rename type 'JsonpJsonReader'
+1469123015473	Delete element
+1469123019317	Delete element
+1469123779975	Extract Class...
+1469130087164	Move file
+1469130178330	Extract interface 'IStackJsonParser'
