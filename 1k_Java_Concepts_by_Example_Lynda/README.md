@@ -19,3 +19,5 @@ If you have errors corresponding to "Java build path problems" in your project, 
 5) Choose Workplace default JRE and click the Finish button, followed by the OK button.
 
 If you are using a version of Java older than 1.8, you might also have to adjust the Compiler compliance levels from the menu item Project > Properties > Java Compiler, so they match the version of Java you are using.
+
+#####Command-Line App for Searching Text Files
