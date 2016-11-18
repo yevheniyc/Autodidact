@@ -29,6 +29,8 @@ public class FileSearchApp {
 		}
 	}
 	
+	
+	
 	public void walkDirectory(String path) {
 		System.out.println("walkDirectory: " + path);
 		searchFile(null);
