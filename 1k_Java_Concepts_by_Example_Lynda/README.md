@@ -20,6 +20,25 @@ If you have errors corresponding to "Java build path problems" in your project, 
 
 If you are using a version of Java older than 1.8, you might also have to adjust the Compiler compliance levels from the menu item Project > Properties > Java Compiler, so they match the version of Java you are using.
 
+Eclipse Preferences:
+- Go to Window -> Properties -> General -> Appearance:
+    - Colors and Themes - choose your theme
+    - Choose Dark appearance
+    - Golors and Fonts -> Git -> Change color for uncommited changes (this will fix the dark-on-dark bug in the Project Explorer)
+- Go to Window -> Properties -> Java -> Syntax Highliting -> Comments -> light grey
+
+Another gnarly setup to add transperancy to Eclipse or any other window in Ubuntu (i.e. VS Code, Sublime, etc.):
+1. Download/Install **CompizConfig**
+```bash
+$ sudo apt-get install compizconfig-settings-manager compiz-plugins-extra
+```
+2. Open and enable **Opacity**
+- Open CompizConfig in Ubuntu
+- Scroll to Accessibility
+- Check Opacity, Brightness and Saturation option
+
+3. Press **Alt** + **+/-** to configure opacity on any window!
+
 ***
 
 To start a project from scratch:
@@ -51,10 +70,10 @@ public class FileSearchApp {
 To run the command-line program follow the steps:
 
 ```bash
-cd ~/src        # the root of the application
-javac com/example/filesearch/FileSearchApp.java  # compile the class
-ls com/example/filesearch/FileSearchApp.class    # compiled files
-java com.example.filesearch.FileSearchApp one two three # exacute *.class
+$ cd ~/src        # the root of the application
+$ javac com/example/filesearch/FileSearchApp.java  # compile the class
+$ ls com/example/filesearch/FileSearchApp.class    # compiled files
+$ java com.example.filesearch.FileSearchApp one two three # exacute *.class
 # Output:
     # one
     # two
@@ -144,3 +163,230 @@ public class FileSearchApp {
 
 }
 ```
+
+The next step is to create a **walkDirectory** method. Below are three different implementations depending on the Java version used (Java6 == File Class; Java7 == NIO Classes;Java8 == Streams).
+
+1. For Java6, use File(path) to specify directory and .listFiles() to list all the files
+```java
+public void walkDirectoryJava6(String path) throws IOException {
+    File dir = new File(path);
+    File[] files = dir.listFiles(); // list all of the files in the current dir
+    // loop through the files, if another dir -> recursive, otherwise, process the file
+    for (File file : files) {
+        if (file.isDirectory()) {
+            walkDirectoryJava6(file.getAbsolutePath());
+        } else {
+            processFile(file);
+        }
+    }
+}
+```
+A few interesting point for the Java6 implementation:
+-We're passing a string instead of a file as a parameter because we got a string as a command line argument telling us which directory to walk. It's better to encapsulate all the file handling logic in this method instead of forcing the main method to figure out how to convert a string into a file. This will also make it easier to substitute this method with the other methods we're going to write for Java 7 and Java 8, as we'll see in a minute.
+- The list files method lists both files and subdirectories that exist under a given directory. It doesn't list all the files in the subdirectories for us, so we need to process the subdirectories manually.
+- When we do encounter a subdirectory reference we can make a recursive call to check the subdirectories as we do here. 
+- When we encounter a file reference we pass it to the process file method, and this method will do something to the file. It will be responsible for searching the file and possibly adding it to the zip file. We keep it separate so it's easily reusable, and so each method in this class has a distinct responsibility. The Walk Directory method walks directories. The Process File method processes files.
+
+2. For Java7, use the new NIO files class that has built-in functionality for copying files, processing files, etc.
+```java
+public void walkDirectoryJava7(String path) throws IOException {
+    Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                throws IOException {
+            processFile(file.toFile());
+            return FileVisitResult.CONTINUE;
+        }
+    });
+}
+```
+A few interesting points:
+- The ```Files.walkFileTree``` method has a checked exception, so we need to either use a try-catch block inside the method, or throw an IOException in the method signature. It's almost always better to throw the exception in this case, and the calling method (the one that gave us the path in the first place) can deal with it. We throw the exception here in the method signature.
+- ```Files.walkFileTree``` parameters:
+    - The first parameter of the walkFileTree method takes a path object, not a file. The Path class was new in Java 7. Since we are getting the original path as a string when this method is called, we can easily convert the string to a path using the call to ```Paths.get```. 
+    - The second parameter fo the walkFileTree method is a File Visitor object (new in Java7). We can either create a brand new implementation of FileVisotr, or implement SimpleFileVisitor and override whatever methods we need. In this case, the only method that is important is the visitFile method. It is called once for each file in the directory being walked. So every time we visit a file, we can call processFile, and then we need to return FileVisitResult.CONTINUE. 
+- Finally, note that the walkFileTree method automatically processes all files in the directory and all subdirectories by default.This is good if you want to process subdirectories like we wanna do here, because there's less code to write. However, if you do not want to process subdirectories, watch out.
+
+3. For Java8, everything becomes easier by using Streams and Lambda functions.
+- **Streams**: one byte at a time. Good for binary data.
+- **Readers/Writers**: one character at a time. Good for text data.
+- **Anything Buffered**: many bytes/characters at a time. Good almost all the time.
+```java
+// 3. Using Streams and Lambda functions
+public void walkDirectoryJava8(String path) throws IOException {
+    Files.walk(Paths.get(path))
+        .forEach(f -> processFile(f.toFile()));
+}
+```
+- We can shorten everything to a single line of code like this. Java 8 introduced the Files.walk method, which returns a stream. We can then operate on each item in the stream with the forEach method.
+
+**Next** step is to focus on the ```processFile()``` method
+
+1. Structure processFile method:
+
+```java
+public void processFile(File file) throws FileNotFoundException {
+    // this try/catch will ensure that if one of the files is broken,
+    // the code will continue processing the rest of the files
+    try {
+        // search the file for regex
+        if (searchFile(file)) {
+            // if regex found, add to zip
+            addFileToZip(file); 	
+        }
+    } catch (IOException|UncheckedIOException e) {
+        // e.printStackTrace();
+        System.out.println("Error processing file: " +
+                file + ": " + e);
+    }
+        
+}
+```
+2. Open and Search the file
+- Java 6 - FileScanner
+- Java 7 - Files class
+- Java 8 using streams
+
+
+FileScanner:
+
+```java
+// searchFile for Java 5 & 6
+public boolean searchFileJava6(File file) throws FileNotFoundException {
+    boolean found = false;
+    Scanner scanner = new Scanner(file, "UTF-8");
+    while (scanner.hasNextLine()) {
+        found = searchText(scanner.nextLine());
+        if (found) { break; }
+    }
+    scanner.close();
+    return found;
+}
+```
+- The steps involved in this method are first, you create a scanner object.
+- The scanner reads a given file using UTF-8 encoding. Obviously there's no guarantee that the file actually is UTF-8 encoded, but there's no guarantee it's even a text file. UTF-8 is just our best guess here. 
+- Next, using the scanner, we read each line of the file. 
+- Then, we send each line to a searchText method to see if it has the regular expression we're searching for. We can break out of the loop the first time we find a match. 
+- Lastly, close the scanner and return the boolean result of our search.
+- There's also a FileNotFoundException we need to worry about here. That's because it's a checked exception that might be thrown when we create the scanner. We have a choice to catch it or throw it. That's a tough decision because on the one hand this is a self-contained process and we know where the file came from, so we can probably safely ignore the exception. On the other hand, it's usually a bad idea to discard exceptions because we think we don't need them. So I'm gonna go ahead and throw the exception here, because this is something that other implementations of searchFile will need to deal with too. And that way we can handle the exception at a higher level of processing.
+
+Files Class:
+
+```java
+// searchFile for Java 7
+public boolean searchFileJava7(File file) throws IOException {
+    List<String> lines = Files.readAllLines(file.toPath(),
+            StandardCharsets.UTF_8);
+    for (String line : lines) {
+        if (searchText(line)) {
+            return true;
+        }
+    }
+    return false;
+}
+```
+- Java 7 gave us a convenience method in the files class called ```readAllLines```.
+- This reads the entire file into memory as a list of strings, so it's really not a good technique for large files.
+- The readAllFiles method can throw an IOException, so we let the caller deal with it
+
+Streams:
+
+```java
+
+```
+-  With Java 8 we can use streams, and this gives us the option to perform the entire operation using a single line. A few interesting points about this technique: 
+    - First the Files.lines method actually reads the file using UTF-8 by default, so we can remove the StandardCharsets parameter if we want to. I left it there just to make the code match the other methods a little better and to show that you can change the character set if you want. After that, the anyMatch method in the Java streams class is what's referred to as a **short-circuiting** method. In other words, it will stop and return true automatically the first time any of the elements of the stream return true for the given condition. Before we had to manually break out of a loop when we found a true condition. Methods like anyMatch have this logic built in.
+    - The Files.lines method throws an IOException, just like the previous two methods did, so, just like the methods we wrote before, we'll have to throw an IOException and let the caller of the method deal with that problem.
+
+Stack trace so far:
+```bash
+# first we encounter . and a few other dirs
+Error processing file: .: java.io.UncheckedIOException: java.io.IOException: Is a directory
+Error processing file: ./com: java.io.UncheckedIOException: java.io.IOException: Is a directory
+Error processing file: ./com/example: java.io.UncheckedIOException: java.io.IOException: Is a directory
+Error processing file: ./com/example/filesearch: java.io.UncheckedIOException: java.io.IOException: Is a directory
+# now we get binary files with MalformedInputException
+Error processing file: ./com/example/filesearch/FileSearchApp$1.class: java.io.UncheckedIOException: java.nio.charset.MalformedInputException: Input length = 1
+Error processing file: ./com/example/filesearch/FileSearchApp.class: java.io.UncheckedIOException: java.nio.charset.MalformedInputException: Input length = 1
+package com.example.filesearch;
+# here is the java file ready to be zipped
+addFileToZip: ./com/example/filesearch/FileSearchApp.java
+```
+
+**Next** step is to implement searchText() method
+1. Simplified version: finding a substring in a string
+
+```java
+private boolean searchText(String text) {
+    // below code searches for substrings in a text, and not regex
+    // because the regex arg is option, let's code defensively
+    return (this.getRegex() == null) ? true :
+        text.toLowerCase().contains(this.getRegex().toLowerCase());
+}
+```
+
+2. Using regular expressions:
+- a language for describing a string by describing a text search with certain qualities:
+    - win.ini => ^win\.ini$  - start and end with the string
+    - w*.*    => ^w.*\.      - start with a ```w``` + ```.```(any number of times ```*```), followed by a ```.```, and anything else (absence of the ```?```)
+    - ???.*   => ^[\w]{3}\.  - start with any 3 alphanumeric, followed by a ```.```, and anything else (absence of the ```?```)
+
+```java
+private boolean searchText(String text) {
+    // below code searches for regex in the text
+    // because the regex arg is optional, let's code defensively
+    return (this.getRegex() == null) ? true :
+        text.matches(this.getRegex());
+}
+```
+-  A regular expression pattern is always compiled before it's applied to a string for the purpose of matching text. It takes very little time to compile a pattern but it does take a finite amount of work. So if you're gonna use the same regular expression over and over again in your code, it's best to pre-compile it first. In Java there's a pattern class we can use for just this purpose. Using the pattern class, we can pre-complile our regular expression once and then use it as many times as we want to in our program without incurring the penalty of compiling it over and over. The easiest way to do this here is to compile the expression at the same time we get it from the command line. So let's add a pattern variable to the class and then compile the pattern in the set regex method.
+
+```java
+import java.utils.regex;
+//...
+Pattern pattern;
+//...
+public void setRegex(String regex) {
+    this.regex = regex;
+    // precompiling regex, if used a lot
+    this.pattern = Pattern.compile(regex);
+}
+//...
+private boolean searchText(String text) {
+    // below code searches for regex in the text
+    // because the regex arg is option, let's code defensively
+    return (this.getRegex() == null) ? true :
+        // we are suing the matches method of the matcher class
+        this.pattern.matcher(text).matches();
+}
+```
+
+Note: something to be awere of: 
+- the **matches** methods for both regex and precompiled regex look for the entire text mathing
+- the **find** method looks for regex anywhere in the string
+
+```java
+Pattern.compile("x").matcher("example").matches() = false
+Pattern.compile("x").matcher("exaple").find() = true
+
+// analyze the followings
+"example".matches("x");                             // False
+Pattern.compile("x").matcher("example").matches();  // False
+Pattern.compile("^x$").matcher("example").find();   // False
+
+Pattern.compile("x").matcher("example").find();     // True
+```
+
+**Next** zip-up the matching files that we found (the files that contained regex) with addFileToZip()
+- Arrays and Collections
+```java
+String[] letters = new String[3];
+letters[0] = "a";
+letters[1] = "b";
+letters[2] = "c";
+
+or 
+
+String[] letters = new String[] {"a", "b", "c"};
+```
+
