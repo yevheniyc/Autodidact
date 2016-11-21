@@ -378,8 +378,14 @@ Pattern.compile("x").matcher("example").find();     // True
 ```
 
 **Next** zip-up the matching files that we found (the files that contained regex) with addFileToZip()
-- Arrays and Collections
+- Arrays:
+    - some limitations of arrays: to extend arrays once created requires creating a copy of the initial array
+- Collections:
+    - Sort
+    - Search
+    - Convert to streams (Java 8)
 ```java
+// String arrays
 String[] letters = new String[3];
 letters[0] = "a";
 letters[1] = "b";
@@ -390,3 +396,429 @@ or
 String[] letters = new String[] {"a", "b", "c"};
 ```
 
+- use array list collection for automatically resizing listss
+```java
+// Array List - resizing automatically
+
+// the only objects put in the list will be strings: Java Generics:
+    // tell the compiler to catch errors as you go in case you added
+    // the wrong type of object into collection
+List<String> letters = new ArrayList<String>();
+
+// or
+
+// we can use a Non-generic approach, telling Java compiler to use any
+// object in the list
+List letters = new ArrayList();
+
+letters.add("a");
+letters.add("b");
+letters.add("c");
+
+letters.remove("b");
+```
+
+- we can also cast collect's array list items back into array, if needed:
+```java
+// Generics - the list is strongly types
+List<String> letters = new ArrayList<String>();
+String[] letterArray = letters.toArray(new String[0]);
+
+// No Generics - the list is not strongly typed
+List letters = new ArrayList();
+String[] letterArray = (String[])letters.toArray(new String[0]);
+```
+
+- or we can convert generic arrays into Collections
+```java
+String[] letters = new String[] {"a", "b", "c"};
+List<String> letterList = Arrays.asList(letters);
+```
+
+**Next** creating a ZIP file:
+1. Create a ZipOutputStream
+2. Add files to the ZipOutputStream
+3. Close the ZipOutputStream
+
+- Add all matched files to array list zipFiles
+
+```java
+public void addFileToZip(File file) {
+    if (getZipFileName() != null) {
+        zipFiles.add(file);
+    }
+}
+```
+
+- Zip all of the files at once
+
+```java
+// utility method for getting relative filenames
+public String getRelativeFilename(File file, File baseDir) {
+    String fileName = file.getAbsolutePath().substring(
+            baseDir.getAbsolutePath().length());
+    // IMPORTANT: the ZipEntry file name must us "/", not "\".
+    fileName = fileName.replace("\\", "/");
+    // fileName cannot start with /
+    while (fileName.startsWith("/")) {
+        fileName = fileName.substring(1);
+    }
+    return fileName;
+}
+```
+
+```java
+// Java 6
+public void zipFilesJava6() throws IOException {
+    ZipOutputStream out = null;
+    // if error happens within the block, the ZipOutputStream will be
+    // properly closed!
+    try {
+        out = new ZipOutputStream(new FileOutputStream(getZipFileName()));
+        File baseDir = new File(getPath());
+        
+        for (File file : zipFiles) {
+            // fileName must be a relative path, not an absolute one.
+            String fileName = getRelativeFilename(file, baseDir);
+            // adding zip entry to the output stream
+            ZipEntry zipEntry = new ZipEntry(fileName);
+            zipEntry.setTime(file.lastModified());
+            out.putNextEntry(zipEntry);
+            // write all of the bytes in the file to the ZipOutputStream,
+            // using buffer as an intermediary
+            int bufferSize = 2048;
+            byte[] buffer = new byte[bufferSize];
+            int len = 0;
+            BufferedInputStream in = new BufferedInputStream(
+                    new FileInputStream(file), bufferSize);
+            while((len = in.read(buffer, 0, bufferSize)) != -1) {
+                out.write(buffer, 0, len);
+            }
+            in.close(); 		// close the buffer
+            out.closeEntry();	// close the output stream
+        }
+    } finally {
+        out.close();
+    }
+}
+```
+
+```java
+// Java 7
+public void zipFilesJava7() throws IOException {
+    // Java 7 - try with resources block, which allows us to skip finally block
+    try (ZipOutputStream out =
+            new ZipOutputStream(new FileOutputStream(getZipFileName()))) {
+        File baseDir = new File(getPath());
+        
+        for (File file : zipFiles) {
+            // fileName must be a relative path, not an absolute one.
+            String fileName = getRelativeFilename(file, baseDir);
+            
+            ZipEntry zipEntry = new ZipEntry(fileName);
+            zipEntry.setTime(file.lastModified());
+            out.putNextEntry(zipEntry);
+            // no need for buffers as in Java 6 example
+            Files.copy(file.toPath(), out);
+            
+            out.closeEntry();
+        }
+    }
+}
+```
+
+```bash
+# all files that contain work "file"
+$ java com.example.filesearch.FileSearchApp ./ .*file.* ../test.zip
+Error processing file: .: java.io.UncheckedIOException: java.io.IOException: Is a directory
+Error processing file: ./com: java.io.UncheckedIOException: java.io.IOException: Is a directory
+Error processing file: ./com/example: java.io.UncheckedIOException: java.io.IOException: Is a directory
+Error processing file: ./com/example/filesearch: java.io.UncheckedIOException: java.io.IOException: Is a directory
+Error processing file: ./com/example/filesearch/FileSearchApp$1.class: java.io.UncheckedIOException: java.nio.charset.MalformedInputException: Input length = 1
+Error processing file: ./com/example/filesearch/FileSearchApp.class: java.io.UncheckedIOException: java.nio.charset.MalformedInputException: Input length = 1
+
+$ unzip test.zip -d test
+$ ls test
+# will contain the file(s) and the directory tree
+```
+
+######Final result of section 1
+- look for all files that contains a regex and add them to the zip file
+
+```java
+package com.example.filesearch;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+public class FileSearchApp {
+	String path;
+	String regex;
+	String zipFileName;
+	Pattern pattern; // precompiling regex
+	List<File> zipFiles = new ArrayList<File>();
+	
+	public static void main(String[] args) {
+		// 1. Create an instance of this class
+		FileSearchApp app = new FileSearchApp();
+		// 2. Process command-line arguments, ensuring
+		// that no more than 3 is provided, else ignore
+		switch(Math.min(args.length, 3)) {
+		case 0: // in the case we get 0 args
+			System.out.println("USAGE: FileSearchApp path [regex] [zipfile]");
+			return;
+		case 3: app.setZipFileName(args[2]); // 3rd arg is the zip file name
+		case 2: app.setRegex(args[1]);       // 2nd is the regex
+		case 1: app.setPath(args[0]); 		 // 1st is the path
+		}
+		
+		// a placeholder for the walkDirectory method
+		try {
+			app.walkDirectory(app.getPath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void walkDirectory(String path) throws IOException {
+		walkDirectoryJava8(path);
+		zipFilesJava7();
+	}
+	
+	// depending on the Java version, different ways of walking are shown:
+	// 1. Using .listFiles()
+	public void walkDirectoryJava6(String path) throws IOException {
+		File dir = new File(path);
+		File[] files = dir.listFiles(); // list all of the files in the current dir
+		// loop through the files, if another dir -> recursive, otherwise, process
+		// the file
+		for (File file : files) {
+			if (file.isDirectory()) {
+				walkDirectoryJava6(file.getAbsolutePath());
+			} else {
+				processFile(file);
+			}
+		}
+	}
+	
+	// 2. Using Files.walkFileTree
+	public void walkDirectoryJava7(String path) throws IOException {
+		Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+					throws IOException {
+				processFile(file.toFile());
+				return FileVisitResult.CONTINUE;
+			}
+		});
+	}
+	
+	// 3. Using Streams and Lambda functions
+	public void walkDirectoryJava8(String path) throws IOException {
+		Files.walk(Paths.get(path))
+			.forEach(f -> {
+				try {
+					processFile(f.toFile());
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			});
+	}
+	
+	public void processFile(File file) throws FileNotFoundException {
+		// this try/catch will ensure that if one of the files is broken,
+	    // the code will continue processing the rest of the files
+		try {
+			// search the file for regex
+			if (searchFile(file)) {
+				// if regex found, add to zip
+				addFileToZip(file); 	
+			}
+		} catch (IOException|UncheckedIOException e) {
+			// e.printStackTrace();
+			System.out.println("Error processing file: " +
+					file + ": " + e);
+		}
+		 
+	}
+	
+	// an overall example of searchFile()
+	public boolean searchFile(File file) throws IOException {
+		return searchFileJava8(file);
+	}
+	
+	// searchFile for Java 5 & 6
+	public boolean searchFileJava6(File file) throws FileNotFoundException {
+		boolean found = false;
+		Scanner scanner = new Scanner(file, "UTF-8");
+		while (scanner.hasNextLine()) {
+			found = searchText(scanner.nextLine());
+			if (found) { break; }
+		}
+		scanner.close();
+		return found;
+	}
+	
+	// searchFile for Java 7
+	public boolean searchFileJava7(File file) throws IOException {
+		List<String> lines = Files.readAllLines(file.toPath(),
+				StandardCharsets.UTF_8);
+		for (String line : lines) {
+			if (searchText(line)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	// searchFile for Java 8
+	public boolean searchFileJava8(File file) throws IOException {
+		return Files.lines(file.toPath())
+				// returns true if any elements of the streaming condition return true
+				.anyMatch(t -> searchText(t));
+	}
+	
+	private boolean searchText(String text) {
+		// below code searches for regex in the text
+		// because the regex arg is option, let's code defensively
+		return (this.getRegex() == null) ? true :
+			// we are suing the matches method of the matcher class
+			this.pattern.matcher(text).matches();
+	}
+
+	public void addFileToZip(File file) {
+		if (getZipFileName() != null) {
+			zipFiles.add(file);
+		}
+	}
+	
+	public String getRelativeFilename(File file, File baseDir) {
+		String fileName = file.getAbsolutePath().substring(
+				baseDir.getAbsolutePath().length());
+		// IMPORTANT: the ZipEntry file name must us "/", not "\".
+		fileName = fileName.replace("\\", "/");
+		// fileName cannot start with /
+		while (fileName.startsWith("/")) {
+			fileName = fileName.substring(1);
+		}
+		return fileName;
+	}
+	
+	public void zipFilesJava6() throws IOException {
+	    ZipOutputStream out = null;
+	    // if error happens within the block, the ZipOutputStream will be
+	    // properly closed!
+	    try {
+	        out = new ZipOutputStream(new FileOutputStream(getZipFileName()));
+	        File baseDir = new File(getPath());
+	        
+	        for (File file : zipFiles) {
+	        	// fileName must be a relative path, not an absolute one.
+	        	String fileName = getRelativeFilename(file, baseDir);
+	        	// adding zip entry to the output stream
+	        	ZipEntry zipEntry = new ZipEntry(fileName);
+	        	zipEntry.setTime(file.lastModified());
+	        	out.putNextEntry(zipEntry);
+	        	// write all of the bytes in the file to the ZipOutputStream,
+	        	// using buffer as an intermediary
+	        	int bufferSize = 2048;
+	        	byte[] buffer = new byte[bufferSize];
+	        	int len = 0;
+	        	BufferedInputStream in = new BufferedInputStream(
+	        			new FileInputStream(file), bufferSize);
+	        	while((len = in.read(buffer, 0, bufferSize)) != -1) {
+	        		out.write(buffer, 0, len);
+	        	}
+	        	in.close(); 		// close the buffer
+	        	out.closeEntry();	// close the output stream
+	        }
+	    } finally {
+	    	out.close();
+	    }
+	}
+	
+	public void zipFilesJava7() throws IOException {
+		// Java 7 - try with resources block, which allows us to skip finally block
+		try (ZipOutputStream out =
+				new ZipOutputStream(new FileOutputStream(getZipFileName()))) {
+			File baseDir = new File(getPath());
+			
+			for (File file : zipFiles) {
+				// fileName must be a relative path, not an absolute one.
+				String fileName = getRelativeFilename(file, baseDir);
+				
+				ZipEntry zipEntry = new ZipEntry(fileName);
+				zipEntry.setTime(file.lastModified());
+				out.putNextEntry(zipEntry);
+				// no need for buffers as in Java 6 example
+				Files.copy(file.toPath(), out);
+				
+				out.closeEntry();
+			}
+		}
+	}
+	
+	public String getPath() {
+		return path;
+	}
+	
+	public void setPath(String path) {
+		this.path = path;
+	}
+	
+	public String getRegex() {
+		return regex;
+	}
+	
+	public void setRegex(String regex) {
+		this.regex = regex;
+		// precompiling regex, if used a lot
+		this.pattern = Pattern.compile(regex);
+	}
+	
+	public String getZipFileName() {
+		return zipFileName;
+	}
+	
+	public void setZipFileName(String zipFileName) {
+		this.zipFileName = zipFileName;
+	}
+}
+```
+
+***
+
+#####Create a Command-Line Application That Accesses a Database
+Goals for this section:
+- Build an app that connects to a relational database, and read some data from it. 
+- Touch on Java cryptography as it relates to encrypting and decrypting strings
+- Java logging of information and errors
+- How to package your finished application in a jar file
+
+Our sample app will be a commandline application, similar to the example in the previous section. However, in the previous section, we received runtime options as commandline parameters. In this example, the runtime options will be stored in a properties file. A standard Java properties file is structured very much like a Windows INI file.
+
+Properties File Structure
+```text
+# Watch out for spacing at the end!
+dbUser=jsmith
+dbPassword=pwd
+dbUrl = jdbc:derby:test.db;create=true
+```
