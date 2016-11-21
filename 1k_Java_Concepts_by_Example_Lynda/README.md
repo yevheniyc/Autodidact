@@ -822,3 +822,96 @@ dbUser=jsmith
 dbPassword=pwd
 dbUrl = jdbc:derby:test.db;create=true
 ```
+
+Write out properties file programmatically:
+
+```java
+package com.example.jdbc;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Properties;
+
+public class DatabaseTest {
+	// Generate Properties file programmatically
+	private String dbUrl;
+	private String dbUser;
+	private String dbPassword;
+	
+	public void writeProperties() throws IOException {
+		Properties prop = new Properties();
+		prop.setProperty("dbUrl", "localhost");
+		prop.setProperty("dbUser", "username");
+		prop.setProperty("dbPassword", "password");
+		
+		try (OutputStream out = new FileOutputStream("project.properties")) {
+			prop.store(out, "Database Properties File");
+		}
+	}
+
+}
+```
+
+Properties files main contains:
+- database connections specifics
+- colors and Fonts
+- often used for localicatin purposes (i.e. containing a button' text in various languages)
+
+In the readProperties method, we will use **public constant** variables for the db properties, so that we can reuse these properties within or outside the class. If the variable names inside the properties files aren't clear, use globals to de-obfuscate the meaning:
+
+```java
+String WINDOW_TITLE = "wndttl";
+```
+
+DatabaseTest.java - modified:
+
+```java
+public class DatabaseTest {
+	private static final String DB_PROPERTIES = "db.properties";
+	private static final String DB_USER = "dbUser";
+	private static final String DB_URL = "dbUrl";
+	private static final String DB_PASSWORD = "dbPassword";
+	private Properties globalProps;
+	
+	public void writeProperties() throws IOException {
+		// Generate Properties file programmatically
+		Properties prop = new Properties();
+		prop.setProperty(DB_URL, "localhost");
+		prop.setProperty(DB_USER, "username");
+		// be aware!
+		prop.setProperty(DB_PASSWORD, "password");
+		
+		try (OutputStream out = new FileOutputStream("project.properties")) {
+			prop.store(out, "Database Properties File");
+		}
+	}
+	
+	public void readProperties() throws IOException {
+		// get the db.properties file and read it and all its vars/properties
+        // as an input stream
+		try (InputStream in = new FileInputStream(DB_PROPERTIES)) {
+			globalProps = new Properties();
+			globalProps.load(in);
+		}
+	}
+}
+```
+
+**Next** Accessing Relational Databases using Java
+- Java Database Connectivity API - used for database Connectivity
+- Each database type has its own drive, so you need a specify JDBC driver
+- JDBC comes with the Apache Derby driver on Windows
+- JDBC drivers for MySQL, Oracle needs to be installed separately
+- The installation basically means - downlaod the jdbc driver .jar file and make sure it is on the local classpath.
+- At the end of this lecture, we will learn how to add the jdbc .jar file into my .jar file when distributing the application. This will give us a way to distribute our application with the jdbc driver .jar file already included.
+- Some vendors require their Licence file (which is also packaged into a separate .jar file) to be distributed with the jdbc driver .jar file
+
+Below is the usual workflow for database connection:
+1. Make sure you have a JDBC driver on your classpath
+2. Create or register an instance of the JDBC driver with the driver manager
+3. Connect to the database
+4. Use SQL querries to put data in or get data out
+5. Close database connection
+
+For the following example we will be using the Apache Derby driver
