@@ -148,7 +148,7 @@ babel index.js --out-file bundle.js
 
 **Hint**: Try to keep node_modules in a single place for projects
 
-4. Automate **httpster** starup
+4. Automate **httpster** startup
 ```json
 {
   "name": "react-essential",
@@ -170,3 +170,55 @@ babel index.js --out-file bundle.js
 ```
 
 Alright, now the transpiling process (converting HTML syntax into JSX) is happening serverside!
+
+5. Automating with **Webpack**
+- Is a module bundler that creates static files and automatates processes that need to happen before our app goes to production.
+- Webpack will bundle many **script.js** files into a single **bundle.js**, elimnating the need for multiple HTTP request
+
+In order to use **webpack**: 
+- Create a **webpack.config.js** file - which describes everything we want to do to our files to ready them for production
+```javascript
+// webpack.config.js
+var webpack = require("webpack");
+
+module.exports = {
+    // entry point == the file where it all begins
+    entry: "./src/index.js",
+    // specify the assets files and the bundled output location
+    output: {
+        path: "dist/assets",    // where all of the unbundled asset files reside
+        filename: "bundle.js",  // the output filename
+        publicPath: "assets"    // folder name where all of the bundled files will reside
+    },
+    // another important feature when working with webpack is to setup a devServer, which
+    // works similary to httpster, however, it allows for hot reloads
+    devServer: {
+        inline: true,
+        contentBase: '/.dist', // where the files are located
+        port: 3000
+    },
+    module: {
+        // specify loaders - different tasks that we want webpack to perform
+        loaders: [
+            { // the first step of the task we are going to setup is the Babel loader
+                // 1. Look at all of the files that have .js extension
+                test: /\.js$/,              
+                // 2. Exclude anything that we don't want Babel to touch
+                exclude: /(node_modules)/,
+                // 3. The name of the loader to use
+                loader: ['babel-loader'],
+                // 4. Just like in .babelrc file, specify presets we will use
+                query: {
+                    presets: ["latest", "react", "stage-0"]
+                }
+            }
+        ]
+    }
+}
+```
+- We will need to install a few npm packages
+```bash
+# install all of the packages as dev dependecies (--save-dev)
+npm install webpack babel-loader webpack-dev-server --save-dev
+```
+
