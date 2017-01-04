@@ -4,7 +4,7 @@
   "description": "A project focusing on React and related tools",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "~/node_modules/httpster/bin/httpster -d ./dist -p 3000"
   },
   "author": "Yev Chu",
   "license": "MIT",
