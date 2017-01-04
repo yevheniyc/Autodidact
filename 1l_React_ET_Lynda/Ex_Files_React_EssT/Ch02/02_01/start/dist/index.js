@@ -2,21 +2,12 @@
 const {createElement} = React
 const {render} = ReactDOM
 
-const style = {
-	backgroundColor: 'orange',
-	color: 'white',
-	fontFamily: 'verdana'
-}
-
-// 1. Create elements
-const title = createElement(
-	'h1',
-	{id: 'title', className: 'header', style: style},
-	'Hello World'
-)
-
-// 2. Render elements in the dom
+// Use JSX - XML-style rendering
 render(
-	title,
+	<h1 id='title'
+		className='header'
+		style={{backgroundColor: 'orange', color: 'white', fontFamily: 'verdana'}}>
+	Hellow World
+	</h1>,
 	document.getElementById('react-container')
 )
