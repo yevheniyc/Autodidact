@@ -1,0 +1,113 @@
+package com.example.webjson;
+
+import static org.junit.Assert.*;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+
+import org.junit.Test;
+
+import com.example.webjson.StackQuery.SortBy;
+import com.example.webjson.StackQuery.SortOrder;
+
+public class ApiTest {
+
+	
+	public static void main(String[] args) {
+		ApiTest test = new ApiTest();
+		try {
+			test.testBasicConnection();
+			test.testUrl();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testBasicConnection() throws IOException {
+		StackQuery query = new StackQuery();
+		
+		query.setSearchTerm("Hello World");
+		query.setSortBy(SortBy.RELEVANCE);
+		query.setSortOrder(SortOrder.ASCENDING);
+		
+		List<QueryResultBean> result = query.execute();
+		//System.out.println("result = " + isResultValid(result) );
+		assertTrue(isResultValid(result));
+	}
+	
+	
+	@Test
+	public void testUrl() throws MalformedURLException {
+		StackQuery query = new StackQuery();
+		
+		query.setSearchTerm("Hello World");
+		query.setSortBy(SortBy.RELEVANCE);
+		query.setSortOrder(SortOrder.ASCENDING);
+		
+		URL url = query.buildUrl();
+		String goodUrl = "https://api.stackexchange.com/2.2/search?site=stackoverflow&pagesize=5&order=asc&sortrelevance&tagged=java&intitle=Hello%20World";
+		//System.out.println("is URL correct? " + goodUrl.equals(url.toString()));
+		assertEquals(goodUrl, url.toString());
+	}
+	
+	
+	
+	@Test
+	public void jsonpParserTest() throws IOException {
+		IStackJsonParser parser = new JsonpJsonParser();
+		try (FileInputStream in = new FileInputStream("JsonForTesting.js")) {
+			List<QueryResultBean> results = parser.parseJson(in);
+			checkTestParse(results);
+		}
+	}
+	
+	
+	@Test
+	public void jacksonParserTest() throws IOException {
+		IStackJsonParser parser = new JacksonJsonParser();
+		try (FileInputStream in = new FileInputStream("JsonForTesting.js")) {
+			List<QueryResultBean> results = parser.parseJson(in);
+			checkTestParse(results);
+		}
+	}
+	
+	
+	public void checkTestParse(List<QueryResultBean> results) {
+		assertNotNull(results);
+		assertEquals(5, results.size());
+		
+		QueryResultBean result1 = results.get(0);
+		assertEquals("java", result1.getTags()[0]);
+		// etc...
+	}
+	
+	
+	
+	public boolean isResultValid(List<QueryResultBean> results) {
+		//if (results == null) { return false; }
+		assertNotNull(results);
+		
+		for (QueryResultBean result : results) {
+			//if (result.getTitle() == null) { return false; }
+			//if (result.getCreation_date() == 0) { return false; }
+			//if (result.getLink() == null) { return false; }
+			assertNotNull(result.getTitle());
+			assertNotEquals(0, result.getCreation_date());
+			assertNotNull(result.getLink());
+			
+			OwnerData owner = result.getOwner();
+			//if (owner == null) { return false; }
+			//if (owner.getDisplay_name() == null) { return false; }
+			//if (owner.getUser_id() == 0) { return false; }
+			assertNotNull(owner);
+			//assertNotNull(owner.getDisplay_name());
+			//assertNotEquals(0, owner.getUser_id());
+		}
+		
+		return true;
+	}
+}

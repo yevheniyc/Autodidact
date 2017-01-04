@@ -1,0 +1,83 @@
+package com.example.swing;
+
+import java.awt.Component;
+
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+
+public class SwingTest {
+	private static final String IMAGE_FILENAME = "testimage.jpg";
+
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater( () -> {
+			SwingTest test = new SwingTest();
+			test.createSimpleSwingWindow();
+		});
+	}
+	
+	
+	public JFrame createSimpleSwingWindow() {
+		JFrame frame = new JFrame("Swing Test");
+		frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JLabel label = new JLabel("This is our test Swing application");
+		JButton button = new JButton("Click Me!");
+		
+		frame.add(label);
+		frame.add(button);
+		
+		frame.pack();
+		frame.setVisible(true);
+		return frame;
+	}
+	
+	
+	
+	public JFrame createSwingWindow() {
+		JFrame frame = new JFrame("Test Swing Application");
+		frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JLabel label = new JLabel("This is our test Swing application");
+		JButton button = new JButton("Click Me!");
+		
+		ImageIcon icon = new ImageIcon(IMAGE_FILENAME);
+		JLabel iconLabel = new JLabel(icon);
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		JLabel pctSizeLabel = new JLabel("Percent Size: ");
+		JTextField pctSizeField = new JTextField();
+		JLabel rotationLabel = new JLabel("Degree Rotation: ");
+		JTextField rotationField = new JTextField();
+		
+		panel.add(pctSizeLabel);
+		panel.add(pctSizeField);
+		panel.add(rotationLabel);
+		panel.add(rotationField);
+		
+		frame.add(label);
+		frame.add(iconLabel);
+		frame.add(panel);
+		frame.add(button);
+		
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		button.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		frame.pack();
+		frame.setVisible(true);
+		return frame;
+	}
+	
+	
+	
+}
