@@ -636,3 +636,99 @@ export const SkiDayCount = React.createClass({
 	}
 })
 ```
+
+4. ES6 (ECMAScript 6) describes how JS should be implemented by browsers. One feature of ES6 that is often used with React is **class syntax**. React has a base class called **React.Component**, and we then extend this class to create our own components.
+
+- Let's refractor our SkiDayCount components as ES6 class
+```javascript
+import {Component} from 'react' 			// import specific components
+import '../stylesheets/ui.scss'
+
+export class SkiDayCount extends Component { // slightly different syntax
+	percentToDecimal(decimal) {
+		return ((decimal * 100) + '%')
+	} 										// remove comas from methods
+	calcGoalProgress(total, goal) {
+		return this.percentToDecimal(total/goal)
+	}
+	render() {
+		return (
+			<div className="ski-day-count">
+				<div className="total-days">
+					<span>{this.props.total}</span>
+					<span>days</span>
+				</div>
+				<div className="powder-days">
+					<span>{this.props.powder}</span>
+					<span>days</span>
+				</div>
+				<div className="backcountry-days">
+					<span>{this.props.backcountry}</span>
+					<span>days</span>
+				</div>
+				<div>
+					<span>
+						{this.calcGoalProgress(
+							this.props.total,
+							this.props.goal
+						)}
+					</span>
+				</div>
+			</div>
+		)
+	}
+}
+```
+
+5. An alternative to creating components with **createClass** and **ES6 class** is by a function.
+
+**Stateless functional components**:
+- are functions that take in property information and return JSX elements.
+- can't access **this**, so properties are passed directly into the function
+- local methods must be removed and put into their own functions:
+```javascript
+const MyComponent = (props) => (
+	<div>{props.title}</div>
+)
+```
+- Stateless functional components is another great approach and might have speed advantages over **React.Components**
+```javascript
+// SkiDayCount.js
+
+// 1. Remove React.Components
+// 2. Remove class, render, this syntax
+import '../stylesheets/ui.scss'
+
+const percentToDecimal = (decimal) => {
+	return ((decimal * 100) + '%')
+}
+
+const calcGoalProgress = (total, goal) => {
+	return percentToDecimal(total/goal)
+}
+
+export const SkiDayCount = ({total, powder, backcountry, goal}) => (
+	<div className="ski-day-count">
+		<div className="total-days">
+			<span>{total}</span>
+			<span>days</span>
+		</div>
+		<div className="powder-days">
+			<span>{powder}</span>
+			<span>days</span>
+		</div>
+		<div className="backcountry-days">
+			<span>{backcountry}</span>
+			<span>days</span>
+		</div>
+		<div>
+			<span>
+				{calcGoalProgress(
+					total, 
+					goal
+				)}
+			</span>
+		</div>
+	</div>
+)
+```
