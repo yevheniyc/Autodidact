@@ -13,7 +13,7 @@ module.exports = {
     // works similary to httpster, however, it allows for hot reloads
     devServer: {
         inline: true,
-        contentBase: '/.dist', // where the files are located
+        contentBase: './dist', // where the files are located
         port: 3000
     },
     module: {

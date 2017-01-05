@@ -186,7 +186,7 @@ module.exports = {
     entry: "./src/index.js",
     // specify the assets files and the bundled output location
     output: {
-        path: "dist/assets",    // where all of the unbundled asset files reside
+        path: "dist/assets",    // path where all of the bundled assets files will reside
         filename: "bundle.js",  // the output filename
         publicPath: "assets"    // folder name where all of the bundled files will reside
     },
@@ -216,9 +216,42 @@ module.exports = {
     }
 }
 ```
+
 - We will need to install a few npm packages
 ```bash
+# if installing locally, make sure to install all of babel dependencies
+$ npm install --save-dev 
+					babel-preset-latest 
+					babel-preset-react 
+					babel-preset-stage-0
 # install all of the packages as dev dependecies (--save-dev)
-npm install webpack babel-loader webpack-dev-server --save-dev
+npm install --save-dev 
+					webpack 
+					babel-loader 
+					webpack-dev-server
+```
+
+- Make sure to src the correct folder in index.html
+```html
+<div id="react-container"></div>
+<script type="text/javascript" src="assets/bundle.js"></script>
+```
+
+- Change from **httpster** to **webpack-dev-server** in package.json, which allows for hot reloads
+```javascript
+// switch to webpack-dev-server
+"scripts": {
+	"start": "./node_modlues/.bin/webpack-dev-server"
+}
+```
+
+- Start **webpack**
+```bash
+./node_modules/.bin/webpack
+```
+
+- Start the sever
+```bash
+npm start # in package.json
 ```
 
