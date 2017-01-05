@@ -1,8 +1,10 @@
 import React from 'react'
 import { render } from 'react-dom'
+import {SkiDayCount} from './components/SkiDayCount'
+
+window.React = React // sometimes an error: React is not defined shows up, this will resolve it
 
 render(
-	<div>
-	</div>,
+	<SkiDayCount />,
 	document.getElementById('react-container')
 )
