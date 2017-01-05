@@ -415,3 +415,90 @@ npm install --save-dev
 				node-sass 	# don't forget this package
 ```
 
+***
+
+##### Chapeter 3 - Activity Counter app
+Before proceeding, let's make sure we do NOT push all of the npm modules. However, I don't want to install packages globally either. Webpack makes it easy for us, the **npm install --save-dev packages...** command will install all of the packages under **~/node_modules**. 
+
+- So let's execute the following: 
+```bash
+npm install --save-dev 
+				babel-cli 
+				json-loader 
+				babel-preset-latest 
+				babel-preset-react 
+				babel-preset-stage-0 
+				webpack 
+				babel-loader 
+				webpack-dev-server 
+				style-loader 
+				css-loader 
+				autoprefixer-loader 
+				sass-loader 
+				node-sass
+
+npm install --save 
+				react 
+				react-dom
+```
+
+- Let's adjust **package.json** to accomodate new loacation of the webpack-dev-server
+```javascript
+// ...
+"scripts": {
+    "start": "~/node_modules/.bin/webpack-dev-server"
+  }
+// ...
+```
+Proper import of the packages (i.e. react, react-dom, etc.) should be hanlded by **npm**
+
+- Let's make sure our **webpack.config.js** is consistant with the dir structure
+```javascript
+var webpack = require("webpack");
+
+module.exports = {
+	entry: "./src/index.js",
+	output: {
+		path: "dist/assets",
+		filename: "bundle.js",
+		publicPath: "assets"
+	},
+	devServer: {
+		inline: true,
+		contentBase: './dist',
+		port: 3000
+	},
+	module: {
+		loaders: [
+			{
+				test: /\.js$/,
+				exclude: /(node_modules)/,
+				loader: ["babel-loader"],
+				query: {
+					presets: ["latest", "stage-0", "react"]
+				}
+			},
+			{
+				test: /\.json$/,
+				exclude: /(node_modules)/,
+				loader: "json-loader"
+			},
+			{
+				test: /\.css$/,
+				loader: 'style-loader!css-loader!autoprefixer-loader'
+			},
+			{
+				test: /\.scss$/,
+				loader: 'style-loader!css-loader!autoprefixer-loader!sass-loader'
+			}
+		]
+	}
+}
+```
+
+- Now **cd** into the appropriate dir and start webpack
+```bash
+# same dir as package.json
+npm start
+```
+
