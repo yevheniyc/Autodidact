@@ -114,7 +114,7 @@ start/
 ```
 
 - Edit **.babelrc** file
-```json
+```javascript
 # add presets:
 # - supporting all latest ECMAScript features (15-16-17)
 # - including react and JSX
@@ -253,5 +253,165 @@ npm install --save-dev
 - Start the sever
 ```bash
 npm start # in package.json
+```
+
+6. Load React dependencies and JSON data with webpack
+- Install React dependencies and remove src import from index.html
+```bash
+npm install --save react react-dom
+```
+- You don't need the links in **index.html** anymore
+```html
+<body>
+    <div id="react-container"></div>
+    <script type="text/javascript" src="assets/bundle.js"></script>
+</body>
+```
+
+- Create **titles.json** file
+```javascript
+{
+    "hello": "Bonjour!",
+    "goodbye": "Au Revoir"
+}
+```
+
+- Create **lib.js** to work with JSON data
+```javascript
+import React from 'react'
+import text from './titles.json'
+
+export const hello = (
+    <h1 id='title'
+        className='header'
+        style={{backgroundColor: 'purple', color: 'yellow'}}>
+        {text.hello}
+    </h1>
+)
+
+export const goodbye = (
+    <h1 id='title'
+        className='header'
+        style={{backgroundColor: 'yellow', color: 'purple'}}>
+        {text.goodbye}
+    </h1>
+)
+```
+
+- Render the exported variables in index.js
+```javascript
+import React from 'react'
+import {render} from 'react-dom'
+import {hello, goodbye} from './lib'
+
+render(
+	<div>
+		{hello}
+		{goodbye}
+	</div>,
+	document.getElementById('react-container')
+)
+```
+
+- Change **webpack.config.js** to include **json-loader** module
+```javascript
+// ...
+{
+	test: /\.json$/,
+	exclude: /(node_modlues)/,
+	loader: "json-loader"
+}
+// ...
+```
+
+- Now install the **json-loader**
+```bash
+npm install --save-dev json-loader
+```
+
+**NOTE**: make sure to include previous downloads, if working from a local **node_modules**
+```bash
+# install babel dependencies
+npm install --save-dev babel-cli
+
+# if installing locally, make sure to install all of babel dependencies
+npm install --save-dev 
+					babel-preset-latest 
+					babel-preset-react 
+					babel-preset-stage-0
+
+# install all of the packages as dev dependecies (--save-dev)
+npm install --save-dev 
+					webpack 
+					babel-loader 
+					webpack-dev-server
+```
+
+7. Server CSS with **webpack**
+- Change styling info in **lib.js**
+```javascript
+// ...
+import './stylesheets/goodbye.scss'
+import './stylesheets/hello.css
+
+export const hello = (
+    <h1 id='title'
+        className='header'
+        style='style'>
+        {text.hello}
+    </h1>
+)
+
+export const goodbye = (
+    <h1 id='title'
+        className='header'
+        style='hello'>
+        {text.goodbye}
+    </h1>
+)
+```
+
+- Create a new folder: src/stylesheets
+```css
+/* hello.css */
+.hello {
+	background-color: indigo;
+	color: turquoise;
+}
+```
+```css
+/* goodbye.scss */
+$bg-color: turquoise;
+$text-color: indigo;
+
+.goodbye {
+	background-color: $bg-color;
+	color: $text-color;
+}
+```
+
+- Change a few things in **webpack.config.js**
+```javascript
+// Add a few more loaders to transpile css/scss into css
+// ...
+{
+	test: /\.css$/,
+	loader: 'style-loader!css-loader!autoprefixer-loader'
+},
+{
+	test: /\.scss$/,
+	loader: 'style-loader!css-loader!autoprefixer-loader!sass-loader'
+}
+// ...
+```
+
+- Install a few things to be able to bundle/transpile CSS/SCSS
+```bash
+npm install --save-dev
+				style-loader
+				css-loader
+				autoprefixer-loader
+				sass-loader
+				node-sass 	# don't forget this package
 ```
 
