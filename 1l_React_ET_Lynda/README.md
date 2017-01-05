@@ -440,6 +440,8 @@ npm install --save-dev
 npm install --save 
 				react 
 				react-dom
+
+npm install --save react-icons
 ```
 
 - Let's adjust **package.json** to accomodate new loacation of the webpack-dev-server
@@ -737,3 +739,103 @@ export const SkiDayCount = ({total, powder, backcountry, goal}) => (
 ```bash
 npm install --save react-icons
 ```
+***
+
+##### Chapter 5 - Props and State
+Start building multiple components in React
+
+1. Build a table
+- Let's pass **JSON** object into the table component (SkiDayList)
+```javascript
+import React from 'react'
+import { render } from 'react-dom'
+import { SkiDayList } from './components/SkiDayList'
+
+window.React = React
+
+render(
+	<SkiDayList days={
+		[
+			{
+				resort: "Squaw Valley",
+				date: new Date("1/2/2016"),
+				powder: true,
+				backcountry: false
+			},
+			{
+				resort: "Kirkwood",
+				date: new Date("3/28/2016"),
+				powder: false,
+				backcountry: false
+			},
+			{
+				resort: "Mt. Tallac",
+				date: new Date("4/2/2016"),
+				powder: false,
+				backcountry: true
+			}
+		]
+	}/>,
+	document.getElementById('react-container')
+)
+```
+
+- Next, let's build the actual **SkiDayList** component
+```javascript
+import Terrain from 'react-icons/lib/md/terrain'
+import SnowFlake from 'react-icons/lib/ti/weather-snow'
+import Calendar from 'react-icons/lib/fa/calendar'
+import {SkiDayRow} from './SkiDayRow'
+
+export const SkiDayList = ({days}) => (
+	// Loop through each item in days object and apply it to <SkiDayRow/>
+	// You can also use an optional spread operator {...day} to access each object
+		// days.map( (day, i) => <SkiDayRow key={i} {...day}}/> )
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Resort</th>
+                <th>Powder</th>
+                <th>Backcountry</th>
+            </tr>
+        </thead>
+        <tbody>
+            {days.map((day, i) =>
+                <SkiDayRow key={i}
+                            resort={day.resort}
+                            date={day.date}
+                            powder={day.powder}
+                            backcountry={day.backcountry}/>
+            )}
+        </tbody>
+    </table>
+)
+```
+
+- Next, build each row in the table **SkiDayRow** and pass variables
+```javascript
+import Terrain from 'react-icons/lib/md/terrain'
+import SnowFlake from 'react-icons/lib/ti/weather-snow'
+import Calendar from 'react-icons/lib/fa/calendar'
+
+export const SkiDayRow = ({resort, date, 
+                            powder, backcountry}) => (
+    <tr>
+        <td>
+            {date.getMonth() + 1}/{date.getDate()}/{date.getFullYear()}
+        </td>
+        <td>
+            {resort}
+        </td>
+        <td>
+            {(powder) ? <SnowFlake/> : null}
+        </td>
+        <td>
+            {(backcountry) ? <Terrain/> : null}
+        </td>
+    </tr>
+)
+```
+
+2. Set default props
