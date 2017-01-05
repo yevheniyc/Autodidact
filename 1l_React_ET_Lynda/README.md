@@ -502,3 +502,91 @@ module.exports = {
 npm start
 ```
 
+1. Build apps based on components with React
+- Create **SkiDayCount** component
+```bash
+mkdir src/components
+touch src/components/SkiDayCount.js
+```
+
+```javascript
+// src/components/SkiDayCount.js
+import React from 'react'
+import '../stylesheets/ui.scss'
+
+// export the class so that to make it visible for imports from other files
+export const SkiDayCount = React.createClass({
+    render() {
+        return (
+            <div className="ski-day-count">
+                <div className="total-days">
+                    <span>5 days</span>
+                </div>
+                <div className="powder-days">
+                    <span>2 days</span>
+                </div>
+                <div className="backcountry-days">
+                    <span>1 hicking day</span>
+                </div>
+            </div>
+        )
+    }
+})
+```
+
+- Now, let's add the new component to the dom
+```javascript
+// src/index.js
+import React from 'react'
+import { render } from 'react-dom'
+import {SkiDayCount} from './components/SkiDayCount'
+
+window.React = React // sometimes an error: React is not defined shows up, this will resolve it
+
+render(
+	<SkiDayCount />,
+	document.getElementById('react-container')
+)
+```
+
+2. With slight modification we can incorporate variables throught our classes/components
+```javascript
+// src/index.js
+import React from 'react'
+import { render } from 'react-dom'
+import { SkiDayCount } from './components/SkiDayCount'
+
+window.React = React
+
+render(
+	<SkiDayCount total={50}
+				 powder={20}
+				 backcountry={10}
+				 goal={100}/>,
+	document.getElementById('react-container')
+)
+```
+
+```javascript
+// src/components/SkiDayCount.js
+import React from 'react'
+import '../stylesheets/ui.scss'
+
+export const SkiDayCount = React.createClass({
+	render() {
+		return (
+			<div className="ski-day-count">
+				<div className="total-days">
+					<span>{this.props.total}</span>
+				</div>
+				<div className="powder-days">
+					<span>{this.props.powder}</span>
+				</div>
+				<div className="backcountry-days">
+					<span>{this.props.backcountry}</span>
+				</div>
+			</div>
+		)
+	}
+})
+```
