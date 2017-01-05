@@ -732,3 +732,8 @@ export const SkiDayCount = ({total, powder, backcountry, goal}) => (
 	</div>
 )
 ```
+
+6. Adding React-icons
+```bash
+npm install --save react-icons
+```
