@@ -590,3 +590,49 @@ export const SkiDayCount = React.createClass({
 	}
 })
 ```
+
+3. Adding methods to the components
+- Keeping most of the forementioned the same, add methods to classes/components
+```javascript
+// src/components/SkiDayCount.js
+import React from 'react'
+import '../stylesheets/ui.scss'
+
+export const SkiDayCount = React.createClass({
+	percentToDecimal(decimal) {
+		// decimal to percent
+		return ((decimal * 100) + '%')
+	},
+	calcGoalProgress(total, goal) {
+		// get the progress
+		return this.percentToDecimal(total/goal)
+	},
+	render() {
+		// call methods with {this.calcGoalProgress(params)}
+		return (
+			<div className="ski-day-count">
+				<div className="total-days">
+					<span>{this.props.total}</span>
+					<span>days</span>
+				</div>
+				<div className="powder-days">
+					<span>{this.props.powder}</span>
+					<span>days</span>
+				</div>
+				<div className="backcountry-days">
+					<span>{this.props.backcountry}</span>
+					<span>days</span>
+				</div>
+				<div>
+					<span>
+						{this.calcGoalProgress(
+							this.props.total,
+							this.props.goal
+						)}
+					</span>
+				</div>
+			</div>
+		)
+	}
+})
+```
