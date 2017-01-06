@@ -741,7 +741,7 @@ npm install --save react-icons
 ```
 ***
 
-##### Chapter 5 - Props and State
+##### Chapter 4 - Props and State
 Start building multiple components in React
 
 1. Build a table
