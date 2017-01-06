@@ -355,7 +355,7 @@ npm install --save-dev
 ```javascript
 // ...
 import './stylesheets/goodbye.scss'
-import './stylesheets/hello.css
+import './stylesheets/hello.css'
 
 export const hello = (
     <h1 id='title'
@@ -420,7 +420,7 @@ npm install --save-dev
 
 ***
 
-##### Chapeter 3 - Activity Counter app
+##### Chapter 3 - Activity Counter app
 Before proceeding, let's make sure we do NOT push all of the npm modules. However, I don't want to install packages globally either. Webpack makes it easy for us, the **npm install --save-dev packages...** command will install all of the packages under **~/node_modules**. 
 
 - So let's execute the following: 
