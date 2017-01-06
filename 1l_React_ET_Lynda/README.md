@@ -839,3 +839,65 @@ export const SkiDayRow = ({resort, date,
 ```
 
 2. Set default props
+- Using **createClass** approach
+```javascript
+export const SkiDayCount = createClass({
+	// use getDefaultProps method for providing default values
+	getDefaultProps() {
+		return {
+			total: 50,
+			powder: 50,
+			backcountry: 15,
+			goal: 100
+		}
+	},
+	percentToDecimal(decimal) {
+		return ((decimal * 100) + '%')
+	},
+	calcGoalProgress(total, goal) {
+		return this.percentToDecimal(total/goal)
+	},
+	render() {
+		return (
+			<div className="ski-day-count">
+			...
+			</div>
+		)
+	}
+})
+```
+
+- Using **ES6 class** approach
+```javascript
+export class SkiDayCount extends Component {
+  // same as before ...
+}
+
+// To ad default properties
+SkiDayCount.defaultProps = {
+  total: 50,
+  powder: 50,
+  backcountry: 15,
+  goal: 100
+}
+```
+
+- Using Stateless way
+```javascript
+// Either add defaults in the arguments with {total=70} or
+// with SkiDayCount.defaultProps method
+// ... imports
+// ... functions
+
+export const SkiDayCount = ({total=70, powder=20, 
+							backcountry=10, goal=100}) => (
+	// ...
+)
+
+SkiDayCount.defaultProps = {
+	total: 50,
+	powder: 50,
+	backcountry: 15,
+	goal: 100
+}
+```
