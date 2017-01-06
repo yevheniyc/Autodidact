@@ -928,4 +928,28 @@ SkiDayCount.propTypes = {
 ```
 
 4. Custom Validation
+- Let's build a custom validations for the incoming data
+```javascript
+// SkiDayList.js
+SkiDayList.PropTypes = {
+	days: PropTypes.array
+}
 
+// or
+
+SkiDayList.propTypes = {
+	days: function(props) {
+		if(!Array.isArray(props.days)) { // not array
+			return new Error(
+				"SkiDayList should be an array"
+			)
+		} else if(!props.days.length) { // empty array
+			return new Error(
+				"SkiDayList must have at least one record"
+			)
+		} else {						// everything is fine!
+			return null
+		}
+	}
+}
+```
