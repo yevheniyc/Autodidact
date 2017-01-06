@@ -1089,3 +1089,52 @@ export class App extends Component {
 
 ***
 
+##### Chapter 5 - React Router
+Display different screens using the **React Router**
+
+1. Incorporating the Router
+- Install **React-Router**
+```bash
+npm install -save react-router
+```
+
+- Incorporate the router
+```javascript
+//index.js
+import React from 'react'
+import { render } from 'react-dom'
+import './stylesheets/ui.scss'
+import { App } from './components/App'
+import {Whoops404} from './components/Whoops404'
+// Router - for all of the separate routes
+// hashHistory
+import {Router, Route, hashHistory} from 'react-router'
+
+window.React = React
+
+render(
+	// "/" -> will render our app's home page
+	// "*" -> any other url will be routed to the 404 page
+	// history={hashHistory} 
+		// - listen to the browser's address bar for any changes, and
+			// it will keep track of those things
+		// - we use it here without a need to configure a server
+	<Router>
+		<Router path="/" component={App}/>
+		<Router path="*" component={Whoops404}/>
+	</Router>,
+	document.getElementById('react-container')
+)
+```
+
+```javascript
+// Whoops404.js
+// we don't need brackets when rendering only JSX components
+export const Whoops404 = () =>
+    <div>
+        <h1>Whoops, route not found</h1>
+    </div>
+```
+
+2. Setting up routes
+
