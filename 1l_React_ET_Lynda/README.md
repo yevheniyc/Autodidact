@@ -901,3 +901,31 @@ SkiDayCount.defaultProps = {
 	goal: 100
 }
 ```
+
+3. Validating with **React.PropTypes**
+**PropTypes** allow us to supply a property type for all of our different properties, so that it will validate to make sure that we're supplying the right type. In this way prop types are both a feature and working documentation about the properties that you are using, and what should be supplied as values.
+
+- Using **createClass** approach
+```javascript
+export const SkiDayCount = createClass({
+	propTypes: {
+		total: PropTypes.number.isRequired, // must be supplied
+		powder: PropTypes.number,
+		backcountry: PropTypes.number
+	}
+})
+```
+
+- Using **ES6 class** apprach, as well as stateless
+```javascript
+import {..., PropTypes} from 'react'
+// ... all the same and at the buttom
+SkiDayCount.propTypes = {
+	total: PropTypes.number,
+	powder: PropTypes.number,
+	backcountry: PropTypes.number
+}
+```
+
+4. Custom Validation
+
