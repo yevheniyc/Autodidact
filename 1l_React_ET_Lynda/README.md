@@ -9,7 +9,7 @@ let g:markdown_fenced_languages = ['html', 'vim', 'ruby', 'python', 'bash=sh']
 
 
 ##### Chapter 2
-1. Let's start with the following
+*1. Let's start with the following
 
 ```html
 <script src="https://fb.me/react-15.1.0.js"></script>
@@ -37,7 +37,7 @@ render(
 )
 ```
 
-- To execute the above code we need to setup an HTTP server
+  - To execute the above code we need to setup an HTTP server
 
 ```bash
 # this will install ./node_modlues/httpster + dependencies
@@ -46,7 +46,7 @@ npm install httpster
 ./node_modules/httpster/bin/httpster -d ./dist -p 3000
 ```
 
-2. Now let's use JSX implementation to simplify syntax
+*2. Now let's use JSX implementation to simplify syntax
 
 ```javascript
 const { render } = ReactDOM
@@ -60,8 +60,8 @@ render(
 	document.getElementById('react-container')
 )
 ```
-- When running the app, we will see the error message, indicating that the browser cannot
-read **HTML** tags this way
+
+- When running the app, we will see the error message, indicating that the browser cannot read **HTML** tags this way
 
 - Using the following approach **Babel** transpiles HTML into React syntax **in the browser**
 
@@ -91,7 +91,8 @@ render(
 - The code will run and display the html properly
 - React debugger will show a properly rendered and transpiled **index.js**
 
-3. Transpiling HTML -> JS is expensive for the browser. Instead let's transpile before runtime with npm/babel packages
+*3. Transpiling HTML -> JS is expensive for the browser. Instead let's transpile before runtime with npm/babel packages
+
 - Build npm packages
 - Install Babel cli
 ```bash
@@ -148,7 +149,7 @@ babel index.js --out-file bundle.js
 
 **Hint**: Try to keep node_modules in a single place for projects
 
-4. Automate **httpster** startup
+*4. Automate **httpster** startup
 ```json
 {
   "name": "react-essential",
@@ -171,7 +172,8 @@ babel index.js --out-file bundle.js
 
 Alright, now the transpiling process (converting HTML syntax into JSX) is happening serverside!
 
-5. Automating with **Webpack**
+*5. Automating with **Webpack**
+
 - Is a module bundler that creates static files and automatates processes that need to happen before our app goes to production.
 - Webpack will bundle many **script.js** files into a single **bundle.js**, elimnating the need for multiple HTTP request
 
@@ -255,7 +257,7 @@ npm install --save-dev
 npm start # in package.json
 ```
 
-6. Load React dependencies and JSON data with webpack
+*6. Load React dependencies and JSON data with webpack
 - Install React dependencies and remove src import from index.html
 ```bash
 npm install --save react react-dom
@@ -347,7 +349,7 @@ npm install --save-dev
 					webpack-dev-server
 ```
 
-7. Server CSS with **webpack**
+*7. Server CSS with **webpack**
 - Change styling info in **lib.js**
 ```javascript
 // ...
@@ -504,7 +506,8 @@ module.exports = {
 npm start
 ```
 
-1. Build apps based on components with React
+*1. Build apps based on components with React
+
 - Create **SkiDayCount** component
 ```bash
 mkdir src/components
@@ -551,7 +554,7 @@ render(
 )
 ```
 
-2. With slight modification we can incorporate variables throught our classes/components
+*2. With slight modification we can incorporate variables throught our classes/components
 ```javascript
 // src/index.js
 import React from 'react'
@@ -593,7 +596,7 @@ export const SkiDayCount = React.createClass({
 })
 ```
 
-3. Adding methods to the components
+*3. Adding methods to the components
 - Keeping most of the forementioned the same, add methods to classes/components
 ```javascript
 // src/components/SkiDayCount.js
@@ -639,7 +642,7 @@ export const SkiDayCount = React.createClass({
 })
 ```
 
-4. ES6 (ECMAScript 6) describes how JS should be implemented by browsers. One feature of ES6 that is often used with React is **class syntax**. React has a base class called **React.Component**, and we then extend this class to create our own components.
+*4. ES6 (ECMAScript 6) describes how JS should be implemented by browsers. One feature of ES6 that is often used with React is **class syntax**. React has a base class called **React.Component**, and we then extend this class to create our own components.
 
 - Let's refractor our SkiDayCount components as ES6 class
 ```javascript
@@ -682,7 +685,7 @@ export class SkiDayCount extends Component { // slightly different syntax
 }
 ```
 
-5. An alternative to creating components with **createClass** and **ES6 class** is by a function.
+*5. An alternative to creating components with **createClass** and **ES6 class** is by a function.
 
 **Stateless functional components**:
 - are functions that take in property information and return JSX elements.
@@ -735,7 +738,7 @@ export const SkiDayCount = ({total, powder, backcountry, goal}) => (
 )
 ```
 
-6. Adding React-icons
+*6. Adding React-icons
 ```bash
 npm install --save react-icons
 ```
@@ -744,7 +747,7 @@ npm install --save react-icons
 ##### Chapter 4 - Props and State
 Start building multiple components in React
 
-1. Build a table
+*1. Build a table
 - Let's pass **JSON** object into the table component (SkiDayList)
 ```javascript
 import React from 'react'
@@ -838,7 +841,7 @@ export const SkiDayRow = ({resort, date,
 )
 ```
 
-2. Set default props
+*2. Set default props
 - Using **createClass** approach
 ```javascript
 export const SkiDayCount = createClass({
@@ -902,7 +905,7 @@ SkiDayCount.defaultProps = {
 }
 ```
 
-3. Validating with **React.PropTypes**
+*3. Validating with **React.PropTypes**
 **PropTypes** allow us to supply a property type for all of our different properties, so that it will validate to make sure that we're supplying the right type. In this way prop types are both a feature and working documentation about the properties that you are using, and what should be supplied as values.
 
 - Using **createClass** approach
@@ -927,7 +930,7 @@ SkiDayCount.propTypes = {
 }
 ```
 
-4. Custom Validation
+*4. Custom Validation
 - Let's build a custom validations for the incoming data
 ```javascript
 // SkiDayList.js
@@ -954,7 +957,7 @@ SkiDayList.propTypes = {
 }
 ```
 
-5. Working with States
+*5. Working with States
 State represents the possible conditions for your application. Maybe you have a state for editing, a state for saved, a state for logged in or logged out. In React apps we want to identify the minimal representation of app state, and then we want to reduce state to as few components as possible. This way we can avoid overwriting state variables, which can cause chaos in our applications.
 
 ```javascript
@@ -1012,7 +1015,7 @@ export const App = createClass({
 
 In the next part, we will pass this data down from parent to children
 
-6. Passing **state** as **props**
+*6. Passing **state** as **props**
 - Now let's pass **state** or various parts of **state** to children
 ```javascript
 import { createClass } from 'react'
@@ -1068,7 +1071,7 @@ export const App = createClass({
 })
 ```
 
-7. Create stateful components with ES6
+*7. Create stateful components with ES6
 - The ES6 method for making the **state** available to the methods
 ```javascript
 // ... the same
@@ -1092,7 +1095,7 @@ export class App extends Component {
 ##### Chapter 5 - React Router
 Display different screens using the **React Router**
 
-1. Incorporating the Router
+*1. Incorporating the Router
 - Install **React-Router**
 ```bash
 npm install -save react-router
@@ -1136,5 +1139,5 @@ export const Whoops404 = () =>
     </div>
 ```
 
-2. Setting up routes
+*2. Setting up routes
 
