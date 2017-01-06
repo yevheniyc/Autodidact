@@ -1143,4 +1143,45 @@ export const Whoops404 = () =>
 ```
 
 ##### 2. Setting up routes
+```javascript
+// index.js
+// ...
+render(
+	<Router history={hashHistory}>
+		<Route path="/" component={App}/>
+		<Route path="list-days" component={App} />
+		<Route path="add-day" component={App} />
+		<Route path="*" component={Whoops404}/>
+	</Router>,
+	document.getElementById('react-container')
+)
+```
+
+```javascript
+// App.js
+// ...
+render() {
+		return (
+			<div className="app">
+			{
+				// if route path is "/" -> trigger SkiDayCount component
+				// if route path is "/add-day" -> AddDayForm
+				// if route path is "SkiDayList" -> SkiDayList
+				(this.props.location.pathname === "/") ?
+					<SkiDayCount total={this.countDays()}
+									powder={this.countDays(
+											"powder"
+										)}
+									backcountry={this.countDays(
+											"backcountry"
+										)}/> :
+				(this.props.location.pathname === "/add-day") ? 
+					<AddDayForm /> :
+					<SkiDayList days={this.state.allSkiDays}/>
+			}	
+			</div>
+		)
+	}
+```
+
 
