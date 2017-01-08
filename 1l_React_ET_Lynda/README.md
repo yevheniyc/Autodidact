@@ -1256,6 +1256,259 @@ export class App extends Component {
 }
 ```
 
+##### Using Route Parameters
+If I want to pass additional parameters via the urls, follow the structure below
+
+```javascript
+// index.js
+// ... imports
+render(
+	// Add another route with the ":filter" path
+	<Router history={hashHistory}>
+		<Route path="/" component={App}/>
+		<Route path="list-days" component={App}> 
+			<Route path=":filter" component={App} />
+		</Route>
+		<Route path="add-day" component={App} />
+		<Route path="*" component={Whoops404}/>
+	</Router>,
+	document.getElementById('react-container')
+)
+```
+
+```javascript
+// App.js
+import { Component } from 'react'
+import { SkiDayList } from './SkiDayList'
+import { SkiDayCount } from './SkiDayCount'
+import { AddDayForm } from './AddDayForm'
+import { Menu } from './Menu'
+
+export class App extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			allSkiDays:
+			// JSON
+		}
+	}
+	// ...
+	render() {
+		// Pass filter paramter entered in the url
+		return (
+			<div className="app">
+			<Menu />
+			{(this.props.location.pathname === "/") ?
+			  <SkiDayCount total={this.countDays()}
+							 powder={this.countDays(
+							 		"powder"
+							 	)}
+							 backcountry={this.countDays(
+							 		"backcountry"
+							 	)}/> :
+			 (this.props.location.pathname === "/add-day") ?
+			 	<AddDayForm /> :
+			 	<SkiDayList days={this.state.allSkiDays}
+				 			filter={this.props.params.filter}/>				 
+			}
+					
+			</div>
+		)
+	}
+}
+```
+
+```javascript
+// SkiDayList.js
+// ... imports
+
+export const SkiDayList = ({days, filter}) => {
+	// if 
+		// there is no filter or
+		// filter does not match /powder or /backountry
+			// then return days
+		// otherwise
+			// return day[filter] - filtered days
+	const filteredDays = (!filter ||
+		!filter.match(/powder|backcountry/)) ?
+		days :
+		days.filter(day => day[filter])
+
+	return (
+		<div className="ski-day-list">
+			<table>
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>Resort</th>
+						<th>Powder</th>
+						<th>Backcountry</th>
+					</tr>
+					<tr>
+						<td colSpan={4}>
+							<Link to="/list-days">
+								All days
+							</Link>
+							<Link to="/list-days/powder">
+								Powder Days
+							</Link>
+							<Link to="/list-days/backcountry">
+								Back Country
+							</Link>
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					{filteredDays.map((day, i) =>
+						<SkiDayRow key={i}
+								{...day}/>	
+						)}
+				</tbody>
+
+			</table>
+		</div>
+	)
+}
+```
+
+##### Nesting routes
+- Let's install all of the dependenices indicated in **package.json**
+```javascript
+{
+	"name": "react-router-demo",
+	"version": "0.0.1",
+	"description": "A React Router tutorial.",
+	"main": "index.js",
+	"scripts": {
+		"prestart": "node_modules/.bin/webpack",
+		"start": "node_modules/.bin/webpack-dev-server"
+  },
+	"author": "Eve Porcello <eve@moonhighway.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"babel-cli": "^6.18.0",
+		"babel-loader": "^6.2.7",
+		"babel-preset-latest": "^6.16.0",
+		"babel-preset-react": "^6.16.0",
+		"babel-preset-stage-0": "^6.16.0",
+		"webpack": "^1.13.3",
+		"webpack-dev-server": "^1.16.2"
+  },
+	"dependencies": {
+		"isomorphic-fetch": "^2.2.1",
+		"react": "^15.3.2",
+		"react-dom": "^15.3.2",
+		"react-icons": "^2.2.1",
+		"react-router": "^3.0.0"
+  }
+}
+```
+
+```javascript
+// index.js
+import React from 'react'
+import { render } from 'react-dom'
+import routes from './routes'
+
+window.React = React
+
+render(routes, document.getElementById('react-container'))
+```
+
+```javascript
+// components/index.js
+import MainMenu from './ui/MainMenu'
+
+export const Left = ({children}) => 
+    <div className="page">
+        <MainMenu className="main-menu" />
+        {children}
+    </div>
+
+export const Right = ({children}) => 
+    <div className="page">
+        {children}
+        <MainMenu className="main-menu" />
+    </div>
+
+export const Whoops404 = ({ location }) =>
+    <div>
+        <h1>Whoops, resource not found</h1>
+        <p>Could not find {location.pathname}</p>
+    </div>
+```
+
+```javascript
+// routes.js
+import React from 'react'
+import { Router, Route, hashHistory } from 'react-router'
+import Home from './components/ui/Home'
+import About from './components/ui/About'
+import MemberList from './components/ui/MemberList'
+import  { Whoops404  } from './components'
+
+const routes = (
+    <Router history={hashHistory}>
+        <Route path="/" component={Home} />
+        <Route path="/" component={Right}>
+            <Route path="about" component={About} />
+            <Route path="members" component={MemberList} />
+        </Route>
+        <Route path="*" component={Whoops404} />
+    </Router>
+)
+
+export default routes
+```
+
+```javascript
+import { Link } from 'react-router'
+import FaHome from 'react-icons/lib/fa/home'
+
+const MainMenu = () => {
+    return (
+        <nav>
+            <Link to="/"><FaHome/></Link>
+            <Link to="about" 
+            	  activeStyle={{
+            	  backgroundColor: "white", 
+            	  color: "slategray"
+            	}}>
+            	About
+            </Link>
+            <Link to="members" 
+            	  activeStyle={{
+            	  	backgroundColor: "white", 
+            	  	color: "slategray"
+            	  }}>
+            	  Members
+           	</Link>
+        </nav>
+    )
+}
+
+export default MainMenu
+```
+
+```javascript
+import MainMenu from './MainMenu'
+
+const Home = () =>
+    <div className="home">
+        <MainMenu className="home-page-menu"/>
+        <div id="homebox">
+            <h1>Rock Appreciation Society</h1>
+        </div>
+    </div>
+
+export default Home
+```
+
+
+
+
+
+
 
 
 
