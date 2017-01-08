@@ -1504,6 +1504,213 @@ const Home = () =>
 export default Home
 ```
 
+***
+
+#### Chapter 6 - Forms and Refs
+
+##### 1. Creating a from component
+
+```javascript
+// index.js
+render(
+	<Router history={hashHistory}>
+		<Route path="/" component={App}/>
+		<Route path="list-days" component={App}>
+			<Route path=":filter" component={App} />
+		</Route>
+		<Route path="add-day" component={App} />
+		<Route path="*" component={Whoops404}/>
+	</Router>,
+	document.getElementById('react-container')
+)
+```
+
+```javascript
+// App.js
+// ... imports
+import { Component } from 'react'
+import { SkiDayList } from './SkiDayList'
+import { SkiDayCount } from './SkiDayCount'
+import { AddDayForm } from './AddDayForm'
+import { Menu } from './Menu'
+
+export class App extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			allSkiDays: [
+			// JSOn
+			]
+		}
+	}
+	// methods
+	render() {
+		return (
+			<div className="app">
+			<Menu />
+			{(this.props.location.pathname === "/") ?
+			  <SkiDayCount total={this.countDays()}
+							 powder={this.countDays(
+							 		"powder"
+							 	)}
+							 backcountry={this.countDays(
+							 		"backcountry"
+							 	)}/> :
+			 (this.props.location.pathname === "/add-day") ?
+			 	<AddDayForm /> :
+			 	<SkiDayList days={this.state.allSkiDays}
+			 				filter={this.props.params.filter}/>				 
+			}
+					
+			</div>
+		)
+	}
+}
+```
+
+```javascript
+// AddDayForm.js
+import { PropTypes, Component } from 'react'
+
+export class AddDayForm extends Component {
+	render() {
+		const {resort, date, powder, backcountry} = this.props
+		return (
+			<form className="add-day-form">
+				<label htmlFor="resort" >Resort Name</label>
+				<input id="resort" 
+						type="text" 
+						required
+						defaultValue={resort} />
+
+				<label htmlFor="date" >Date</label>
+				<input id="date" 
+						type="date" 
+						required
+						defaultValue={date} />
+
+				<div>
+					<input id="powder" 
+							type="checkbox" 
+							defaultChecked={powder} />
+					<label htmlFor="powder" >Powder Day</label>
+				</div>
+
+				<div>
+					<input id="backcountry" 
+							type="checkbox" 
+							defaultChecked={backcountry} />
+					<label htmlFor="backcountry" >Backcountry</label>
+				</div>
+			</form>
+		)
+	}
+}
+
+AddDayForm.defaultProps = {
+	resort: "Kirkwood",
+	date: "2017-02-12",
+	powder: true,
+	backcountry: false
+}
+
+AddDayForm.propTypes = {
+	resort: PropTypes.string.isRequired,
+	date: PropTypes.string.isRequired,
+	powder: PropTypes.bool.isRequired,
+	backcountry: PropTypes.bool.isRequired
+}
+```
+
+##### 2. Using Refs in class components
+Use **refs** for sumitting form data
+
+```javascript
+// index.js
+// ... same as above
+```
+
+```javascript
+// App.js
+// ... same as above
+```
+
+```javascript
+import { PropTypes, Component } from 'react'
+
+export class AddDayForm extends Component {
+
+	constructor(props) {
+		super(props)
+		// not sure if necessary, but helps to see all of the methods up top!
+		this.submit = this.submit.bind(this);
+	}
+	submit(e) {
+			e.preventDefault()
+			consolge.log('resort', this.refs.resort.value)
+			consolge.log('date', this.refs.date.value)
+			consolge.log('powder', this.refs.powder.checked)
+			consolge.log('backcountry', this.refs.backcountry.checked)
+	}
+	render() {
+		const { resort, date, powder, backcountry } = this.props 
+
+		return (
+			// include the onSubmit action
+			<form onSubmit={this.submit} className="add-day-form">
+
+				<label htmlFor="resort">Resort Name</label>
+				<input id="resort" 
+					   type="text" 
+					   required 
+					   defaultValue={resort}
+					   ref="resort"/>
+
+				<label htmlFor="date">Date</label>
+				<input id="date" 
+					   type="date" 
+					   required 
+					   defaultValue={date}
+					   ref="date"/>
+
+				<div>
+					<input id="powder" 
+						   type="checkbox" 
+						   defaultChecked={powder}
+						   ref="powder"/>
+					<label htmlFor="powder">Powder Day</label>
+				</div>
+
+				<div>	
+					<input id="backcountry" 
+						   type="checkbox"
+						   defaultChecked={backcountry} 
+						   ref="backcountry"/>
+					<label htmlFor="backcountry">
+						Backcountry Day
+					</label>
+				</div>
+				<button>Add Day</button>
+			</form>
+		)
+	}
+}
+
+AddDayForm.defaultProps = {
+	resort: "Kirkwood",
+	date: "2017-02-12",
+	powder: true,
+	backcountry: false
+}
+
+AddDayForm.propTypes = {
+	resort: PropTypes.string.isRequired,
+	date: PropTypes.string.isRequired,
+	powder: PropTypes.bool.isRequired,
+	backcountry: PropTypes.bool.isRequired
+}
+```
+
 
 
 
