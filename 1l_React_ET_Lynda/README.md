@@ -1184,4 +1184,78 @@ render() {
 	}
 ```
 
+##### 3. Navigating with the link component
+Well, the **Link** component is just **<a href=""></a>** elements
+
+```javascript
+// index.js
+// ...
+render(
+	<Router history={hashHistory}>
+		<Route path="/" component={App}/>
+		<Route path="list-days" component={App} />
+		<Route path="add-day" component={App} />
+		<Route path="*" component={Whoops404}/>
+	</Router>,
+	document.getElementById('react-container')
+)
+```
+
+```javascript
+// Menu.js
+// ... imports
+export const Menu = () =>
+    <nav classMenu="menu">
+        <Link to="/" activeClassName="selected">
+            <HomeIcon />
+        </Link>
+        <Link to="/add-day" activeClassName="selected">
+            <AddDayIcon/>
+        </Link>
+        <Link to="/list-days" activeClassName="selected">
+            <ListDaysIcon />
+        </Link>
+    </nav>
+// end
+```
+
+```javascript
+// App.js
+// ... imports
+export class App extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			allSkiDays: [
+				// JSON
+			]
+		}
+	}
+	// ... methods
+	render() {
+		return (
+			// Build the page with the components
+			<div className="app">
+				<Menu />
+				{(this.props.location.pathname === "/") ?
+					<SkiDayCount total={this.countDays()}
+									powder={this.countDays(
+											"powder"
+										)}
+									backcountry={this.countDays(
+											"backcountry"
+										)}/> :
+				(this.props.location.pathname === "/add-day") ?
+					<AddDayForm /> :
+					<SkiDayList days={this.state.allSkiDays}/>				 
+				}
+					
+			</div>
+		)
+	}
+}
+```
+
+
+
 
