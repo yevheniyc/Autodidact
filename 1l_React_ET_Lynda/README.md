@@ -747,7 +747,7 @@ npm install --save react-icons
 ```
 ***
 
-##### Chapter 4 - Props and State
+#### Chapter 4 - Props and State
 Start building multiple components in React
 
 ##### 1. Build a table
@@ -1095,7 +1095,7 @@ export class App extends Component {
 
 ***
 
-##### Chapter 5 - React Router
+#### Chapter 5 - React Router
 Display different screens using the **React Router**
 
 ##### 1. Incorporating the Router
