@@ -10,6 +10,7 @@ let g:markdown_fenced_languages = ['html', 'vim', 'ruby', 'python', 'bash=sh']
 To run any of the excercise apps, just do the following (also included below):
 - Checkout **package.json** to make sure it includes the dependencies (for us they are babel + react + webpack), and that **npm start** is configured. It can be configured with the **npm init** and downlaoding the appropriate packages
 ```javascript
+// package.json
 {
     "name": "react-router-demo",
     "version": "0.0.1",
@@ -47,6 +48,7 @@ npm start
 ... and it all will be taken care of on **localhost:3000**
 - Also make sure **webpack.config.js** is properly configured:
 ```javascript
+// webpack.config.js
 module.exports = {
     entry: "./src/index.js",
     output: {
