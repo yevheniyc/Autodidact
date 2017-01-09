@@ -11,30 +11,32 @@ export class App extends Component {
 			allSkiDays: [
 			{
 				resort: "Squaw Valley",
-				date: new Date("1/2/2016"),
+				date: "2016-01-02",
 				powder: true,
 				backcountry: false
-			},
-			{
-				resort: "Kirkwood",
-				date: new Date("3/28/2016"),
-				powder: false,
-				backcountry: false
-			},
-			{
-				resort: "Mt. Tallac",
-				date: new Date("4/2/2016"),
-				powder: false,
-				backcountry: true
 			}
 		]
 		}
+		this.addDay = this.addDay.bind(this)
 	}
+
+	addDay(newDay) {
+		this.setState({
+			allSkiDays: [
+				// ES6 spread operator: take all of the existing days that are held in state, 
+				// it will going to push those into a new state object, and will also add the newDay
+				...this.state.allSkiDays,
+				newDay
+			]
+		})
+	}
+
 	countDays(filter) {
 		const { allSkiDays } = this.state
 		return allSkiDays.filter(
 			(day) => (filter) ? day[filter] : day).length
 	}
+
 	render() {
 		return (
 			<div className="app">
@@ -48,7 +50,7 @@ export class App extends Component {
 							 		"backcountry"
 							 	)}/> :
 			 (this.props.location.pathname === "/add-day") ?
-			 	<AddDayForm /> :
+			 	<AddDayForm onNewDay={this.addDay}/> :
 			 	<SkiDayList days={this.state.allSkiDays}
 			 				filter={this.props.params.filter}/>				 
 			}

@@ -1,18 +1,28 @@
-import { PropTypes, Component } from 'react'
+import { PropTypes} from 'react'
 
 export const AddDayForm = ({ resort, 
 							 date, 
 							 powder, 
-							 backcountry }) => {
+							 backcountry,
+							 onNewDay }) => {
 	
 	let _resort, _date, _powder, _backcountry
 	
 	const submit = (e) => {
 		e.preventDefault()
-		console.log('resort', _resort.value)
-		console.log('date', _date.value)
-		console.log('powder', _powder.checked)
-		console.log('backcountry', _backcountry.checked)
+		// this is just a callback function passed from App.js == this.addDay
+		// It is triggered here once the parameters are passed
+		onNewDay({
+			resort: _resort.value,
+			date: _date.value,
+			powder: _powder.checked,
+			backcountry: _backcountry.checked
+		})
+		// once the form is submitted, let's reset our values to empty stings
+		_resort.value = ''
+		_date.value = ''
+		_powder.checked = false
+		_backcountry.checked = false
 
 	}
 

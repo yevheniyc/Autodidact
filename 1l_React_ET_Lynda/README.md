@@ -1772,6 +1772,93 @@ export const AddDayForm = ({ resort, date, powder, backcountry }) => {
 // ... same defaultProps and propTypes
 ```
 
+#### 4. Two-way function binding
+Now that we have access to the form values we need to pass them up the component tree to the parent, the **App.js**
+
+The following is **beautiful**: 
+
+- First *define** (addDay) and **bind** (this.addDay = ...) the method to the **App** constructor. Then pass the method to **AddDayForm**
+```javascript
+// ... imports
+export class App extends Component {
+	// here is the constractor if defined state and method
+	constructor(props) {
+		super(props)
+		this.state = {
+			allSkiDays: [
+			{
+				resort: "Squaw Valley",
+				date: "2016-01-02",
+				powder: true,
+				backcountry: false
+			}
+		]
+		}
+		this.addDay = this.addDay.bind(this)
+	}
+
+	addDay(newDay) {
+	// this will be passed to AddDayForm child as a callback
+	// once the callback is triggered with the new day data,
+	// it will update the App's state
+		this.setState({
+			allSkiDays: [
+				// ES6 spread operator: take all of the existing days that are held in state, 
+				// it will going to push those into a new state object, and will also add the newDay
+				...this.state.allSkiDays,
+				newDay
+			]
+		})
+	}
+
+	// ... other methods
+
+	render() {
+		return (
+			// ... everythign the same
+			<AddDayForm onNewDay={this.addDay}/>
+		)
+	}
+}
+```
+
+- In the **AddDayForm** component pass the callback, and trigger with the new day data
+```javascript
+import { PropTypes} from 'react'
+
+export const AddDayForm = ({ resort, 
+							 date, 
+							 powder, 
+							 backcountry,
+							 onNewDay }) => {
+	
+	let _resort, _date, _powder, _backcountry
+	
+	const submit = (e) => {
+		e.preventDefault()
+		// this is just a callback function passed from App.js == this.addDay
+		// It is triggered here once the parameters are passed
+		onNewDay({
+			resort: _resort.value,
+			date: _date.value,
+			powder: _powder.checked,
+			backcountry: _backcountry.checked
+		})
+		// once the form is submitted, let's reset our values to empty stings
+		_resort.value = ''
+		_date.value = ''
+		_powder.checked = false
+		_backcountry.checked = false
+
+	}
+
+	return (
+		// same form info
+		<form onSubmit={submit} className="add-day-form">
+		</form>
+	)
+}
+```
 
 
 
