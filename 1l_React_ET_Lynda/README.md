@@ -1860,7 +1860,7 @@ export const AddDayForm = ({ resort,
 }
 ```
 
-#### Adding an autocomplete component
+#### 5. Adding an autocomplete component
 Add autocomplete component
 
 ```javascript
@@ -1928,6 +1928,86 @@ export const AddDayForm = ({ resort,
 
 // same defaultProps and PropTypes
 ```
+
+***
+
+#### Chapter 7 - Understanding Component Lifecycle
+React provides methods that you can use to execute bits of code at certain moments in a component's lifetime. 
+
+##### 1. Understanding the mounting cycle
+- Grab some data from **https://api.randomuser.me/?nat=US&results=12**
+- The **loading** state variable is initially set to false, and will be trigerred to **true** with another method
+- **import 'isomorphic-fetch'** to load data from API; it is included in the **npm install json**
+
+```javascript
+import { Component } from 'react'
+import fetch from 'isomorphic-fetch' // loading the data from API!
+import Member from './Member'
+
+class MemberList extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            members: [],
+            loading: false // set as false when the render is staring
+        }
+    }
+
+    // will fire as soon the as the render method fires for the first time
+    componentDidMount() {
+        this.setState({loading: true})
+        fetch('https://api.randomuser.me/?nat=US&results=12')
+            // once we receive a response from the API, we will turn it into json
+            // function(response) {
+                // return response.json()
+            // } -> same as below
+            .then(response => response.json())
+            // let's pass the return parameter (response.json() as json into the next function)
+            .then(json => json.results)
+            // take results to set the state
+            .then(members => this.setState({
+                members, // same as members = members -> ES6 literal enhancement
+                loading: false
+            }))
+    }
+
+    render() {
+		// set local scope
+			// if loading is true, then show the below component
+			// if any of the members are returned:
+				// loop through each one of them with "map" (could also filter)
+					// and parse the needed information
+    	const { members, loading } = this.state
+        return (
+            <div className="member-list">
+                <h1>Society Members</h1>
+			
+                { 
+                    (loading) ? 
+                    <span>laoding...</span> :
+                    <span>{members.length} members</span>
+                }
+                { 
+                    (members.length) ? 
+                        members.map(
+                            (member, i) => 
+                                <Member key={i} 
+                                        name={member.name.first + ' ' + member.name.last}
+                                        email={member.email}
+                                        thumbnail={member.picture.thumbnail}/>
+                        ):
+                        <span>Currently 0 Members </span>
+                }
+            </div>
+        )
+    }
+}
+
+export default MemberList
+```
+
+##### 2. Understanding updating cycle
 
 
 
