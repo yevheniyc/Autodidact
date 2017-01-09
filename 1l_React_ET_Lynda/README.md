@@ -1860,6 +1860,74 @@ export const AddDayForm = ({ resort,
 }
 ```
 
+#### Adding an autocomplete component
+Add autocomplete component
+
+```javascript
+import { PropTypes, Component } from 'react'
+
+const tahoeResorts = [
+	"Alpine Meadows",
+	"Boreal",
+	"Diamond Peak",
+	"Donner Ski Ranch", 
+	"Heavenly", 
+	"Homewood",
+	"Kirkwood",
+	"Mt. Rose", 
+	"Northstar",
+	"Squaw Valley",
+	"Sugar Bowl"
+]
+
+// we will create the Autocomplete component in the same place
+class Autocomplete extends Component {
+	// getter and setter in ES6 classes - this is a standard to retrive
+	// and set the value on search
+	get value() {
+		return this.refs.inputResort.value
+	}
+
+	set value(input) {
+		this.refs.inputResort.value = inputValue
+	}
+
+	render() {
+		return (
+			<div>
+				<input ref="inputResort" 
+						type="text" 
+						list="tahoe-resorts" />
+				<datalist id="tahoe-resorts">
+					{this.props.options.map(
+						(opt, i) => <option key={i}>{opt}</option>
+					)}
+				</datalist>
+			</div>
+		)
+	}
+}
+
+export const AddDayForm = ({ resort, 
+							 date, 
+							 powder, 
+							 backcountry,
+							 onNewDay }) => {
+	
+	// same let and const
+
+	return (
+		<form onSubmit={submit} className="add-day-form">
+
+			<label htmlFor="resort">Resort Name</label>
+			<Autocomplete options={tahoeResorts}
+				   ref={input => _resort = input}/>
+		</form>
+	)
+}
+
+// same defaultProps and PropTypes
+```
 
 
 
