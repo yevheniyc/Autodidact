@@ -2012,33 +2012,33 @@ export default MemberList
 React **lifecycle** contains a set of properties extended from **React.Component**. These methods are:
 
 - Mounting: these methods are called when an instance of a component is being created and inserted into the DOM:
-* **constructor()**
-* **componentWillMount()**
-* **render()**
-* **componentDidMount()**
+	* **constructor()**
+	* **componentWillMount()**
+	* **render()**
+	* **componentDidMount()**
 
 - Updating: An update can be caused by changes to props or state. These methods are called when component is being re-rendered:
-* **componentWillReceiveProps()**
-* **shouldComponentUpdate()**
-* **componentWillUpdate()**
-* **render()**
-* **componentDidUpdate()**
+	* **componentWillReceiveProps()**
+	* **shouldComponentUpdate()**
+	* **componentWillUpdate()**
+	* **render()**
+	* **componentDidUpdate()**
 
 - Unmounting: this method is called when a component is being remove from the DOM:
-* **componentWillUnmount()**
+	* **componentWillUnmount()**
 
 - Here are some other APIs we are using:
-* **setState()**
-* **forceUpdate()**
+	* **setState()**
+	* **forceUpdate()**
 
 - Class properties
-* **defaultProps**
-* **displayName**
-* **propTypes**
+	* **defaultProps**
+	* **displayName**
+	* **propTypes**
 
 - Instance properties
-* **props**
-* **state**
+	* **props**
+	* **state**
 
 - Here is how the **Update Lifecycle** works:
 
@@ -2124,13 +2124,3 @@ class MemberList extends Component {
 
 export default MemberList
 ```
-
-
-
-
-
-
-
-
-
-
