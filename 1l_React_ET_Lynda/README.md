@@ -2009,6 +2009,125 @@ export default MemberList
 
 ##### 2. Understanding updating cycle
 
+React **lifecycle** contains a set of properties extended from **React.Component**. These methods are:
+
+- Mounting: these methods are called when an instance of a component is being created and inserted into the DOM:
+* **constructor()**
+* **componentWillMount()**
+* **render()**
+* **componentDidMount()**
+
+- Updating: An update can be caused by changes to props or state. These methods are called when component is being re-rendered:
+* **componentWillReceiveProps()**
+* **shouldComponentUpdate()**
+* **componentWillUpdate()**
+* **render()**
+* **componentDidUpdate()**
+
+- Unmounting: this method is called when a component is being remove from the DOM:
+* **componentWillUnmount()**
+
+- Here are some other APIs we are using:
+* **setState()**
+* **forceUpdate()**
+
+- Class properties
+* **defaultProps**
+* **displayName**
+* **propTypes**
+
+- Instance properties
+* **props**
+* **state**
+
+- Here is how the **Update Lifecycle** works:
+
+```javascript
+// MembersList.js
+import { Component } from 'react'
+import fetch from 'isomorphic-fetch'
+import Member from './Member'
+
+class MemberList extends Component {
+
+    constructor(props) {
+		// props are passed along from App.js and
+		// initiated as inherited properties here
+        super(props)
+        this.state = {
+            members: [],
+            loading: false,
+            administrators: []
+        }
+        this.makeAdmin = this.makeAdmin.bind(this)
+        this.removeAdmin = this.removeAdmin.bind(this)
+    }
+
+    componentDidMount() {
+		// right after render method inserted the components
+		// into the DOM
+        this.setState({loading: true})
+        fetch('https://api.randomuser.me/?nat=US&results=12')
+            .then(response => response.json())
+            .then(json => json.results)
+            .then(members => this.setState({
+                members,
+                loading: false
+            }))
+    }
+
+    makeAdmin(email) {
+        const administrators = [
+            ...this.state.administrators,
+            email
+        ]
+        this.setState({administrators})
+    }
+
+    removeAdmin(email) {
+        const administrators = this.state.administrators.filter(
+            adminEmail => adminEmail !== email
+        )
+        this.stateState({administrators})
+    }
+
+    render() {
+    	const { members, loading } = this.state
+        return (
+            <div className="member-list">
+                <h1>Society Members</h1>
+
+                {(loading) ?
+                    <span>loading...</span> :
+                    <span>{members.length} members</span>
+                }
+
+                {(members.length) ?
+                   members.map(
+                	(member, i) => 
+                		<Member key={i} 
+                                admin={this.state.administrators.some(
+                                    adminEmail => adminEmail === member.email
+                                )}
+                                name={member.name.first + ' ' + member.name.last} 
+                                email={member.email}
+                                thumbnail={member.picture.thumbnail}
+                                makeAdmin={this.makeAdmin}
+                                removeAdmin={this.removeAdmin}/>
+                	 ):
+                   <span>Currently 0 Members </span>
+               }
+            </div>
+        )
+    }
+}
+
+export default MemberList
+```
+
+
+
+
 
 
 
