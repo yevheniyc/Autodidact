@@ -7,6 +7,73 @@ Allow markdown specific code snippets to be added in vim:
 let g:markdown_fenced_languages = ['html', 'vim', 'ruby', 'python', 'bash=sh']
 ```
 
+To run any of the excercise apps, just do the following (also included below):
+- Checkout **package.json** to make sure it includes the dependencies (for us they are babel + react + webpack), and that **npm start** is configured. It can be configured with the **npm init** and downlaoding the appropriate packages
+```javascript
+{
+    "name": "react-router-demo",
+    "version": "0.0.1",
+    "description": "A React Router tutorial.",
+    "main": "index.js",
+    "scripts": {
+      "prestart": "node_modules/.bin/webpack",
+      "start": "node_modules/.bin/webpack-dev-server"
+  },
+    "author": "Eve Porcello <eve@moonhighway.com>",
+    "license": "MIT",
+    "devDependencies": {
+        "babel-cli": "^6.18.0",
+        "babel-loader": "^6.2.7",
+        "babel-preset-latest": "^6.16.0",
+        "babel-preset-react": "^6.16.0",
+        "babel-preset-stage-0": "^6.16.0",
+        "webpack": "^1.13.3",
+        "webpack-dev-server": "^1.16.2"
+  },
+    "dependencies": {
+        "isomorphic-fetch": "^2.2.1",
+        "react": "^15.3.2",
+        "react-dom": "^15.3.2",
+        "react-icons": "^2.2.1",
+        "react-router": "^3.0.0"
+  }
+}
+```
+- Then just run:
+```bash
+npm install
+npm start
+```
+... and it all will be taken care of on **localhost:3000**
+- Also make sure **webpack.config.js** is properly configured:
+```javascript
+module.exports = {
+    entry: "./src/index.js",
+    output: {
+        path: "dist/assets",
+        filename: "bundle.min.js",
+        publicPath: "/assets/"
+    },
+    devServer: {
+        inline: true,
+        contentBase: './dist',
+        port: 3000
+    },
+    module: {
+        loaders: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                loader: ['babel'],
+                query: {
+                    presets: ['es2015', 'react', 'stage-0']
+                }
+            }
+        ]
+    }
+}
+```
+
 
 #### Chapter 2
 
