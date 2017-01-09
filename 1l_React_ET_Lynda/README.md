@@ -1,5 +1,5 @@
 ### React Essential Training - Lynda
-The example files contain start and finish mini-project that were created while following the tutorials. Below is the tutorial step-by-step description with important commands and scripts
+The example files contain start and finish mini-projects that were created while following the tutorials. Below is the tutorial step-by-step description with important commands and scripts
 
 Allow markdown specific code snippets to be added in vim:
 
