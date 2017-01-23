@@ -96,4 +96,59 @@ var words = ["for","your","information"];
 var acronym = words.map(first);
 print(acronym.join("")); // displays "fyi"
 
+// filter() - The filter() function works similarly to every(), but instead of returning true if all the elements of an array satisfy a Boolean function, the function returns a new array consisting of those elements that satisfy the Boolean function.
+function isEven(num) {
+    return num % 2 == 0;
+}
+function isOdd(num) {
+    return num % 2 != 0;
+}
+var nums = [];
+for (var i = 0; i < 20; ++i) {
+    nums[i] = i+1;
+}
+var evens = nums.filter(isEven);
+print("Even numbers: ");
+print(evens);
+var odds = nums.filter(isOdd);
+print("Odd numbers: ");
+print(odds);
+// Even numbers:
+2,4,6,8,10,12,14,16,18,20
+// Odd numbers:
+1,3,5,7,9,11,13,15,17,19
+
+// another example of filter - show passing grades only
+function passing(num) {
+    return num >= 60;
+}
+var grades = [];
+for (var i = 0; i < 20; ++i) {
+    grades[i] = Math.floor(Math.random() * 101);
+}
+var passGrades = grades.filter(passing);
+print("All grades: );
+print(grades);
+print("Passing grades: ");
+print(passGrades);
+// This program displays:
+// All grades:
+39,43,89,19,46,54,48,5,13,31,27,95,62,64,35,75,79,88,73,74
+// Passing grades:
+89,95,62,64,75,79,88,73,74
+
+// Of course, we can also use filter() with strings. Here is an example that applies the
+// spelling rule “i before e except after c”:
+function afterc(str) {
+    if (str.indexOf("cie") > -1) {
+	return true;
+    }
+    return false;
+}
+var words = ["recieve","deceive","percieve","deceit","concieve"];
+var misspelled = words.filter(afterc);
+print(misspelled); // displays recieve,percieve,concieve
+
+
+// 3. Two-Dimensional and Multidimensional Arrays
 
