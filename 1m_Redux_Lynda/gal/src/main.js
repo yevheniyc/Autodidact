@@ -5,10 +5,18 @@ import ReactDOM from 'react-dom'
 
 import Gallery from './Gallery'
 
-import {createStore} from 'redux'
+import {createStore, applyMiddleware} from 'redux'
+import createSagaMiddleware from 'redux-saga'
 import reducer from './reducer'
 
-const store = createStore(reducer)
+import {loadImages} from './sagas'
+
+const store = createStore(
+    reducer,
+    // execute sayHello as a regular method, 
+    // by executing next() behind the scenes
+    applyMiddleware(createSagaMiddleware(loadImages))
+)
 
 import {Provider} from 'react-redux'
 
