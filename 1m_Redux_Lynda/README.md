@@ -7,12 +7,14 @@ This simplified approach is highly dependent on Flux and the functional programm
 - Once we understand where Redux came from and why we need it, we'll begin working on the client data layer for a small application. 
 - This course will be wrapped up by integrating the Redux store into a view layer made of React components.
 
- The JavaScript community and React community are using the latest features of the JavaScript language so we will too. If you've never seen or used 
- - Arrow functions
- - Object Literal Enhancements
- - Object De-structuring
- - Spread operator
- ...then you might want to brush up on your JavaScript syntax skills by taking Up and Running with ECMAScript 6 with Eve Porcello.
+The JavaScript community and React community are using the latest features of the JavaScript language so we will too. If you've never seen or used 
+- Arrow functions
+- Object Literal Enhancements
+- Object De-structuring
+- Spread operator
+...then you might want to brush up on your JavaScript syntax skills by taking Up and Running with ECMAScript 6 with Eve Porcello.
+
+***
 
 ### Chapter 1. What is Redux
 In Flux, the data flows in one direction. 
@@ -309,6 +311,651 @@ export const goal = (state=10, action) => {
     }
 }
 ```
+
+***
+#### Egghead Intervention
+
+##### 1. Simple Redux app
+Let's create a simple redux application
+
+```javascript
+// the reducer; if state === 'underfinded' then initialize to 0,
+    // otherwise uses the current getState() result
+// the action - which is defined as {type: 'something'}
+const counter = (state = 0, action) => {
+    switch (action.type) {
+        case 'INCREMENT':
+            return state + 1
+        case 'DECREMENT':
+            return state - 1
+        default:
+            return state
+    }
+}
+
+const {createStore} = Redux // import {createStore} from 'redux' if with npm
+const store = createStore(counter) // holds the state tree of the application
+
+const render = () => {
+    document.body.innerText = store.getState()
+}
+
+// adds the change listener - called any time an action is dispatched
+store.subscribe(render)
+// // call the initial render() to show default state on page
+render()
+
+// everytime I click anywhere in the document, 
+    // call the counter reducer to update the state
+    // call the render subscriber to update the page
+document.addEventListener('click', () => {
+    store.dispatch({type: 'INCREMENT'})
+});
+```
+
+##### 2. Reimplement the **createStore** provided by Redux
+- Implement the createStore from scratch
+
+```javascript
+
+const counter = (state = 0, action) => {
+    switch (action.type) {
+        case 'INCREMENT':
+            return state + 1
+        case 'DECREMENT':
+            return state - 1
+        default:
+            return state
+    }
+}
+
+// let's reimplement createStore from scratch
+const createStore = (reducer) => {
+    let state // define state variable
+    let listener [] // because subscribe can be called multiple times
+                    // we need to keep track of the listeners
+
+    const getState = () => state
+
+    const dispatch = (action) => {
+        // the only way to keep track of the internal state
+        state = reducer(state, action)
+        listeners.forEach(listener => listener())
+    }
+
+    const subscribe = (listener) => {
+        // subscribe just adds listeners (fucntions) to a global counter
+        // on dispatch, these listeners are executed
+        listeners.push(listener);
+        // the return value is a function that includes a list of listeners
+        // excpet the one passed to subscribe
+        return () => {
+            // so far we didn't provide a way to unsubscribe a method
+            // so instead, we will return a function when subscirbe is called
+                // that will return all listeners, except the one called here
+            listners = listeners.filter(l => l !== listener)
+        }
+    }
+
+    dispatch({}) // get the reducer to populate the initial state
+
+    return {getState, dispatch, subscribe} // redux store
+}
+
+
+const store = createStore(counter) // holds the state tree of the application
+
+const render = () => {
+    document.body.innerText = store.getState()
+}
+
+// adds the change listener - called any time an action is dispatched
+store.subscribe(render)
+// call the initial render() to show default state on page
+render()
+
+
+document.addEventListener('click', () => {
+    store.dispatch({type: 'INCREMENT'})
+});
+```
+
+##### 3. Let's add React to the mix
+
+```html
+<script src="redux"></script>
+<script src="react"></script>
+<body>
+    <div id='root'></div>
+</body>
+```
+
+```javascript
+const counter = (state = 0, action) => {
+    switch (action.type) {
+        case 'INCREMENT':
+            return state + 1
+        case 'DECREMENT':
+            return state - 1
+        default:
+            return state
+    }
+}
+
+// how the current application state converts into renderable output
+// howt the callbacks are bound to the event handlers
+const Counter = ({value}) => (
+    <h1>{value}</h1>
+    <button onClick={onIncrement}>+</button>
+    <button onClick={onDecrement}>-</button>
+)
+
+const {createStore} = Redux; // import {createStore} from 'redux'
+const store = createStore(counter) // holds the state tree of the application
+
+const render = () => {
+    ReactDOM.render(
+        // Counter's value should be taken from the Redux store's current state
+        // when onIncrement or onDecrement are triggered, then dispatch the approriate action
+        //+ and update the current state of the application
+        <Counter value={store.getState()}
+            onIncrement={() =>
+                store.dispatch({
+                    type: 'INCREAMENT'
+                })
+            }
+            onDecrement={() =>
+                store.dispatch({
+                    type: 'DECREMENT'
+                })
+        }/>,
+        document.getElementById('root')
+    )
+}
+
+// the render function is executed any time the state changes and the action is called
+store.subscribe(render)
+render()
+```
+
+##### 4. Let't avoid array mutation with **expect** and **deep-freeze** libraries
+Learn how to manage states without mutatting the original state, and using expect for testing, and deep-freeze for testing for mutability.
+**Expect** - used for testing
+**Deep-Freeze** - used to make sure that the code is free from mutations
+
+```html
+<script src="expect"></script>
+<script src="deep-freeze"></script>
+```
+
+```javascript
+
+/* adding a number to a list without mutation */
+const addCounter = (list) => {
+    // add a new item at the end of the array, mutating the array
+    list.push(0)
+    return list
+}
+
+const addCounter = (list) => {
+    // add 0 to list, without mutating the list
+    return list.concat([0])
+        // or use ES6 spread operator
+    return [...list, 0]
+}
+
+/* remove an item from a list at an index, without array mutation */
+const removeCounter = (list, index) => {
+    list.splice(index, 1) // remove one element at index position
+    return list // return mutated list
+        // or without mutation
+    return list
+        // take the first part of the array up to index position
+        .slice(0, index)
+        // to the first part of the array concat the second part from 
+        //+ index + 1 position, omitting the alement at index position
+        .concat(list.slice(index + 1))
+        
+        // or with ES6 syntax without mutation
+    return [
+        ...list.slice(0, index), // take only the first part of the list till index position
+        ...list.slice(index + 1) // add the second part from index + 1 postion
+    ]
+}
+
+/* increment a counter at a specified position */
+const incrementCounter = (list, index) => {
+    list[index]++
+    return list // return mutated list
+        // or without mutation
+    return list
+        .slice(0, index) // get the copy of the first part of the array
+        .concat([list[index] + 1]) // add and increment the item at position = index
+        .contat(list.slice(index + 1)) // add a copy of the second part of the array
+
+        // or ES6 without mutation
+    return [
+        ...list.slice(0, index),
+        list[index] + 1, // specify the new item
+        ...list.slice(index + 1)
+    ]
+}
+
+const testAddCounter = () => {
+    // appends a zero at the end of an array
+    const listBefore = []
+    const listAfter = [0]
+
+    // we need to learn to avoid mutations in redux
+    deepFreeze(listBefore)
+
+    expect(
+        addCounter(listBefore)
+    ).toEqual(listAfter)
+}
+
+const testRemoveCounter = () => {
+    // remove an item from indicated position
+    const listBefore = [0, 10, 20]
+    const listAfter = [0, 20] // removed at position 1
+
+    deepFreeze(listBefore)
+
+    expect(
+        removeCounter(listBefore, 1)
+    ).toEqual(listAfter)
+}
+
+const testIncrementCounter = () => {
+    listBefore = [0, 10, 20]
+    listAfter = [0, 11, 20]
+
+    deepFreeze(listBefore)
+
+    expect(
+        incrementCounter(listBefore, 1)
+    ).toEqual(listAfter)
+}
+
+testAddCounter();
+testRemoveCounter();
+console.log('All tests passed.')
+```
+
+##### 5. Avoiding Object Mutation with **Object.assign()** and ...spread
+To use test assertions as before use **expect** and **deep-freeze**
+```html
+<script src="expect"></script>
+<script src="deep-freeze"></script>
+```
+
+```javascript
+// toggle ToDo
+const toggleToDo = (todo) => {
+    todo.completed = !todo.completed
+    return todo // this will mutate the original object
+        // or without mutating the origianl object
+        // the drawback is that i have to remember to update 
+        //+ this object every time todo properties are added/removed
+    return {
+        id: todo.id,
+        text: todo.text,
+        completed: !todo.completed
+    }
+        // or ES6 without mutation and irrelavence to changes to todo object
+    return Object.assign({}, todo, {
+        completed: !todo.completed
+    })
+        // or a newer way - which i don't think is implemented yet
+    return {
+        ...todo,
+        completed: !todo.completed
+    }
+}
+
+const testToggleToDo = () => {
+    const todoBefore = {
+        id: 0,
+        text: 'Learn Redux',
+        completed: false
+    }
+
+    const todoAfter = {
+        id: 0,
+        text: 'Learn Redux',
+        completed: true
+    }
+
+    deepFreeze(todoBefore)
+
+    expect(
+        toggleTodo(todoBefore)
+    ).toEqual(todoAfter)
+}
+```
+
+##### 6. Writing a Todo List Reducer (Adding a Todo, Toggling a Todo)
+To use test assertions as before use **expect** and **deep-freeze**
+```html
+<script src="expect"></script>
+<script src="deep-freeze"></script>
+```
+
+```javascript
+// state = an array of todos
+// reducer = is a pure function that contains an update logic for your
+//+ application => that is, how the next state is calculated given the 
+//+ the current state and the action being dispatched
+const todos = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return [
+                ...state,
+                {
+                    id: action.id,
+                    text: action.text,
+                    completed: false
+                }
+            ]
+        case 'TOGGLE_TODO':
+            // produce a new array with the map method
+            return state.map(todo => {
+                if (todo.id !== action.id) {
+                    return todo
+                }
+
+                return {
+                    ...todo, 
+                    completed: !todo.completed
+                }
+            }) 
+        default:
+            return state
+    }
+}
+
+// before writing a reducer, we need to know if it's code is correct, 
+//+ by writing a test for it
+const testAddTodo = () => {
+    const stateBefore = []
+    const action = {
+        type: 'ADD_TODO',
+        id: 0,
+        text: 'Learn Redux'
+    }
+    const stateAfter = {
+        id: 0, // has the same id as the action object
+        text: 'Learn Redux',
+        completed: false
+    }
+
+    // make sure the reducer is a pure function
+    deepFreeze(stateBefore)
+    deepFreeze(action)
+
+    expect(
+        todos(stateBefore, action)
+    ).toEqual(stateAfter) // deeply equal
+
+    testAddTodo();
+    // unless an exception been raised, show the success message
+    console.log('All tests passed.')
+}
+
+const testToggleTodo = () => {
+    const stateBefore = [
+        {
+            id: 0,
+            text: 'Learn Redux',
+            completed: false
+        }, 
+        {
+            id: 1,
+            text: 'Go shopping',
+            completed: false
+        }
+    ]
+    const action = {
+        type: 'TOGGLE_TODO',
+        id: 1
+    }
+    const stateAfter = [
+        {
+            id: 0,
+            text: 'Learn Redux',
+            completed: false
+        }, 
+        {
+            id: 1,
+            text: 'Go shopping',
+            completed: true
+        }
+    ]
+
+    deepFreeze(stateBefore)
+    deepFreeze(action)
+
+    expect(
+        todos(state, action)
+    ).toEqual(stateAfter)
+}
+
+testAddTodo()
+testToggleTodo()
+consle.log('All tests passed.')
+```
+
+##### 7. Reducer Composition with Arrays
+To use test assertions as before use **expect** and **deep-freeze**
+```html
+<script src="expect"></script>
+<script src="deep-freeze"></script>
+```
+
+```javascript
+const todo = (state, action) => {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return {
+                id: action.id,
+                text: action.text,
+                completed: false
+            }
+        case 'TOGGLE_TODO': 
+            if (state.id !== action.id) {
+                return state
+            }
+
+            return {
+                ...state, 
+                completed: !state.completed
+            }
+        default:
+            return state
+    }
+}
+
+const todos = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return [
+                ...state,
+                todo(undefined, action)
+            ]
+        case 'TOGGLE_TODO':
+            // call the todo reducer for each state
+            return state.map(t => todo(t, action)) 
+        default:
+            return state
+    }
+}
+
+// before writing a reducer, we need to know if it's code is correct, 
+//+ by writing a test for it
+const testAddTodo = () => {
+    const stateBefore = []
+    const action = {
+        type: 'ADD_TODO',
+        id: 0,
+        text: 'Learn Redux'
+    }
+    const stateAfter = {
+        id: 0, // has the same id as the action object
+        text: 'Learn Redux',
+        completed: false
+    }
+
+    // make sure the reducer is a pure function
+    deepFreeze(stateBefore)
+    deepFreeze(action)
+
+    expect(
+        todos(stateBefore, action)
+    ).toEqual(stateAfter) // deeply equal
+
+    testAddTodo();
+    // unless an exception been raised, show the success message
+    console.log('All tests passed.')
+}
+
+const testToggleTodo = () => {
+    const stateBefore = [
+        {
+            id: 0,
+            text: 'Learn Redux',
+            completed: false
+        }, 
+        {
+            id: 1,
+            text: 'Go shopping',
+            completed: false
+        }
+    ]
+    const action = {
+        type: 'TOGGLE_TODO',
+        id: 1
+    }
+    const stateAfter = [
+        {
+            id: 0,
+            text: 'Learn Redux',
+            completed: false
+        }, 
+        {
+            id: 1,
+            text: 'Go shopping',
+            completed: true
+        }
+    ]
+
+    deepFreeze(stateBefore)
+    deepFreeze(action)
+
+    expect(
+        todos(state, action)
+    ).toEqual(stateAfter)
+}
+
+testAddTodo()
+testToggleTodo()
+consle.log('All tests passed.')
+```
+
+##### 8. Reducer Composition with objects
+The actions of multiple reducers that have been combine into a single reducer are handled independently
+```html
+<script src="expect"></script>
+<script src="deep-freeze"></script>
+```
+
+```javascript
+const todo = (state, action) => {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return {
+                id: action.id,
+                text: action.text,
+                completed: false
+            }
+        case 'TOGGLE_TODO': 
+            if (state.id !== action.id) {
+                return state
+            }
+
+            return {
+                ...state, 
+                completed: !state.completed
+            }
+        default:
+            return state
+    }
+}
+
+const todos = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return [
+                ...state,
+                todo(undefined, action)
+            ]
+        case 'TOGGLE_TODO':
+            // call the todo reducer for each state
+            return state.map(t => todo(t, action)) 
+        default:
+            return state
+    }
+}
+
+// let's write another reducer
+const visibilityFilter = (
+    state = 'SHOW_ALL',
+    action
+) => {
+    switch (action.type) {
+        case 'SET_VISIBILITY_FILTER':
+            return action.filter
+        default:
+            return state
+    }
+}
+
+// to store this information, I don't need to change the existing reducer,
+//+ but instead we will use a reducer composition patterns and create a new reducer
+//+ that calls the existing reducer to manage parts of its state and combine their
+//+ results in a single state object 
+const todoApp = (state = {}, action) => {
+    return {
+        todos: todos(
+            state.todos,
+            action
+        ),
+        visibilityFilter: visibilityFilter(
+            state.visibilityFilter,
+            action
+        )
+    }
+}
+
+// !IMPORTANT: to simplify the above, Redux implements combineReducers()
+const {combineReducers} = Redux
+const todoApp = combineReducers({
+    todos: todo, // ES6 object-literal allows for: todos, visibilityFilter
+    visibilityFilter: visibilityFilter
+})
+
+const {createStore} = Redux; // import {createStore} from 'redux'
+const store = createStore(todoApp)
+
+console.log('Dispatch SET_VISIBILITY_FILTER')
+store.dispatch({
+    type: 'SET_VISIBILITY_FILTER',
+    filter: 'SHOW_COMPLETED'
+})
+
+// Tests as specified above
+```
+
+***
 
 ##### 2. Create object reducers - build **skiDay** reducer
 
