@@ -6,7 +6,7 @@
 *.war
 *.ear
 *.class
-
+node_modules/
 # eclipse specific git ignore
 *.pydevproject
 .project
