@@ -1,7 +1,7 @@
 export default function images(state = {images:[]}, action) {
   switch (action.type) {
     case 'IMAGES_RECEIVED':
-      console.log(JSON.stringify(action.images));
+      console.log('IMAGES_RECEIVED: ', JSON.stringify(action.images));
       return {...state, images: action.images};
     case 'LOAD_IMAGES_FAILURE':
       return state;
