@@ -55,7 +55,11 @@ Visit **rubygems.org** to check all of the available gems and dependencies
 # Make sure to activate proper ruby version
 $ rbenv global/local/shell 2.4.0
 $ gem install bundler # necessary for managing rails applications
-$ sudo gem install nokogiri # a dependency of other tools
+# be careful to NOT use sudo as recommended by some stackoverflow posts
+#+ it creates downstream issues when trying to connect to db
+#+ if excidentally installed with sudo, make sure to remove gem/doc||test/nokogiri
+#+ as all nokogiri gems will be installed with sudo/root
+$ gem install nokogiri # a dependency of other tools
 # download rails gem + dependencies
 $ gem install rails
 $ gem list # view all of the installed gems
@@ -104,7 +108,64 @@ rbenv local 2.3.1 # a new file will appear in the root dir:
 
 ```
 
+- Connect the database with the new project
+```bash
+# create dev and test database
+mysql -u root -p
+mysql> create database demo_project_mysql_dev;
+mysql> create database demo_project_mysql_test;
+# create a user in addition to the root user for db connections
+# grant to the new user db privileges for all tables
+mysql> grant all privileges on demo_project_mysql_dev.* to 'rails_user'@'localhost' identified by 'rails_user_pw';
+mysql> grant all privileges on demo_project_mysql_test.* to 'rails_user'@'localhost' identified by 'rails_user_pw';
+mysql> exit
+```
 
+- Edit config that connects rails to database
+```bash
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: rails_user
+  password: rails_user_pw
+  socket: /tmp/mysql.sock
 
+development:
+  <<: *default
+  database: demo_project_mysql_dev
 
+### ....
+```
 
+- Ran into an interesting **ERROR** at this point on my Mac when running **rails db:schema:dump**
+```text
+...blahblah
+LoadError: dlopen(/Users/whitehat/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/nokogiri-1.7.0.1/lib/nokogiri/nokogiri.bundle, 9): Library not loaded: /usr/local/opt/zlib/lib/libz.so.1.2.8
+  Referenced from: /Users/whitehat/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/nokogiri-1.7.0.1/lib/nokogiri/nokogiri.bundle
+  Reason: image not found - /Users/whitehat/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/nokog
+...more of blahblah
+```
+
+After some analysis it looks as if the **zlib** installation is off. Here is how I fixed it:
+```bash
+# manually deleted old links
+rm -rf /usr/local/opt/zlib # link to /usr/local/Cellar/zlib/1.2.11
+rm -rf /usr/local/Cellar/zlib # /lib/1.2.8 was actually installed with only r permissions
+gem uninstall nokogiri # to double check that nokogiri didn't try to install zlib dependency
+gem install nokogiri # zlib wasn't installed
+bundle install # to make sure all of the gems are bundled - not necessary step
+
+brew untap homebrew/dupes
+brew tap homebrew/dups
+brew install zlib
+brew list zlib # the links in /usr/local/opt/zlib -> /usr/local/Cellar/zlib/1.2.11 properly
+
+rails db:schema:dump # properly generate project/db/schema.rb output
+``` 
+
+- Launch a Project!
+```bash
+# go to the projec root
+$ rails server # go to localhost:3000
+```
