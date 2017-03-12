@@ -5,6 +5,7 @@
 
 - PATH setup - **Important to add the eval statement**
 ```bash
+# ~/.bash_profile
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:$PATH"
 eval "$(rbenv init -)" # run this comman every time a window is opened
 ```
