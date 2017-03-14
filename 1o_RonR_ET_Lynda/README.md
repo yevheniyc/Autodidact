@@ -91,7 +91,9 @@ gem install pg
 - Installing Web Server
 
 Production: Apache2 or NGINX
+
 Passenger or Unicorn: are the lighter web servers that help handling requests between rails and the production server.
+
 For development: WEBrick (prev versions) -> Puma (Rails 5) - allows concurrency, can be used in production, **comes with rails**
 
 - Create a new project
@@ -161,7 +163,7 @@ gem install nokogiri # zlib wasn't installed
 bundle install # to make sure all of the gems are bundled - not necessary step
 
 brew untap homebrew/dupes
-brew tap homebrew/dups
+brew tap homebrew/dupes
 brew install zlib
 brew list zlib # the links in /usr/local/opt/zlib -> /usr/local/Cellar/zlib/1.2.11 properly
 
@@ -172,4 +174,11 @@ rails db:schema:dump # properly generate project/db/schema.rb output
 ```bash
 # go to the projec root
 $ rails server # go to localhost:3000
+```
+
+### Starting Project in RONR 5 Essentioal Training
+
+```bash
+rails new simple_cms -d mysql
+# after updating the gems, install bundler will need to be run agian
 ```
