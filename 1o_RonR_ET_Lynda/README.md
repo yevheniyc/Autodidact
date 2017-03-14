@@ -291,4 +291,51 @@ simple_cms
 	rails server || rails s
 	```
 
-5. 
+5. Start with Controllers
+
+	```bash
+    # generate a controller and views for that controller
+	generate controller demo index another_view
+	# output:
+	Running via Spring preloader in process 99008
+      create  app/controllers/demo_controller.rb          # DemoController < ApplicationController
+       route  get 'demo/index'
+      invoke  erb
+      create    app/views/demo
+      create    app/views/demo/index.html.erb
+      invoke  test_unit
+      create    test/controllers/demo_controller_test.rb
+      invoke  helper
+      create    app/helpers/demo_helper.rb
+      invoke    test_unit
+      invoke  assets
+      invoke    coffee
+      create      app/assets/javascripts/demo.coffee
+      invoke    scss
+      create      app/assets/stylesheets/demo.scss
+	```
+
+	- The following class is generated in the controller:
+	```ruby
+	# controllers/demo_controller.rb
+	class DemoController < ApplicationController
+		layout false # turn off default layouts
+		def index
+		# this is the action that renders the index view
+		end
+	end
+	```
+	- A few more files have been generates:
+	```ruby
+	# views/demo/index.html.rb
+	# config/routes.rb
+	```
+
+6. How Server Requests are Handled?
+	
+	- Public folder is accessed prior to accessing Rails Framework
+		- In production, web server needs to know that the document root **(ip:/)** is the Public directory
+		- In development, Puma knows that Public is the document root
+	- The url is parsed and passed to Routing to determine which controller/view/model to access
+
+![alt text](imgs/1_ronr.png "MVC")
