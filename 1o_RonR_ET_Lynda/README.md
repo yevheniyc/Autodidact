@@ -79,6 +79,9 @@ brew services start mysql
 # to configure root pw/security
 $ mysql_secure_installation # to set a root password
 $ mysql -uroot -p # enter the pw
+# local credentials
+root:whitehat
+rails_user:rails_user_pw
 
 # now isntall rubygem for mysql or postgres
 gem install mysql2
