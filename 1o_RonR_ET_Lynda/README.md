@@ -243,7 +243,44 @@ simple_cms
 	  end
 	end
 	```
-	- **config/environments/... ** - will preceed this file
-	- **config/initializers ** - will be called after this file 
+	- **config/environments/...** - dev/prod/test envs activation will preceed this file
+	- **config/initializers** - will be called after this file 
 
+3. Configure database
 
+	```bash
+	mysql -u root -p #whitehat
+    mysql> create database simple_cms_development;
+    mysql> create database simple_cms_test;
+    # define a new user for the rail applicaiton: it will be a locally connecting user,
+    # not from somewhere else
+    mysql> grant all privileges on simple_cms_development.* to 'rails_user'@'localhost' \ 
+                                                            identified by 'rails_user_pw';
+    mysql> grant all privileges on simple_cms_test.* to 'rails_user'@'localhost' \
+															identified by 'rails_user_pw';
+	```
+
+	```bash
+	default: &default
+	  adapter: mysql2
+	  encoding: utf8
+	  pool: 5
+	  username: rails_user
+	  password: rails_user_pw
+	  host: localhost
+
+	development:
+	  <<: *default
+	  database: simple_cms_development
+
+	# Warning: The database defined as "test" will be erased and
+	# re-generated from your development database when you run "rake".
+	# Do not set this db to the same as development or production.
+	test:
+	  <<: *default
+	  database: simple_cms_test
+	```
+
+    ```bash
+	rails db:schema:dump # get all definitions (descriptions) of the database -> db/schema.db
+	```
