@@ -243,7 +243,7 @@ simple_cms
 	  end
 	end
 	```
-	**config/environments/... ** - will preceed this file
-    **config/initializers ** - will be called after this file 
+	- **config/environments/... ** - will preceed this file
+	- **config/initializers ** - will be called after this file 
 
 
