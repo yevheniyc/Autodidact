@@ -250,13 +250,13 @@ simple_cms
 
 	```bash
 	mysql -u root -p #whitehat
-    mysql> create database simple_cms_development;
-    mysql> create database simple_cms_test;
-    # define a new user for the rail applicaiton: it will be a locally connecting user,
-    # not from somewhere else
-    mysql> grant all privileges on simple_cms_development.* to 'rails_user'@'localhost' \ 
-                                                            identified by 'rails_user_pw';
-    mysql> grant all privileges on simple_cms_test.* to 'rails_user'@'localhost' \
+	mysql> create database simple_cms_development;
+	mysql> create database simple_cms_test;
+	# define a new user for the rail applicaiton: it will be a locally connecting user,
+	# not from somewhere else
+	mysql> grant all privileges on simple_cms_development.* to 'rails_user'@'localhost' \ 
+															identified by 'rails_user_pw';
+	mysql> grant all privileges on simple_cms_test.* to 'rails_user'@'localhost' \
 															identified by 'rails_user_pw';
 	```
 
@@ -269,7 +269,7 @@ simple_cms
 	  password: rails_user_pw
 	  host: localhost
 
-	development:
+	development
 	  <<: *default
 	  database: simple_cms_development
 
@@ -281,6 +281,14 @@ simple_cms
 	  database: simple_cms_test
 	```
 
-    ```bash
+	```bash
 	rails db:schema:dump # get all definitions (descriptions) of the database -> db/schema.db
 	```
+
+4. Access a Project
+
+	```bash
+	rails server || rails s
+	```
+
+5. 
