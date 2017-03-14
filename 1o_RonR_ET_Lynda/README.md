@@ -182,3 +182,68 @@ $ rails server # go to localhost:3000
 rails new simple_cms -d mysql
 # after updating the gems, install bundler will need to be run agian
 ```
+
+- File Structure
+
+```bash
+simple_cms
+├── app
+│   ├── assets          # js/css/img
+│   ├── channels        # action cable - websockets
+│   ├── controllers
+│   ├── helpers         # view helpers
+│   ├── jobs            # repeating tasks
+│   ├── mailers         # sending email
+│   ├── models
+│   └── views
+├── bin
+│   └── ...
+├── config               # db configs, routers
+│   └── ...
+├── db                  # db data, migration files                   
+│   └── seeds.rb
+├── lib                 # custom code used from project to project
+│   ├── assets
+│   └── tasks
+├── log                 # log files, errors
+├── public              # public files that are not served by app
+│   └── ...
+├── test                # test unit, rspec
+│   └── ...
+└── vendor              # 3rd party ruby code that is not in gems
+    └── assets
+--Gemfile               # specifies which ruby gems are used
+```
+
+- Basic Configs
+
+1. Define Gemfile - include any necessary gems used in the project
+
+	```bash
+	# then run
+	bundle install # part of the bundler gem
+	```
+
+2. Configuraiton that apply to the app throughought - **application.rb**
+
+	```ruby
+	require_relative 'boot'
+
+	require 'rails/all'
+
+	# Require the gems listed in Gemfile, including any gems
+	# you've limited to :test, :development, or :production.
+	Bundler.require(*Rails.groups)
+
+	module SimpleCms
+	  class Application < Rails::Application
+		# Settings in config/environments/* take precedence over those specified here.
+		# Application configuration should go into files in config/initializers
+		# -- all .rb files in that directory are automatically loaded.
+	  end
+	end
+	```
+	**config/environments/... ** - will preceed this file
+    **config/initializers ** - will be called after this file 
+
+
