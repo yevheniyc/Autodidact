@@ -338,4 +338,4 @@ simple_cms
 		- In development, Puma knows that Public is the document root
 	- The url is parsed and passed to Routing to determine which controller/view/model to access
 
-![alt text](imgs/1_ronr.png "MVC")
+![alt text](imgs/2_ronr.png "MVC")
