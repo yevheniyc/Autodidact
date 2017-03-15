@@ -248,7 +248,7 @@ simple_cms
 
 3. Configure database
 
-	```bash
+	```
 	mysql -u root -p #whitehat
 	mysql> create database simple_cms_development;
 	mysql> create database simple_cms_test;
@@ -260,7 +260,7 @@ simple_cms
 															identified by 'rails_user_pw';
 	```
 
-	```bash
+	```
 	default: &default
 	  adapter: mysql2
 	  encoding: utf8
@@ -268,17 +268,6 @@ simple_cms
 	  username: rails_user
 	  password: rails_user_pw
 	  host: localhost
-
-	development
-	  <<: *default
-	  database: simple_cms_development
-
-	# Warning: The database defined as "test" will be erased and
-	# re-generated from your development database when you run "rake".
-	# Do not set this db to the same as development or production.
-	test:
-	  <<: *default
-	  database: simple_cms_test
 	```
 
 	```bash
@@ -338,4 +327,44 @@ simple_cms
 		- In development, Puma knows that Public is the document root
 	- The url is parsed and passed to Routing to determine which controller/view/model to access
 
-![alt text](imgs/2_ronr.png "MVC")
+	![alt text](imgs/2_ronr.png "MVC")
+
+7. Routes
+	
+	- Rails routing parses the request's url and decides which controller to pass the request to
+	- Routes Definitions/Types:
+		- Simple/Match Route
+			```ruby
+			get "demo/index"
+			# longer version: 
+			match "demo/index", :to => "demo:index", :via => :get
+			```
+		- Default Route Structure: **:controller/:action/:id**
+			```ruby
+			# GET /students/edit/52 -> StudentsController, edit action, id = 52
+			get ':controller(/:action(/:id))'
+			# use () for optional parts; if action is omitted - it will use default index action
+			match ':controller(/:action(/:id))', :via => :get
+			```
+		- Root Route - if nothing matches the url -> used for homepage
+			```ruby
+			root 'demo#index' # localhost redirects to the demo#index action
+			```
+		- Resourceful routes
+
+8. Render a Template
+	- Sensible Defaults
+		```ruby
+		# routes.rb
+		get 'demo/hello' # even without hello controller, hello.html.erb will be rendered
+		``` 
+	- Render Template Syntax
+		```ruby
+		# demo_controller.rb
+		def hello
+			# because it is inside demo controller, we only need to specify method/action name
+			render(:template => 'demo/hello')
+			render('demo/hello')
+			render('hello')
+		end
+		```
