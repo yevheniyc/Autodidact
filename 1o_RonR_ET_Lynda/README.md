@@ -368,3 +368,4 @@ simple_cms
 			render('hello')
 		end
 		```
+9. Redirecting Actions
