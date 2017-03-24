@@ -369,3 +369,11 @@ simple_cms
 		end
 		```
 9. Redirecting Actions
+
+```ruby
+# demo_controller.rb
+def other_hello
+    #redirect_to(:controller => 'demo', :action => 'index')
+    redirect_to(:action => 'index')
+end
+```
