@@ -374,6 +374,49 @@ simple_cms
 # demo_controller.rb
 def other_hello
     #redirect_to(:controller => 'demo', :action => 'index')
-    redirect_to(:action => 'index')
+    redirect_to(:action => 'index') # rails knows which controller to use
 end
 ```
+
+10. View Templates
+Embed Ruby into templates with ERB (embedded ruby), using eRuby templating system.
+We could also have other formats, xml/json/javascript
+
+```html
+<% code %> # Processes and executes ruby code, but does NOT output
+<%= code or 1 + 1 %> # Executes ruby code and then outputs whatever result that code returns in the template
+
+<%= 1 + 1 %>
+<% target = "world" %>
+<%= "hello #{target}" %>
+
+<!-- Outputs to the console-->
+<%=
+3.times do |n|
+  puts n
+end
+%> <!--Outputs only 3  -->
+
+<% 3.times do |n| %>
+  <%= n %>
+<% end %> <!-- Outputs: 0, 1, 2-->
+```
+
+11. Instance Variables
+Provide templates access to data gathered by the controller
+- Templates only have access to instance variables
+variable vs. @instance_variable  (applies only to the Controller object)
+
+```ruby
+def hello
+    @array = [1, 2, 3, 4, 5]
+    render('hello')
+end
+```
+```html
+<% @array.each do |n| %>
+  <%= n %> <br>
+<% end %> 
+```
+
+The Controller and the View code is grouped together inside Rails framework as part of action pack. In other words, ActionController and ActionView are both part of ActionPackt. 

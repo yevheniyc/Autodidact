@@ -1,1 +1,16 @@
 <h1>Hello world from hello.html</h1>
+
+<%= 1 + 1 %>
+<% target = "world" %>
+<%= "hello #{target}" %>
+
+<!-- Outputs to the console-->
+<%=
+3.times do |n|
+  puts n
+end
+%> <!--Outputs only 3  -->
+<br>
+<% @array.each do |n| %>
+  <%= n %> <br>
+<% end %> <!-- Outputs: 0, 1, 2-->
