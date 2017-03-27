@@ -16,3 +16,8 @@ end
 <% end %> <!-- Outputs: 0, 1, 2-->
 <hr>
 <%= link_to('Hello page 1', {:action => 'index'}) %><br />
+
+ID: <%= @id %><br>
+ID: <%= params[:id] %><br>
+Page: <%= @page %><br>
+Next Page: <%= @page.to_i + 1 %><br>

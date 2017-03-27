@@ -436,4 +436,46 @@ The controller part could be ommited if the action is within the same controller
 <%= link_to(text, {:controller => 'demo', :action => 'index'} %>
 ```
 
+Rails prefers the shorter router path.
+
+13. URL Parameters
+
+Entring page 5 of a multi-page list, parameters are values to the right of the **?** in URL.
+
+```html
+/demo/hello/1?page=3&name=kevin
+```
+
+We can specify either symbols or strings:
+
+```ruby
+params[:id]
+params['id']
+```
+
+Example with parameters:
+
+```html
+<%= link_to( 'Hello with parameters', {:action => 'hello', :page => 5, :id => 20}) %><br />
+```
+
+Let's except the parameters in controller
+
+```ruby
+def hello
+    @array = [1, 2, 3, 4, 5]
+    @id = params['id']
+    @page = params[:page]
+    render('hello')
+end
+```
+
+Read the instance variables in the view. NOTE: params are always **strings**
+
+```html
+ID: <%= @id %><br>
+Page: <%= @page %><br>
+ID: <%= params[:id] %>
+Next page: <%= @param.to_i + 1 %><br>
+```
 
