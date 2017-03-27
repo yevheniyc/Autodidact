@@ -420,3 +420,20 @@ end
 ```
 
 The Controller and the View code is grouped together inside Rails framework as part of action pack. In other words, ActionController and ActionView are both part of ActionPackt. 
+
+
+12. Links
+
+Creating a link example:
+```html
+<%= link_to(text, target) %>
+<a href="/demo/index">index page</a>
+```
+
+The controller part could be ommited if the action is within the same controller that rendered the current page
+```html
+<%= link_to(text, "/demo/index") %>
+<%= link_to(text, {:controller => 'demo', :action => 'index'} %>
+```
+
+
