@@ -479,3 +479,83 @@ ID: <%= params[:id] %>
 Next page: <%= @param.to_i + 1 %><br>
 ```
 
+
+### Databases and Migration
+
+Index - data structure on a table to increase lookup speed - finding rows faster
+Create, Read, Update, Delete
+
+1. Configure Database and Connect Rails Project Review
+
+Don't use root user:
+
+```bash
+mysql -u rails_user -p # enter password
+```
+
+```sql
+-- basic show, create, use, drop
+show databases;
+create database db_name;
+use db_name;
+drop database db_name;
+
+-- grant privileges to a user
+grant all privileges on db_name.*
+    to 'username'@'localhost'
+    identified by 'password';
+
+-- display privileges
+show grants for 'username'@'localhost';
+```
+
+- Configure rails project to the database: **config/database.yml**
+- To check if worked: 
+
+```bash
+rails db:schema:dump
+```
+
+2. Migrations: Add Tables to the Database
+
+Rails Migration: Generate a Migration
+
+```bash
+rails generate migration MigrationName
+```
+
+Then check db/migrations/timestap_migration_name_yet.rb for the output
+
+```ruby
+class MigrationName < ActiveRecord::Migration[5.0]
+    def change
+	end
+end
+
+# where change equals to: def up end and def down end
+```
+
+Where:
+- **up** method describes what needs to be done to the database
+- **down** method describes how to revert **up's** changes
+- **Important** - some changes cannot be automatically reversed (down), which we would have to reverse manually
+
+
+3. Generate Models and Migrations
+
+```bash
+rails generate model ModelName # User
+
+# Output:
+  invoke  active_record
+  create    db/migrate/20170328035823_create_users.rb
+  create    app/models/user.rb
+  invoke    test_unit
+  create      test/models/user_test.rb
+  create      test/fixtures/users.yml
+```
+
+
+
+
+
