@@ -129,3 +129,15 @@ incomes.std() # 49.79...
 incomes.var() # 2479.46...
 ```
 
+#### Probability Density Function and Probability Mass Function
+
+Probability Density/Destribution Function:
+- Normal Destribution: probability of a given range of values occuring
+    - Probability of a value falling within 1 std_dev is hight, for example
+![Normal Distribution](imgs/1_normal_destribution.png)
+
+Probability Mass Function: when dealing with discrete data - visualizing probability of discrete data
+- We could plot a probability density function (normal destribution) on the discrete data points
+- However, if we want to quantize the discrete dataset, we could use histogram: the number 3 accures a set number of times (vs. a percent occurance of a range of values with normal destribution).
+![Probability Mass Function](imgs/2_probability_mass_function.png)
+
