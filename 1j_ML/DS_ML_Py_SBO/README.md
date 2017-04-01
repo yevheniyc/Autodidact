@@ -93,3 +93,39 @@ ages # array([500 values])
 from scipy import stats # statistics
 stats.mode(ages) # (array([34]), array([13])) => (mode, frequency_of_mode) => age 34 appeared 13 times
 ```
+
+#### Variation and Standard Deviation
+
+**Variance** - how spread is the dataset 
+- Variance (sigma^2) - the average of the squared differences from the mean
+```
+dataset = (1, 4, 5, 4, 8)
+1. Find the mean: 4.4
+2. Find the differences from the mean: (-3.4, -0.4, 0.6, -0.4, 3.6)
+3. Find the squared differences: (11.56, 0.16, 0.36, 0.16, 12.96) # emplify differences
+4. Find the average of the squared differences:
+   Variance = (11.56 + 0.16 + 0.36 + 0.16 + 12.96) / 5 = 5.04
+5. Find standard deviation
+   std_dev(sigma) = \sqrt{variance == sigma^2} # used to identify outliers
+6. In normal destribution:
+   - 1 std_dev from the mean considers to be normal for normal destribution
+```
+- Population (sigma^2) vs. Sample Variance (S)
+```
+sigma^2 = (11.56 + 0.16 + 0.36 + 0.16 + 12.96) / 5 = 5.04
+S = (11.56 + 0.16 + 0.36 + 0.16 + 12.96) / 4 = 6.3
+```
+- Population variance: sigma^2 = \frac{\sum(X - mean)^{2}}{N}
+- Sample variance: S = \frac{\sum(X - mean)^{2}}{N - 1}
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+incomes = np.random.normal(100.0, 50.0, 10000)
+plt.hist(incomes, 50)
+plt.show()
+
+incomes.std() # 49.79...
+incomes.var() # 2479.46...
+```
+
