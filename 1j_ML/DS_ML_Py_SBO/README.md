@@ -141,3 +141,71 @@ Probability Mass Function: when dealing with discrete data - visualizing probabi
 - However, if we want to quantize the discrete dataset, we could use histogram: the number 3 accures a set number of times (vs. a percent occurance of a range of values with normal destribution).
 ![Probability Mass Function](imgs/2_probability_mass_function.png)
 
+#### Common Data Distributions
+Distributions.ipnb
+
+**Uniform Distribution**: a constant probability of a value occuring within a given range
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+values = np.random.uniform(-10, 10, 100000) # (min, max, values)
+plt.hist(values, 50)
+plt.show()
+# an equal change of any given value (range of values) occuring within the data
+# x => (range of values), y => (frequency of occurance of each value or range of values)
+```
+
+**Normal / Gaussian** - Probability Density Function
+
+- Visualize Probability Density Function 
+```python
+from scipy.stats import norm
+import matplotlib.pyplot as plt
+
+# create a list of x numbers (from, to, step)
+x = np.arange(-3, 3, 0.001)
+plt.plot(x, norm.pdf(x)) # (x, y)
+```
+
+- Generate some random numbers with a normal distribution
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+mu = 5.0
+sigma = 2.0
+values = np.random.normal(mu, sigma, 10000)
+plt.hist(values, 50)
+plt.show()
+# Normal distributions histogram with mean = 5, std_dev = 2.0
+```
+
+**Exponential Probability Destribution Function / "Power Law"**
+
+```python
+from scipy.stats import expon
+import matplotlib.pyplot as plt
+
+x = np.arange(0, 10, 0.001)
+plt.plot(x, expon.pdf(x))  # (x, y)
+# exponential distribution line: y decreases exponentially with increasing x
+```
+
+**Binomial Probability Mass Function** - dealing with discrete data
+
+```python
+from scipy.stats import binom
+import matplotlib.pyplot as plt
+
+n, p = 10, 0.5
+x = np.arange(0, 10, 0.001)
+plt.plot(x, binom.pmf(x, n, p)) # (values, num_of_events[roll a dice 20 times], prob_of_event_occuring)
+```
+
+**Poisson Probability Mass Function**: 
+If given an average of events occuring at a particular time period, what is the probability of getting a different average values: 
+- My website gets on average 500 visits per day. What is the probability of getting 550?
+
+
