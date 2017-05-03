@@ -1,7 +1,7 @@
-###Amazon Web Services Essential Training - Lynda
+### Amazon Web Services Essential Training - Lynda
 ===
 
-#####Cloud Services
+##### Cloud Services
 - Infrastructure as a Service (IaaS)
  - Windows Asure
  - Rackspace Cloud
@@ -18,31 +18,31 @@
 
 NOTE: AWS offers all three services (IaaS, PaaS, Saas)
 
-#####Business Benefits
+##### Business Benefits
 - Minimal upfront infrastructure investment
 - Just in-time infrastructure - expand based on my needs
 - Maximize efficiency of resources
 - Only pay for what you use
 
-#####Technical Benefits
+##### Technical Benefits
 - Have APIs for scriptable automations 
 - Automatically scale my system Up/Down Right/Left
 - Meet anticipated demand
 - Ease of implementing disaster recovery infrastructure
 
-#####Scalable Architectures (up/down/in/out)
+##### Scalable Architectures (up/down/in/out)
 - Scaling Out (horizontal scaling) - adding capacity to a system by adding more components or nodes that make up that system. For example, adding more web servers to the system to handle an increase in traffic.
 - Scaling In (horizontal scaling) - removing capacity from a system, by decreasing the number of components or nodes. For example, scale in the web server tier by reducing the number of running web servers.
 - Scaling Up (vertical scalling) - adding resources to a single component or node in our system in order to increase cits capacity to handle load. For example, increasing the number of CPUs or increase the memory of a database server. 
 - Scaling Down (vertical scalling) - reducing the resources of a single component or node in the system. 
 ===
 
-#####Understanding Elasticity: Clouds ability to accomodate changes in load and demand of the system.
+##### Understanding Elasticity: Clouds ability to accomodate changes in load and demand of the system.
 - There is not a Cloud server type that has the exact or greater amount of RAM required on single server, that what you already have on premises. In that case, you should think about ways to distribute that need across multiple servers, by rethinking you application architecture, or perhaps by leveraging other available Cloud services, like a distributed memory cache (i.e. AWS EsastiCache).
 - You find that the database requires more input/output operations per second, often referred to as IOPS, than what the Cloud provides. There are other ways to achieve this based on your data in use cases. One solution is to distribute across a cluster, thereby scaling out the database layer, or take advantage of other database sharding techniques that can route data and requests to where they need to be. 
 - Often, if you find to be hitting constraints with Cloud infrastructure (which in theory is infinitely scalable), this is most likely due to the application architecture not being built in a scalable manner. 
 
-#####Implement Elasticity - ability to scale cloud resource up/down/in/out
+##### Implement Elasticity - ability to scale cloud resource up/down/in/out
 - Scale on regular bases: daily/monthly/weekly - highly predictable traffic
 - Just when expecting event to happen: due to some events
 - Setup monitoring infrastructure (i.e. CPU utilization, or Network IO) - based on this info scale appropriately/automatically
@@ -53,7 +53,7 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
     - refers to creating a self-sustaining start-up process that can run on its own and in the context of AWS
     - tipically involves the process needed to get your application up and running on an EC2 instance
     
-#####Loose Coupling
+##### Loose Coupling
 - Minimize dependencies between components
 - Example infrastructure: several web servers, app servers and a database server
 
@@ -62,7 +62,7 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
 - Loosely-coupled components
 <br><img src="img/2_loose_coupling.png" width="200" hight="200">
 
-#####Security
+##### Security
 - Provider (AWS) Responsibility
     - Physical security of the building
     - Infrastructure security
@@ -101,10 +101,10 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
             - X509 Certificates
 ===
 
-####Designing for Failure
+#### Designing for Failure
 Avoid single points of failure (2 web servers -> 1 database server) - using Relational Database Service (RDS)
 
-#####Virual Servers (EC2) and Elastic IP
+##### Virual Servers (EC2) and Elastic IP
 - EC2 - these are the servers used in AWS
 - Elastic IPs 
     - are the static IP addresses designed for cloud computing
@@ -174,7 +174,7 @@ Fault Tolerance with ELB:
 <br><img src="img/10_elastic_load_balancer_round_robin.png" width="400" hight="400">
 
 
-#####Cloudwatch - alert machanisms when a system experiences failure or approaches failure
+##### Cloudwatch - alert machanisms when a system experiences failure or approaches failure
 - Resource and Application monitoring service
 - Monitor resources immediately and automatically
 - Monitor resource utilization, performance, traffic load demand
@@ -206,7 +206,7 @@ Detailed Monitoring (comes at a >$):
 In Summary: 
 The design for fauilure lesson #5 - utilize Cloudwatch to get more visibility and take appropriate actions in case of hardware fauilure or permormance issues.
 
-#####Elastic Block Storage (EBS)
+##### Elastic Block Storage (EBS)
 The next topic to cover as we explore how to design for faulure is **volume storage** for our EC2 instances.
 
 If you are running an application on EC2, and this application is storing data on the instance, you need to know about your storage options and how to design to ensure you are able to retain this data in the event an instance were to fail. In AWS, volume storage comes in two varieties:
@@ -237,7 +237,7 @@ If you are running an application on EC2, and this application is storing data o
     - Cloudwatch can be used to view performacne metrics for the EBS volumes providing the insight into metrics such as throughput and latency.
 - Ephemeral Volumes (Local Storage) - does not servive termination
 
-#####Relational Database Services (RDS)
+##### Relational Database Services (RDS)
 When the database part of your application fails, you want to ensure a safe and quick recovery. If you are using a relational database to store persistent information in your application, you definitely want to consider using Amazon Relational Database Service. Amazon Relational Database Service, or simply RDS, provides an easy way to **setup**, **operate**, and **scale** a relational database in the cloud.
 
 You can launch a DB instance and get access to a full featured relational database without having to worry much about common database administration tasks like **backups**, **patch management**, and **security management**. RDS is also configured in such a way so that you can easily achieve **high avialability** and **high redundancy** requirements as well.
@@ -257,7 +257,7 @@ Design for failures #7:
 - Design for Failure Lesson Number Seven: Consider using RDS to simplify database security, administration, backups, redundancy, failovers, scalability, and geographical distribution.
 ===
 
-#####Bootstrapping
+##### Bootstrapping
 Learn about the services and tools needed to help take advantage of the elastic nature of the Cloud, and as has been mentioned before, taking advantage of the Cloud's elastic nature is going to drive some of the biggest benefits you will realize from a Cloud-based environment versus a traditional one.
 
 
