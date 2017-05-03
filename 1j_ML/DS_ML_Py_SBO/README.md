@@ -208,4 +208,5 @@ plt.plot(x, binom.pmf(x, n, p)) # (values, num_of_events[roll a dice 20 times], 
 If given an average of events occuring at a particular time period, what is the probability of getting a different average values: 
 - My website gets on average 500 visits per day. What is the probability of getting 550?
 
+#### Percentiles and Moments
 
