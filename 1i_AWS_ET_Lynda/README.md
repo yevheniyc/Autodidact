@@ -1,5 +1,5 @@
 ### Amazon Web Services Essential Training - Lynda
-===
+---
 
 ##### Cloud Services
 - Infrastructure as a Service (IaaS)
@@ -35,7 +35,7 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
 - Scaling In (horizontal scaling) - removing capacity from a system, by decreasing the number of components or nodes. For example, scale in the web server tier by reducing the number of running web servers.
 - Scaling Up (vertical scalling) - adding resources to a single component or node in our system in order to increase cits capacity to handle load. For example, increasing the number of CPUs or increase the memory of a database server. 
 - Scaling Down (vertical scalling) - reducing the resources of a single component or node in the system. 
-===
+---
 
 ##### Understanding Elasticity: Clouds ability to accomodate changes in load and demand of the system.
 - There is not a Cloud server type that has the exact or greater amount of RAM required on single server, that what you already have on premises. In that case, you should think about ways to distribute that need across multiple servers, by rethinking you application architecture, or perhaps by leveraging other available Cloud services, like a distributed memory cache (i.e. AWS EsastiCache).
@@ -99,7 +99,7 @@ NOTE: AWS offers all three services (IaaS, PaaS, Saas)
                     - Make sure to secure your own applications - AWS provides security groups which act as your firewalls to the associated instances - always make sure you lock this down and restrict access to the instances.
                     - Make sure to update all software packages and apply all security patches - all of the pre-cloud application security practices still apply in the cloud.
             - X509 Certificates
-===
+---
 
 #### Designing for Failure
 Avoid single points of failure (2 web servers -> 1 database server) - using Relational Database Service (RDS)
@@ -255,7 +255,7 @@ Using RDS:
 
 Design for failures #7:
 - Design for Failure Lesson Number Seven: Consider using RDS to simplify database security, administration, backups, redundancy, failovers, scalability, and geographical distribution.
-===
+---
 
 ##### Bootstrapping
 Learn about the services and tools needed to help take advantage of the elastic nature of the Cloud, and as has been mentioned before, taking advantage of the Cloud's elastic nature is going to drive some of the biggest benefits you will realize from a Cloud-based environment versus a traditional one.
