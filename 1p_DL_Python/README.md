@@ -1,13 +1,13 @@
-###Deep Dive into Python Machine Learning
+### Deep Dive into Python Machine Learning
 This repo follows Safaribooksonline's Learning Path: Deep Dive Into Python Machine learning. It consists of the following sections:
 1. Chapter 1: Mastering Python
 2. Chapter 2: Data Mining with Python: Implementing Classification and Regression
 3. Chapter 3: Python Machine Learning Solutions
 4. Chapter 4: Deep Learning with Python
 
-####Chapter 1: Mastering Python
+#### Chapter 1: Mastering Python
 
-#####First-Class Functions and Classes
+##### First-Class Functions and Classes
 In Python, Functions and Classes are First-Class Objects: 
 - First-Class Object means somthine is a Data Value that can be accessed, modified, stored and otherwise manipulated by the program its a part of
 - In Python, a function is as much a data value as a text string is.
@@ -133,4 +133,3 @@ combined_values # [1, 2, 3]
 **zipapp** - manage executable python zip archives
 
 ##### Setting Up
-
