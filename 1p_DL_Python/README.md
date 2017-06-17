@@ -146,7 +146,85 @@ combined_values # [1, 2, 3]
 
 - Other packages included in 3.5
 
-**typing**
-**zipapp** - manage executable python zip archives
+**typing** - type hinting
+**zipapp** - manage executable python zip archives (.pyc), especially when distributing the application to the users.
 
 ### Setting Up
+
+Python versions:
+
+- Python 2
+
+```python
+from urllib import urlopen, URLError
+
+def fetch_email(url):
+    try:
+        data = urlopen(url).read()
+        return data.split('mailto:')[1].split('"')[0]
+    except (IndexError, URLError), error:
+        print error
+        return 'invalid@example.com'
+```
+
+- Python 3
+
+```python
+from urllib.request import urlopen
+from urllib.error impor URLError
+
+def fetch_email(url):
+    try:
+        data = urlopen(url).read().decode('utf8')
+        return data.split('mailto:')[1].split('"')[0]
+    except (IndexError, URLError) as error:
+        print(error)
+        return 'invalid@example.com'
+```
+
+### Using pip
+
+Make sure we have permissions to write into the Python's library directory
+
+```bash
+# to install into system's python directory
+pip install banknumber
+# to install into user's python directory
+pip install --user requests
+# view packages
+pip list
+# upgrade a specific library
+pip install --upgrade requests
+# uninstall
+pip uninstall requests
+```
+
+Finding packages in the Python Package Index
+
+- What if we don't know which library to use for the task? Search in **PyPI.python.org**
+
+```bash
+pip search asyncio
+```
+
+### Creating Packages
+
+- Create a simple, empty package
+- Add code modules to the package
+- Accessing code from other modules in the package
+- Adding static data files to the package
+
+#### Create a simple, empty package
+
+- How Python recognizes packages
+- How to add  metadata to a package
+- Import our package, to see it work
+
+```bash
+mkdir demopackage
+```
+
+Two things turn a folder into a regular package:
+
+- 
+
