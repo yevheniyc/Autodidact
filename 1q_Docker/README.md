@@ -27,6 +27,12 @@ sudo apt-get install -y docker-ce
 sudo systemctl status docker # docker.service - Docker App...
 ```
 
+5. Add a user to Docker group
+
+```bash
+sudo usermod -aG docker greenhat
+``` 
+
 #### Working with Docker images
 1. Run and exit the docker
 
