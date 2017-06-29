@@ -152,3 +152,104 @@ docker push # push to my docker hub
 --- 
 
 ### Run Processes in Containers
+Let's now dive into what exactly happens when containers a run in Docker.
+
+- The ```docker run image process`` gets the image name to start the container from and the process to run in that container.
+- The container is not done until that process exits
+- If we start other processes in that container, the container only finishes when the main process is finished (and not the other processes)
+- So Docker containers have **one main** process
+- Containers have names, and we don't give the name, the Docker will make on up
+
+Some more functionality:
+
+- Run a command or a process within the container and then delete that container on exit:
+
+```bash
+docker run --rm -ti ubuntu sleep 5 # start a container, sleep for 5 seconds, exit, rm the container
+```
+
+- Start a container, run a command in it, then run another command, then exit, and delete a container
+
+```bash
+docker run --rm -ti ubuntu bash -c "sleep 3; echo all done"
+```
+
+- Now let's talk about leaving things in a container. Docker has an idea of **detached** containers. You can have a container running and just let it go
+
+```bash
+docker run -d -ti ubuntu bash # run on the background
+docker ps
+docker attach container_name # to jump into the started container (ssh-like)
+# Cntr + P and Cntr + Q -> to run in the background
+```
+
+- How to add another process to a running container
+  - great for debugging when containers are acting out.
+  - great for DB administration
+  - cannot add ports, volumes, and other things that are possible with ```docker run```
+  - when the original container exits the main process, the ```exec`` (child) process exits as well
+
+```bash
+docker exec -ti container_name bash # execute another process in the running container
+```
+
+---
+
+### Manage Containers
+Looking at the container output of a container that is already finished could be very frustrating. You start up a container, it didn't work, you want to know what went wrong. 
+
+- Looking at container logs
+  - The ```docker logs``` command is useful for debugging.
+  - The docker keeps containers' logs as long as the container stays alive.
+  - Let's test out the logs:
+  - run container
+  - give it a name
+  - run it as detached container
+  - run it based on the "ubntu" image
+  - run a process bash inside the container
+  - execute the command ```less /etc/password```
+  - purposely misspell the command and look at the logs
+
+  ```bash
+  docker run --name example -d ubuntu bash -c "loss /etc/passord"
+  docker logs example # output: lose - command not found
+  ```
+  - Don't let the output get too large
+
+- Stopping and Removing Containers
+  - often when trying to start a container with a fixed name, you will get an error saying that container already exists. It is because the container hasn't been removed.
+
+  ```bash
+  docker kill container_name # stop a container
+  docker rm container_name  # remove a container
+  ```
+
+- Container Resource Constaints
+  - One of the big features of docker is the ability to enforce limits on how many resources a container is gonna use.
+    - You can limit to a fixed amount of memory, which prevents runaway containers from clobbering the rest of the sytem
+
+  ```bash
+  docker run --memory maximum-allowed-memory image_name command
+  ```
+    - You can limit the CPU time relative to what is available for the system (i.e. give the container half of the total CPU time, and the other container the other half, so that if one is not busy, the other can use more CPU) - but it will enforce that the containers have equal access
+
+  ```bash
+  docker run --cpu-shares # relative to other containers
+  ```
+
+    - You can also give hard limits, for example for the CPU usage: this container can only use 10% of the system's CPU, even though the other 90% are idle
+
+  ```bash
+  docker run --cpu-quota
+  ```
+
+- Orchestration
+  - Most of the Orchestration systems (discussed later) generally require you to state the limists of a particular task or container.
+
+- Lessons
+  - Dont' let your containers fetch dependencies when they start. Include the dependencies inside you containers, so that any updates to the dependencies don't break the entire infrastructure (i.e. Nodejs dependencies -> don't install package.json packages on container start, but rather create the container with the dependencies)
+  - Don't leave important things in unnamed stopped containers
+
+---
+
+### Network Between Containers
