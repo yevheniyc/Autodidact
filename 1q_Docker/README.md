@@ -36,7 +36,16 @@ sudo systemctl status docker # docker.service - Docker App...
 
 ```bash
 sudo usermod -aG docker greenhat
-``` 
+```
+
+6. Docker-Machine
+
+- Install and run Docker on Mac or Windows
+- Provision and manage multiple remote Docker hosts
+- Provision Swarm Clusters
+- Starts up a linux virtual machine that manages the containers
+
+
 
 #### Working with Docker images
 1. Run and exit the docker
@@ -253,3 +262,39 @@ Looking at the container output of a container that is already finished could be
 ---
 
 ### Network Between Containers
+
+Private Container Networking:
+
+- Docker provides a private network for use by the containers on your system
+- Programs in containers are isolated from the Internet by default. Containers can have several private networks, so that you can isolate things nicely.
+  - We can group our containers into "private" networks, so that all of our stuff related to one infrastructure is in one private network, and an unrelated service doesn't have to worry about interfering with that or being snopped upon.
+- We explicitly set, when running Docker, who can talk to whom and on what ports, and this is done by explicitly **exposing ports** and **linking containers**.
+- Docker has a good mechaism for helping these containers find each other and make the connections.
+- Docker helps you find other exposed ports with Compose services.
+
+Exposing a Specific Port: for incoming connections
+
+- Explicitly specify the port inside the container that can be excessed by outside container
+- We can do this for as many ports as we want per container
+
+Example:
+
+- Let's start up a container -> ```docker run```
+- Let's clean up the container after exit -> ```-rm``
+- Let's make it interactive terminal -> ```-ti```
+- Let's assing a port to it -> ```-p 45678:45678```
+  - expose port **45678** inside the container
+  - to the outside of the container as port **45678**
+  - So this says that I want the program listening on port **45678** inside the container to reachable from outside the container by just going to that host on port **45678**, and then it will be forwarded to the container and the connection will be established.
+- Let's **forward** another port to this containers -> ```-p 45679:45679```
+- So now both ports **45678** and **45679** forward connections directly in the container.
+- Let's name this container -> ```--name echo-server```
+- Lets run this container from image -> ```ubuntu:14.04```
+- Let's start a bash process in the container -> ```bash```
+- Once inside the conainer, let's build an echo server with **netcat** -> ```nc -lp 45678```
+  - 
+
+```bash
+docker run -rm -ti -p 45678:45678 -p 45679:45679 --name echo-server ubuntu:14.04 bash
+root@container_id:/# nc -lp 45678 # netcat listen to port 45678
+```
