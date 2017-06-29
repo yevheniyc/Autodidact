@@ -36,3 +36,12 @@ However, Elasticsearch is much more than just Lucene and much more than "just" f
 And it packages up all this functionality into a standalone server that your application can talk to via a simple RESTful API, using a web client from your favorite programming language, or even from the command line.
 
 It is easy to get started with Elasticsearch. It ships with sensible defaults and hides complicated search theory away from beginners. It just works, right out of the box. With minimal understanding you can soon become productive. 
+
+#### Elasticsearch Installation
+Yes, Docker it is! 
+
+```bash
+docker search elasticsearch
+docker pull elasticsearch
+docker run -ti elasticsearch
+```
