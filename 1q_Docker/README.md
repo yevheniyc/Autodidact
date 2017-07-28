@@ -291,10 +291,9 @@ Example:
 - Let's name this container -> ```--name echo-server```
 - Lets run this container from image -> ```ubuntu:14.04```
 - Let's start a bash process in the container -> ```bash```
-- Once inside the conainer, let's build an echo server with **netcat** -> ```nc -lp 45678```
-  - 
+- Once inside the conainer, let's build an echo server with **netcat** -> ```nc -lp 45678``` 
 
-```bash
-docker run -rm -ti -p 45678:45678 -p 45679:45679 --name echo-server ubuntu:14.04 bash
-root@container_id:/# nc -lp 45678 # netcat listen to port 45678
-```
+  ```bash
+  docker run -rm -ti -p 45678:45678 -p 45679:45679 --name echo-server ubuntu:14.04 bash
+  root@container_id:/# nc -lp 45678 # netcat listen to port 45678
+  ```
