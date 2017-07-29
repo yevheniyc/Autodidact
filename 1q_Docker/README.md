@@ -390,3 +390,16 @@ Second approach:
   #+to link to the server, because their on the same private network.
   ```
 
+NOTE: 
+- Linking through private networks is relatively new to Docker. Before they had a feature called linking, which was very similar, but it worked by setting environment variables inside the containers.
+- IP Address Binding in Your Services:
+  - Very often a service is configured to either listen for connections from the local machine of from the internet. Now when that service gets moved into a containe, the local machine for that container's perspective is the inside of that container. If you wanted to actually be able to receive connections from the same host, but in different containers, you need to change that service to listen for connections from the internet, by setting its bind address to **0.0.0.0**
+  - You will see this a lot when configuring web servers and the such. Don't worry about exposing, as you can still use Docker to limit access to only from the same host. You just have to allow access from outside the container into the container. Example:
+    - Listen for connections only from the localhost address 127.0.0.1
+    - and only if it's coming from this host should you forward it on port 1234
+    - into the container on port 1234 using TCP
+  ```bash
+  docker run -p 127.0.0.1:1234:1234/tcp
+  ```
+ 
+
