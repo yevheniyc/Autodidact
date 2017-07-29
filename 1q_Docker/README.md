@@ -292,8 +292,101 @@ Example:
 - Lets run this container from image -> ```ubuntu:14.04```
 - Let's start a bash process in the container -> ```bash```
 - Once inside the conainer, let's build an echo server with **netcat** -> ```nc -lp 45678``` 
+  - At this point anyone who connects to the port 45678 will be able to echo messages
+- Let's add a relay to the echo server -> ```nc -lp 45678 | nc -lp 45679```
+  - Anything passed into port 45678 will be piped out of port 45679 
 
   ```bash
   docker run -rm -ti -p 45678:45678 -p 45679:45679 --name echo-server ubuntu:14.04 bash
   root@container_id:/# nc -lp 45678 # netcat listen to port 45678
   ```
+- Let's test and see how this container relays information:
+  - first, Docker Machine starts up a Linux virtual machine on the computer, to run the actual containers. So we need to find out what is the IP address of that machine so that we can connect to the port we've just opened. 
+  - second, we netcat to both ports:
+    - terminal 1: ```nc IP 45678```
+    - terminal 2: ```nc IP 45679```
+  - no the messages in terminal 1 will be relayed to terminal 2 via the container
+
+Exposing Ports Dynamically:
+- Docker has a command that finds exposed ports, which helps to resolve conflicts in advance, in case we want to create a container on a port that is being used. IMPORTANT!
+- The program inside the container always listens on the same port, but from the outside of the container, it just gets whatever port is next available:
+  - Let's start a container with specified exposed internal ports, but dynamically exposed external
+  ```bash
+  docker run --rm -ti -p 45678 -p 45679 --name echo-server ubuntu:14.04 bash
+  ```
+  - To examine which external ports were dynamically assigned: ```docker port container_name```
+  ```bash
+  # output:
+  45678/tcp -> 0.0.0.0:45678
+  45679/tcp -> 0.0.0.0:45679
+  ```
+  - This is often used with a service discovery program that manages hooking up the machines outside docker
+  - Note: by default docker opens up TCP ports, if UDP port needs to be open:
+  ```bash
+  docker run -p outside-port:inside-port/protocol
+  ```
+
+---
+
+### Link Containers
+Connecting data between containers
+
+First approach:
+- Connecting between containers via Host Network. Communicate data from Client to Server Containers by exposing a port on each of the containers and then having each of them connect to the host on that port, which then gets forwarded to the appropriate container. For example:
+  - Expose a particular port from the host 1234:1234 into this container:
+  ```bash
+  docker run -ti --rm -p 1234:1234 -name server-listener ubuntu:14.04 bash
+  root@container_id:/# nc -lp 1234 # listen to connection on port 1234
+  ```
+  - Get the IP address of the virtual machine that runs docker and containers:
+  ```bash
+  $ ifconfig # within virtualbox -> will show docker0 interface and IP 
+  ```
+  - Now, start up another container -> client container and connect out to the host (use above IP) on port 1234, which is redirected to the server-listener container:
+  ```bash
+  docker run -ti --rm ubuntu:14.04 -name client-listener bash
+  root@container_id:/# nc host_IP 1234
+  hello world # redirected -> to server-listener
+  ```
+Second approach:
+- Connecting directly between containers using Virtual Network. Link container directly, so that data travels from server to client container while staying within Docker. This apprach has advantages and a few things to watch out for.
+- This approach is usually used with some orchestration tool to keep track of what's running where.
+- When two containers are linked, all their ports are linked, but only one way. You are connecting from the client to the server, but the server doesn't know when a client connects to it or goes away - so it is one way
+- This should be used on the services that are meant to be running on the same machine. A good example is a service and a health check that monitors it. A service and its DB - not a good example:
+  
+  ```bash
+  # start up a server
+  docker run --rm -ti --name server ubuntu:14.04 bash
+  root@container_id:/# nc -lp 1234
+  ```
+  ```bash
+  # start up a client
+  docker run --rm -ti --link server --name client ubuntu:14.04 bash
+  root@container_id:/# nc server 1234
+  hello # -> will reflect in the server container
+  ```
+  - the act of linking creates a name within this container to refer to the server, or the machine the client is linked to, which happens to be named server here. So we can connect directly to the server by using: ```nc server 1234```
+  - when creating a client, docker added the "server" to: ```cat /etc/hosts```
+  - if the server's IP address changes after that, the link will break
+
+- How to make Links not break when the services start and stop?
+  - Docker has private networks that you can set up, put containers in, and that will keep track of the names at the network level, so that when containers go away and come back, the name will change for all of the machines in that private network to refer to the new address.
+  - You have to make these networks in advance. It's not fully automatic, but it's pretty easy.
+  - Create private networks within Docker:
+  
+  ```bash
+  # terminal 1
+  docker network create example
+  docker run --rm -ti --net=example --name server ubuntu:14.04 bash
+  root@container_id:/# nc -lp 1234
+  ```
+  ```bash
+  # terminal 2
+  docker run --rm -ti --link server --net=example --name client ubuntu:14.04 bash
+  root@container_id: nc server 1234
+  hello # will reflect in terminal 1
+  # terminate container in terminal 1 and start again.
+  # creating a new container with the same name (server), still allows client
+  #+to link to the server, because their on the same private network.
+  ```
+
