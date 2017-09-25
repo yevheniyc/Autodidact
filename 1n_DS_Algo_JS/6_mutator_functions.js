@@ -6,8 +6,8 @@ nums // 1, 2, 3, 4, 5
 
 // 2. unshift() - prepend to array
 var nums = [2, 3, 4, 5];
-nums.unshift(1); // 5
-nums // 2, 3, 4
+nums.unshift(1);
+nums // 1, 2, 3, 4, 5
 
 // 3. pop() - remove from the end
 var nums = [1, 2, 3, 4, 5];
@@ -21,7 +21,7 @@ nums // 2, 3, 4, 5
 // 5. splice(start_indiex_where_to_add, num_elements_to_remove_0_if_none, els_to_add)
 var nums = [1, 2, 3, 7, 8, 9];
 var newElements = [4, 5, 6];
-nums.splice(3, 0, nuwElements);
+nums.splice(3, 0, newElements);
 nums // 1, 2, 3, 4, 5, 6, 7, 8, 9
 
 var nums = [1,2,3,7,8,9];
