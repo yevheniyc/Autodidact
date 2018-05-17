@@ -51,33 +51,33 @@ sudo usermod -aG docker greenhat
 1. Run and exit the docker
 
 ```bash
-sdocker run hello-world
+docker run hello-world
 ```
 
 2. Search for docker images in Docker Hub
 
 ```bash
-sdocker search ubuntu
+docker search ubuntu
 ```
 
 3. Pull an image to local host and run it
 
 ```bash
-sdocker pull ubuntu
-sdocker run ubuntu
-sdocker images # to view the images
+docker pull ubuntu
+docker run ubuntu
+docker images # to view the images
 ```
 
 4. Container Management
 
 ```bash
-sdocker ps -a # view all containers past and present
-sdocker ps -l # view the latest run container
-sdocker commit -m "added vim and nodejs" -a "Tuesday yev" df78c1f9769f finid/ubuntu-nodejs
-sdocker login -u yevheniyc
-sdocker push yevheniyc/ubuntu-nodejs
+docker ps -a # view all containers past and present
+docker ps -l # view the latest run container
+docker commit -m "added vim and nodejs" -a "Tuesday yev" df78c1f9769f finid/ubuntu-nodejs
+docker login -u yevheniyc
+docker push yevheniyc/ubuntu-nodejs
 # change tag on container
-sdocker tag 206914cf980a yevheniyc/ubuntu-nodejs
+docker tag 206914cf980a yevheniyc/ubuntu-nodejs
 ```
 
 ---
@@ -88,9 +88,9 @@ Docker Image - just enough of the OS to do what we need to do. This allows us to
 
 Docker Flow:
 
-    Image -> ```docker run -ti image_name``` -> 
-    Running Container -> ```exit``` -> 
-    Stopped Container -> ```docker commit container_id``` -> 
+    Image -> ```docker run -ti image_name``` ->
+    Running Container -> ```exit``` ->
+    Stopped Container -> ```docker commit container_id``` ->
     New Image
 
 View running/stopped containers
@@ -158,7 +158,7 @@ docker rmi my-tag # will remove an unwated tag
 docker push # push to my docker hub
 ```
 
---- 
+---
 
 ### Run Processes in Containers
 Let's now dive into what exactly happens when containers a run in Docker.
@@ -205,7 +205,7 @@ docker exec -ti container_name bash # execute another process in the running con
 ---
 
 ### Manage Containers
-Looking at the container output of a container that is already finished could be very frustrating. You start up a container, it didn't work, you want to know what went wrong. 
+Looking at the container output of a container that is already finished could be very frustrating. You start up a container, it didn't work, you want to know what went wrong.
 
 - Looking at container logs
   - The ```docker logs``` command is useful for debugging.
@@ -291,17 +291,17 @@ Example:
 - Let's name this container -> ```--name echo-server```
 - Lets run this container from image -> ```ubuntu:14.04```
 - Let's start a bash process in the container -> ```bash```
-- Once inside the conainer, let's build an echo server with **netcat** -> ```nc -lp 45678``` 
+- Once inside the conainer, let's build an echo server with **netcat** -> ```nc -lp 45678```
   - At this point anyone who connects to the port 45678 will be able to echo messages
 - Let's add a relay to the echo server -> ```nc -lp 45678 | nc -lp 45679```
-  - Anything passed into port 45678 will be piped out of port 45679 
+  - Anything passed into port 45678 will be piped out of port 45679
 
   ```bash
   docker run -rm -ti -p 45678:45678 -p 45679:45679 --name echo-server ubuntu:14.04 bash
   root@container_id:/# nc -lp 45678 # netcat listen to port 45678
   ```
 - Let's test and see how this container relays information:
-  - first, Docker Machine starts up a Linux virtual machine on the computer, to run the actual containers. So we need to find out what is the IP address of that machine so that we can connect to the port we've just opened. 
+  - first, Docker Machine starts up a Linux virtual machine on the computer, to run the actual containers. So we need to find out what is the IP address of that machine so that we can connect to the port we've just opened.
   - second, we netcat to both ports:
     - terminal 1: ```nc IP 45678```
     - terminal 2: ```nc IP 45679```
@@ -340,7 +340,7 @@ First approach:
   ```
   - Get the IP address of the virtual machine that runs docker and containers:
   ```bash
-  $ ifconfig # within virtualbox -> will show docker0 interface and IP 
+  $ ifconfig # within virtualbox -> will show docker0 interface and IP
   ```
   - Now, start up another container -> client container and connect out to the host (use above IP) on port 1234, which is redirected to the server-listener container:
   ```bash
@@ -353,7 +353,7 @@ Second approach:
 - This approach is usually used with some orchestration tool to keep track of what's running where.
 - When two containers are linked, all their ports are linked, but only one way. You are connecting from the client to the server, but the server doesn't know when a client connects to it or goes away - so it is one way
 - This should be used on the services that are meant to be running on the same machine. A good example is a service and a health check that monitors it. A service and its DB - not a good example:
-  
+
   ```bash
   # start up a server
   docker run --rm -ti --name server ubuntu:14.04 bash
@@ -373,7 +373,7 @@ Second approach:
   - Docker has private networks that you can set up, put containers in, and that will keep track of the names at the network level, so that when containers go away and come back, the name will change for all of the machines in that private network to refer to the new address.
   - You have to make these networks in advance. It's not fully automatic, but it's pretty easy.
   - Create private networks within Docker:
-  
+
   ```bash
   # terminal 1
   docker network create example
@@ -390,7 +390,7 @@ Second approach:
   #+to link to the server, because their on the same private network.
   ```
 
-NOTE: 
+NOTE:
 - Linking through private networks is relatively new to Docker. Before they had a feature called linking, which was very similar, but it worked by setting environment variables inside the containers.
 - IP Address Binding in Your Services:
   - Very often a service is configured to either listen for connections from the local machine of from the internet. Now when that service gets moved into a containe, the local machine for that container's perspective is the inside of that container. If you wanted to actually be able to receive connections from the same host, but in different containers, you need to change that service to listen for connections from the internet, by setting its bind address to **0.0.0.0**
@@ -401,10 +401,10 @@ NOTE:
   ```bash
   docker run -p 127.0.0.1:1234:1234/tcp
   ```
---- 
+---
 
 ### Images
-Images use the same resources, so don't use **SIZE** as the accurate representation. 
+Images use the same resources, so don't use **SIZE** as the accurate representation.
 Turning containers into images:
 ```bash
 docker pas -l
@@ -432,7 +432,7 @@ Volumes are virtual disks that we can store data in and share them between the c
 - Persistent: data will be available on hosts even after container goes away
 - Ephemeral: exists as long as a container uses them
 
-Volumes are not part of images either you pull or push, volumes get excluded. 
+Volumes are not part of images either you pull or push, volumes get excluded.
 
 #### Sharing data between the Host and the Container
 Sharing a folder and a file: between Linux host (virtual machine) and the containers
@@ -499,7 +499,7 @@ docker push yevheniyc/test-image-42:v99.9
 ### Dockerfiles
 Dockerfile:
 - Small program to create an image
-  
+
   ```bash
   docker build -t name-of-result /Dockerfile/location
   ```
@@ -523,7 +523,7 @@ vi Dockerfile
 FROM busybox
 RUN echo "building simple docker image"
 CMD echo "Hello Container"
-``` 
+```
 - FROM busybox: what image to start with (super tiny - ony shell in it)
 - RUN ...     : create a container and inside of it RUN the echo command; save into an image
 - CMD ...     : when image is started, run the folloing command (CMD)
@@ -637,20 +637,20 @@ What Kernels do?
   - everything that goes on electrically, bubbles up to the kernel and gets dealt with
 - It starts and schedules programs
 - It says what's allowed to run and when, and allows to do everything else you ask at the same time
-- It controls and organizes the storage devices on the computer. When you say "write to this file", kernel says "he actually means this little spot/address on the disk". It then goes and writes the data. Someone has to make this decision, and that's the role of the file system inside the kernel. 
+- It controls and organizes the storage devices on the computer. When you say "write to this file", kernel says "he actually means this little spot/address on the disk". It then goes and writes the data. Someone has to make this decision, and that's the role of the file system inside the kernel.
 - It passes messages between programs, when two programs in a computer what to communicate. When two programs on different computers want to communicate over a network, they ask the kernel to pass a message.
 - The kernel passes the message, gets it ready, sends it over to kernel on the other computer which receives the message, gets it ready for the program, and sends it to the program over there.
 - It allocates resources, memory, time to actually do work on a CPU, how much network bandwidth to give to who. All of that is managed by kernel.
 
 Docker, in place, is a program that manages the kernel! So Docker is:
 - program written in Go - a great system language that allows for manageing kernel's features, which allows to build the concept of containers and images.
-- Docker primary uses **cgroups** (control groups) to group processes together and give them the idea of being contained within their own little world - this is what keeps one cotnainer from interfering with another. 
+- Docker primary uses **cgroups** (control groups) to group processes together and give them the idea of being contained within their own little world - this is what keeps one cotnainer from interfering with another.
 - It uses **namespaces** - which a feature of Linux kernel which allows it to split the networking stack, so that you have one set of addresses for one container, another set of addreses for another containers, and other addresses for things that are not in containers at all.
-- It uses **copy-on-write** file systems and various other approaches to build the idea of images, to say you have this image, it doesn't change, but you can run stuff on top of it. 
+- It uses **copy-on-write** file systems and various other approaches to build the idea of images, to say you have this image, it doesn't change, but you can run stuff on top of it.
 - So Docker allows scripting distributed systems easy, and that is why it is so popular!
 
 Docker is devided into two programs: the Client and the Server
-- These two program communicate over a socket - can be a network socket, where the client is running on one computer, and the server is running on a computer somethwere on a cloud provider across the world. Or they can be running directly on the same hardware. Or they can be running on the same hardware with the server in a virtual machine, which is the comman case for people in this course. 
+- These two program communicate over a socket - can be a network socket, where the client is running on one computer, and the server is running on a computer somethwere on a cloud provider across the world. Or they can be running directly on the same hardware. Or they can be running on the same hardware with the server in a virtual machine, which is the comman case for people in this course.
 - In this case, the client communicates over a network and sends messages to the Docker server to say: make a container, start a container, stop a container. When the client and server are running on the same computer, they can connect through a special file called a socket. Since they can communicate through a file, and Docker can efficiently share files between hossts and containers, it means you can run the client, inside Docker itself. It's pretty easy to run the client inside one of the containers, and share the socket into that container, which allows the same messages to go through the same socket, get to the server running on the host, and do everything that it would do normally. So let's take a little look at what that looks like in practice. The idea is to get a visceral feel for what it means to control Docker through its socket.
 
 ```bash
@@ -663,18 +663,18 @@ root@container_id:
 ```
 Explained:
 - mount the file **docker.sock** on the host to the **docker.sock** in the container
-- the container will be built from image **docker** which is an image provided by Docker (the company) to allow you to run Docker in Docker. 
+- the container will be built from image **docker** which is an image provided by Docker (the company) to allow you to run Docker in Docker.
 - The take from here is that a client can run containers from anywhere, as long as it is connected to the docker server.
 
---- 
+---
 
 ### Networking and Namespaces
-Docker manages networking for you to create containers. First of all, networking is divided into many layers: 
-- The bottom layer is how machines that are near each other or containers that are near each other actually talk directly to each other. We call this the Ethernet layer. It moves little frames of data in a local area. 
+Docker manages networking for you to create containers. First of all, networking is divided into many layers:
+- The bottom layer is how machines that are near each other or containers that are near each other actually talk directly to each other. We call this the Ethernet layer. It moves little frames of data in a local area.
 - Above that, you have the Internet Protocol layer, or IP, and that's how data moves between networks and between systems in different parts of the world.
 - Routing is how packets get into and out of networks. Docker takes care of setting up that for you too.
 - Ports are specific programs running on a specific computer, actually listening to traffic.
-- So Docker uses bridges to create virtual networks inside your computer. When you create a private network in Docker, it creates a bridge. These function like software switches. It's equivalent to having a little blue box on your desk and plugging a bunch of different wires into it. Except all of this is within your computer and you are plugging containers into it with virtual network wires. So these are used to control the Ethernet layer, containers that actually talk directly to each other. 
+- So Docker uses bridges to create virtual networks inside your computer. When you create a private network in Docker, it creates a bridge. These function like software switches. It's equivalent to having a little blue box on your desk and plugging a bunch of different wires into it. Except all of this is within your computer and you are plugging containers into it with virtual network wires. So these are used to control the Ethernet layer, containers that actually talk directly to each other.
 
 Let's take a look at these bridges inside a running Docker system:
 - In order to look into these bridges, we need a system with BRCTL (Bridge Control Program) installed, and have an access to my Docker host's networking
@@ -689,7 +689,7 @@ root@default: brctl show
 #OUTPUT
 bridge_name    bridge_id   STP_enabled  interfaces
 br-xxxx ...
-docker0 ... # virtual network used by all machines in Docker 
+docker0 ... # virtual network used by all machines in Docker
             # that don't have their own network
 
 # after creating a new network: my-new-network bellow
@@ -716,7 +716,7 @@ In the above demo we turned off the isolation that prevents containers from mess
   - turn off for production!
 
 #### Routing
-Next layer up, is how Docker moves packets between networks and between cotnaienr and the internet. It uses the built-in firewall features of the Linux kernel, namely the IP tables command, to create firewall rules that control when packets get sent between the bridges, and thus become available to the containers that are attached to those bridges. 
+Next layer up, is how Docker moves packets between networks and between cotnaienr and the internet. It uses the built-in firewall features of the Linux kernel, namely the IP tables command, to create firewall rules that control when packets get sent between the bridges, and thus become available to the containers that are attached to those bridges.
 
 This whole system is commonly referred to as NAT (Network Address Translation). That means when a packet is on its way out towards the internet, you change the source address so it'll come back to you. Then, when it's on the way back in, you change the destination address so it looks like it came directly from the machine you were connecting to. Let's take a look at how Docker accoplishes port-forwarding under the hood: ```sudo iptables -n -L -t nat```
 
@@ -731,7 +731,7 @@ sudo iptables -n -L -t nat # list table network address translation
 Chain DOCKER (2 references)
 target   prot  opt  source      destination
 RETURN   all   --   0.0.0.0/0    0.0.0.0
-# - not much informaiton 
+# - not much informaiton
 
 # After executing Terminal 2
 sudo iptables -n -L -t nat
@@ -754,17 +754,17 @@ root@container_id:
 The **Terminal 1** after creating port-forwarding rule with **Terminal 2** states the following: ```tcp dpt:8080 to:172.17.0.2:8080```
 - For this machine, all traffic on port 8080 should be redirected to the address of the Docker machine (host) I just started on port 8080
 
-That's how Docker actually accomplishes exposing a port in the container. It uses these firewall rules. So exposing a port is really port forwarding. 
+That's how Docker actually accomplishes exposing a port in the container. It uses these firewall rules. So exposing a port is really port forwarding.
 
-####Namespaces 
+####Namespaces
 Namespaces are a feature in the Linux kernel that allows you to provide complete network isolation to different processes in the system. So it enforces the rule that you're not allowed to mess with the networking of other processes. Processes running in containers are attached to virtual network devices. And those virtual network devices are attached to bridges, which lets them talk to any other containers attached to the same bridges. This is how it creates the virtual networking. But each container has its own copy of all of the Linux networking stack. All of the different pieces that make up the networking are isolated to each container, so that they can't do things like reach in and reconfigure other containers. Namespaces enforce the rules of Docker and keep containers safe from each other.
 
 ### Processes and cgroups
-One of Docker's jobs is to manage the processes in containers, keep them isolated and keep them talking to each other where appropriate. 
+One of Docker's jobs is to manage the processes in containers, keep them isolated and keep them talking to each other where appropriate.
 
 First, a little primer on processes in Linux:
-- Processes come from other processes. It's a parent-child relationship, just one parent though. 
-- When a process exits, it returns that package to the process that started it. 
+- Processes come from other processes. It's a parent-child relationship, just one parent though.
+- When a process exits, it returns that package to the process that started it.
 - There's a special process, Process Zero, called init. That's the process that starts it all and every other process in a Linux system comes from dividing that process into other processes.
 
 So in Docker, your container starts with one process, the init process. That process can divide into other processes and do any number of things. Often, it starts with a shell, and that shell splits off and runs commands and runs other processes. When that init process exits, your container just vanishes. Any other processes that were in it at the time that the init process exits get shuts down unceremoniously. The container is done!
@@ -823,7 +823,7 @@ df -a # show all of the mounted file systems, including bind-ed
 sudo umount work
 ```
 
-This layering (mounting/unmounting) is the key concept that allows for creating multiple images from the original image, while keeping only the diffs (the spots), and not the entire container (the cow)! This is how Docker does the shared folders between the containers and the host. 
+This layering (mounting/unmounting) is the key concept that allows for creating multiple images from the original image, while keeping only the diffs (the spots), and not the entire container (the cow)! This is how Docker does the shared folders between the containers and the host.
 
 Now let's talk briefly about how Docker accomplishes the idea of images and containers. How does it do the storage behind them keeping them isolated, letting them be stacked on top of each other? All of that stuff requires a little bit of an introduction to the layers of the Unix file systems method. So at the very lowest level, you have actual things. Stuff that stores bits, hard drives, thumb drives, network storage devices.
 
@@ -897,7 +897,7 @@ Orchestration Systems:
 - Make sure containers run in the place with enough resurces
 
 The easiest to start with:
-- Docker Compose: 
+- Docker Compose:
   - single machine coordination
   - designed for testing and development
   - included in docker toolbox
