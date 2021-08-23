@@ -39,7 +39,7 @@ jupyter==1.0.0
 jupyter-client==4.4.0
 jupyter-console==5.0.0
 jupyter-core==4.2.0
-jupyterlab==0.31.12
+jupyterlab==1.2.21
 jupyterlab-launcher==0.10.5
 lxml==4.2.1
 MarkupSafe==0.23
