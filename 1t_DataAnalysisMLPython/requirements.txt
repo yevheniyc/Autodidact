@@ -103,7 +103,7 @@ textblob==0.11.1
 toolz==0.9.0
 tornado==4.4.2
 traitlets==4.3.1
-Twisted==17.9.0
+Twisted==22.4.0
 ua-parser==0.6.1
 user-agents==1.0.1
 w3lib==1.19.0
